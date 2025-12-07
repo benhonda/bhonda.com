@@ -12,8 +12,9 @@ inputs = {
 
   # Route53 configuration
   domains = {
-    "bhonda-com" = "bhonda.com"
-    "bhonda-ca"  = "bhonda.ca"
+    "bhonda-com"   = "bhonda.com"
+    "bhonda-ca"    = "bhonda.ca"
+    "benhonda-dev" = "benhonda.dev"
   }
 
   # Staging DNS records
@@ -61,6 +62,21 @@ inputs = {
     }
     "www-ca" = {
       domain    = "bhonda-ca"
+      subdomain = "www"
+      type      = "CNAME"
+      ttl       = 300
+      records   = ["4a329c9f48a47eb1.vercel-dns-016.com"]
+    }
+    # benhonda.dev
+    "root-dev" = {
+      domain    = "benhonda-dev"
+      subdomain = ""
+      type      = "A"
+      ttl       = 300
+      records   = ["216.150.1.1"]
+    }
+    "www-dev" = {
+      domain    = "benhonda-dev"
       subdomain = "www"
       type      = "CNAME"
       ttl       = 300

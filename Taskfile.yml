@@ -251,9 +251,11 @@ tasks:
   #
   ########################################################################################################################
 
-  # `terraform init` for shared
+  #  init shared infrastructure first
   tfinit-shared:
-    desc: Initialize Terraform for shared environment
+    desc: Initialize shared infrastructure
+    internal: true
+    interactive: true
     deps:
       - check-aws-identity
     dir: infra/live/shared
@@ -265,35 +267,17 @@ tasks:
     desc: Initialize Terraform (use ENV=staging or ENV=production)
     deps:
       - check-aws-identity
+      - tfinit-shared
     vars:
       ENV: '{{default "staging" .ENV}}'
     dir: infra/live/{{.ENV}}
     cmds:
       - terragrunt init {{.CLI_ARGS}}
 
-  # `terragrunt plan` for shared
-  tfplan-shared:
-    desc: Run Terragrunt plan for shared environment
-    deps:
-      - check-aws-identity
-    dir: infra/live/shared
-    cmds:
-      - terragrunt plan {{.CLI_ARGS}}
-
-  # `terragrunt plan`
-  tfplan:
-    desc: Run Terragrunt plan (use ENV=staging or ENV=production)
-    deps:
-      - check-aws-identity
-    vars:
-      ENV: '{{default "staging" .ENV}}'
-    dir: infra/live/{{.ENV}}
-    cmds:
-      - terragrunt plan {{.CLI_ARGS}}
-
-  # `terragrunt apply` for shared
+  # Apply shared infrastructure first
   tfapply-shared:
-    desc: Run Terragrunt apply for shared environment
+    desc: Apply shared infrastructure
+    internal: true
     interactive: true
     deps:
       - check-aws-identity
@@ -306,12 +290,34 @@ tasks:
     desc: Run Terragrunt apply (use ENV=staging or ENV=production)
     interactive: true
     deps:
-      - check-aws-identity
+      - tfapply-shared
     vars:
       ENV: '{{default "staging" .ENV}}'
     dir: infra/live/{{.ENV}}
     cmds:
       - terragrunt apply {{.CLI_ARGS}}
+
+  # plan shared infrastructure first
+  tfplan-shared:
+    desc: Plan shared infrastructure
+    internal: true
+    interactive: true
+    deps:
+      - check-aws-identity
+    dir: infra/live/shared
+    cmds:
+      - terragrunt plan {{.CLI_ARGS}}
+
+  # `terragrunt plan`
+  tfplan:
+    desc: Run Terragrunt plan (use ENV=staging or ENV=production)
+    deps:
+      - tfplan-shared
+    vars:
+      ENV: '{{default "staging" .ENV}}'
+    dir: infra/live/{{.ENV}}
+    cmds:
+      - terragrunt plan {{.CLI_ARGS}}
 
   # `terragrunt destroy`
   tfdestroy:

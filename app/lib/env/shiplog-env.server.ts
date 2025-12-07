@@ -1,0 +1,33 @@
+import { z } from "zod";
+
+/**
+ * Environment variables for weekly shiplog generation
+ */
+const shiplogEnvSchema = z.object({
+  /**
+   * GitHub Personal Access Token for fetching commits
+   */
+  GITHUB_PAT: z.string(),
+  /**
+   * Claude Code OAuth token for Claude synthesis
+   */
+  CLAUDE_CODE_OAUTH_TOKEN: z.string(),
+  /**
+   * S3 bucket name for storing shiplogs
+   */
+  S3_BUCKET_NAME: z.string(),
+  /**
+   * S3 bucket key prefix (no leading/trailing slashes)
+   */
+  S3_BUCKET_KEY_PREFIX_NO_SLASHES: z.string(),
+  /**
+   * Secret for verifying Vercel cron requests
+   */
+  VERCEL_CRON_SECRET: z.string(),
+});
+
+const shiplogEnv = shiplogEnvSchema.parse({
+  ...process.env,
+});
+
+export { shiplogEnv };
