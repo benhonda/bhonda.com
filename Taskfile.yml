@@ -1,0 +1,354 @@
+version: "3"
+
+# https://taskfile.dev/usage/#output-syntax
+output: prefixed
+
+vars:
+  AWS_PROFILE: "pharmer"
+
+dotenv:
+  - .env
+  - .env.vercel
+
+tasks:
+  default:
+    cmds:
+      - task --list-all
+  ########################################################################################################################
+  #
+  #                                        AWS commands (archived)
+  #
+  ########################################################################################################################
+  login:
+    requires:
+      vars:
+        - AWS_PROFILE
+    vars:
+      AWS_PROFILE: "{{.AWS_PROFILE}}"
+    cmds:
+      - aws sso login --profile {{.AWS_PROFILE}}
+
+  check-aws-identity:
+    requires:
+      vars:
+        - AWS_PROFILE
+    vars:
+      AWS_PROFILE: "{{.AWS_PROFILE}}"
+    cmds:
+      - |
+        if ! aws sts get-caller-identity --profile {{.AWS_PROFILE}}; then
+          echo ""
+          echo "Your '{{.AWS_PROFILE}}' AWS profile is not logged in. Run 'task login' to log in."
+          exit 1
+        fi
+    silent: true
+
+  ########################################################################################################################
+  #
+  #                                        Lambda Build commands
+  #
+  ########################################################################################################################
+
+  ########################################################################################################################
+  #
+  #                                        Docker / ECR commands
+  #
+  ########################################################################################################################
+
+  ########################################################################################################################
+  #
+  #                                        Development commands
+  #
+  ########################################################################################################################
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Development server
+  # --------------------------------------------------------------------------------------------------------------------
+  start:
+    aliases:
+      - dev
+    desc: Start development server
+    interactive: true
+    deps:
+      - check-aws-identity
+    cmds:
+      - bunx --bun react-router dev
+
+  install:
+    desc: Install dependencies with Bun
+    cmds:
+      - bun install {{.CLI_ARGS}}
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Build commands
+  # --------------------------------------------------------------------------------------------------------------------
+  build:
+    desc: Build the application
+    cmds:
+      - bun run build
+
+  typecheck:
+    desc: Run TypeScript type checking on app and all services
+    aliases:
+      - typecheck:all
+    deps:
+      - generate
+    cmds:
+      - bun run typecheck
+
+  typecheck-app:
+    desc: Run TypeScript type checking on main app only
+    aliases:
+      - typecheck:app
+    cmds:
+      - bun run typecheck
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Database commands
+  # --------------------------------------------------------------------------------------------------------------------
+  db-push:
+    aliases:
+      - push
+      - drizzle-push
+      - drizzle-kit-push
+      - db:push
+    desc: Push database schema changes to database
+    interactive: true
+    prompt: "Before pushing schema changes, double-check the DATABASE_URL - is it correct?"
+    cmds:
+      - bunx drizzle-kit push
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Testing commands
+  # --------------------------------------------------------------------------------------------------------------------
+  test:
+    desc: Run all tests
+    cmds:
+      - bun test
+
+  test-watch:
+    aliases:
+      - test:watch
+    desc: Run tests in watch mode
+    cmds:
+      - bun test --watch
+
+  test-coverage:
+    aliases:
+      - test:coverage
+    desc: Run tests with coverage
+    cmds:
+      - bun test --coverage
+
+  test-unit:
+    aliases:
+      - test:unit
+    desc: Run unit tests only
+    cmds:
+      - bun test app/lib
+
+  test-integration:
+    aliases:
+      - test:integration
+    desc: Run integration tests only
+    cmds:
+      - bun test tests/integration
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Code generation commands
+  # --------------------------------------------------------------------------------------------------------------------
+  generate:
+    desc: Run all code generators
+    cmds:
+      - task: generate-actions
+      - task: generate-routes
+      - task: generate-env
+      - task: generate-db
+      - task: generate-jobs
+
+  generate-actions:
+    aliases:
+      - generate:actions
+    desc: Generate action map from action handlers
+    cmds:
+      - |
+        if [ -f app/lib/actions/_core/action-map.generate.ts ]; then
+          bun run app/lib/actions/_core/action-map.generate.ts
+        else
+          echo "⚠️  Skipping generate-actions: app/lib/actions/_core/action-map.generate.ts not found"
+        fi
+
+  generate-routes:
+    aliases:
+      - generate:routes
+    desc: Generate type-safe routes from app/routes
+    cmds:
+      - |
+        if [ -f app/lib/router/generouted-generate-routes.ts ]; then
+          bun run app/lib/router/generouted-generate-routes.ts
+        else
+          echo "⚠️  Skipping generate-routes: app/lib/router/generouted-generate-routes.ts not found"
+        fi
+
+  generate-env:
+    aliases:
+      - generate:env
+    desc: Generate consolidated environment variable files
+    cmds:
+      - |
+        if [ -f app/lib/env/_core/env-map.generate.ts ]; then
+          bun run app/lib/env/_core/env-map.generate.ts
+        else
+          echo "⚠️  Skipping generate-env: app/lib/env/_core/env-map.generate.ts not found"
+        fi
+
+  generate-db:
+    aliases:
+      - generate:db
+    desc: Generate consolidated database schema
+    cmds:
+      - |
+        if [ -f app/lib/db/schema.generate.ts ]; then
+          bun run app/lib/db/schema.generate.ts
+        else
+          echo "⚠️  Skipping generate-db: app/lib/db/schema.generate.ts not found"
+        fi
+
+  generate-jobs:
+    aliases:
+      - generate:jobs
+    desc: Generate EventBridge job map
+    cmds:
+      - |
+        if [ -f app/lib/eventbridge-api-jobs/_core/eventbridge-job-map.generate.ts ]; then
+          bun run app/lib/eventbridge-api-jobs/_core/eventbridge-job-map.generate.ts
+        else
+          echo "⚠️  Skipping generate-jobs: app/lib/eventbridge-api-jobs/_core/eventbridge-job-map.generate.ts not found"
+        fi
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Other commands
+  # --------------------------------------------------------------------------------------------------------------------
+
+  # pull dev env from vercel
+  env:
+    aliases:
+      - pull-env
+      - pull
+    interactive: true
+    cmds:
+      - bunx vercel env pull .env.vercel
+
+  link:
+    desc: Link to Vercel project
+    interactive: true
+    cmds:
+      - bunx vercel link
+
+  ########################################################################################################################
+  #
+  #                                        Terraform commands
+  #
+  ########################################################################################################################
+
+  # `terraform init`
+  tfinit:
+    desc: Initialize Terraform (use ENV=staging or ENV=production)
+    deps:
+      - check-aws-identity
+    vars:
+      ENV: '{{default "staging" .ENV}}'
+    dir: infra/live/{{.ENV}}
+    cmds:
+      - terragrunt init {{.CLI_ARGS}}
+
+  # `terragrunt plan`
+  tfplan:
+    desc: Run Terragrunt plan (use ENV=staging or ENV=production)
+    deps:
+      - check-aws-identity
+    vars:
+      ENV: '{{default "staging" .ENV}}'
+    dir: infra/live/{{.ENV}}
+    cmds:
+      - terragrunt plan {{.CLI_ARGS}}
+
+  # `terragrunt apply`
+  tfapply:
+    desc: Run Terragrunt apply (use ENV=staging or ENV=production)
+    interactive: true
+    deps:
+      - check-aws-identity
+    vars:
+      ENV: '{{default "staging" .ENV}}'
+    dir: infra/live/{{.ENV}}
+    cmds:
+      - terragrunt apply {{.CLI_ARGS}}
+
+  # `terragrunt destroy`
+  tfdestroy:
+    desc: Run Terragrunt destroy (use ENV=staging or ENV=production)
+    interactive: true
+    deps:
+      - check-aws-identity
+    vars:
+      ENV: '{{default "staging" .ENV}}'
+    dir: infra/live/{{.ENV}}
+    cmds:
+      - terragrunt destroy {{.CLI_ARGS}}
+
+  # `terragrunt import`
+  tfimport:
+    desc: Run Terragrunt import (use ENV=staging or ENV=production)
+    deps:
+      - check-aws-identity
+    vars:
+      ENV: '{{default "staging" .ENV}}'
+    dir: infra/live/{{.ENV}}
+    cmds:
+      - terragrunt import {{.CLI_ARGS}}
+
+  # `terraform state list`
+  tflist:
+    desc: List Terraform state (use ENV=staging or ENV=production)
+    deps:
+      - check-aws-identity
+    vars:
+      ENV: '{{default "staging" .ENV}}'
+    dir: infra/live/{{.ENV}}
+    cmds:
+      - terraform state list
+
+  # `terragrunt refresh`
+  tfrefresh:
+    desc: Run Terragrunt refresh (use ENV=staging or ENV=production)
+    deps:
+      - check-aws-identity
+    vars:
+      ENV: '{{default "staging" .ENV}}'
+    dir: infra/live/{{.ENV}}
+    cmds:
+      - terragrunt refresh
+
+  # Show outputs for a specific environment
+  tfoutput:
+    desc: Show Terraform outputs (use ENV=staging or ENV=production)
+    deps:
+      - check-aws-identity
+    vars:
+      ENV: '{{default "staging" .ENV}}'
+    dir: infra/live/{{.ENV}}
+    cmds:
+      - terragrunt output {{.CLI_ARGS}}
+
+  # Save terraform outputs to JSON file
+  save-outputs:
+    desc: Save Terraform outputs to JSON file (use ENV=staging or ENV=production)
+    deps:
+      - check-aws-identity
+    vars:
+      ENV: '{{default "staging" .ENV}}'
+    dir: infra/live/{{.ENV}}
+    cmds:
+      - terragrunt output -json > ../../../terraform-outputs-{{.ENV}}.json
+      - echo "✅ Saved {{.ENV}} terraform outputs to terraform-outputs-{{.ENV}}.json"

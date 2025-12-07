@@ -1,0 +1,208 @@
+import {
+  isRouteErrorResponse,
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLoaderData,
+  type LinksFunction,
+  type LoaderFunctionArgs,
+  useLocation,
+  useRouteLoaderData,
+} from "react-router";
+import "./app.css";
+import { ReadableError } from "~/lib/readable-error";
+import { serverEnv } from "~/lib/env/env.defaults.server";
+import { Toaster } from "sonner";
+import { useI18n } from "~/hooks/use-i18n";
+import { useDebouncedCallback } from "use-debounce";
+import { logDebug } from "~/lib/logger";
+import { browserPageEvent } from "~/lib/analytics/events.defaults.client";
+import { useEffect } from "react";
+import { useRouteError } from "react-router";
+import { getThemeFromRequest } from "~/lib/theme/theme.server";
+import { cn } from "~/lib/utils";
+
+const SITE_NAME = "bhonda.com";
+const SITE_DESC = "bhonda.com";
+
+export const links: LinksFunction = () => [
+  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  {
+    rel: "preconnect",
+    href: "https://fonts.gstatic.com",
+    crossOrigin: "anonymous",
+  },
+  {
+    rel: "stylesheet",
+    // Inter
+    // href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+    // Inter + Source Serif 4
+    // href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap",
+    // Inter + Roboto Condensed
+    // href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap",
+    // Inter + Inter Tight
+    // href: "https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+    // Poppins + Inter
+    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap",
+  },
+];
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  // only take the public env vars (the ones that start with "PUBLIC_")
+  const publicEnv = Object.fromEntries(Object.entries(serverEnv).filter(([key]) => key.startsWith("PUBLIC_")));
+
+  // Get theme preference from cookie
+  const theme = getThemeFromRequest(request);
+
+  return { publicEnv, theme };
+};
+
+const GTM_ID = "GTM-XXXXXXXX";
+
+/**
+ * Layout component wraps the entire document structure.
+ * Used by App, ErrorBoundary, and HydrateFallback to avoid duplication
+ * and prevent remounting of app shell elements.
+ */
+export function Layout({ children }: { children: React.ReactNode }) {
+  // Use useRouteLoaderData to safely access loader data (might be undefined in error state)
+  const data = useRouteLoaderData<typeof loader>("root");
+  const { language } = useI18n();
+
+  // Defensive fallbacks for error boundary case
+  const theme = data?.theme || "system";
+  const publicEnv = data?.publicEnv || {};
+  const themeClass = theme === "system" ? "" : theme;
+
+  return (
+    <html lang={language} translate="no" className={cn("notranslate", themeClass)}>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content={SITE_NAME} />
+        <link rel="manifest" href="/site.webmanifest" />
+
+        {/* OG */}
+        <meta property="og:title" content={SITE_NAME} />
+        <meta property="og:image" content="/og.png" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content={SITE_NAME} />
+
+        {/* make this site not indexed by search engines */}
+        <meta name="robots" content="noindex, nofollow" />
+
+        <Meta />
+        <Links />
+
+        {/**
+         * This is a way to pass data from the server to the client
+         */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.env = ${JSON.stringify(publicEnv)}`,
+          }}
+        />
+      </head>
+
+      <body>
+        {/* gtm */}
+        {typeof window !== "undefined" && window.env.PUBLIC_APP_ENV === "production" && (
+          <noscript
+            dangerouslySetInnerHTML={{
+              __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=${GTM_ID}"
+height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
+            }}
+          ></noscript>
+        )}
+
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+        <Toaster richColors />
+      </body>
+    </html>
+  );
+}
+
+function App() {
+  const { publicEnv } = useLoaderData<typeof loader>();
+  const { language } = useI18n();
+
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  const triggerPageEvent = useDebouncedCallback(
+    () => {
+      logDebug("triggerPageEvent", { pathname, language });
+      browserPageEvent({ language });
+    },
+    1000,
+    { leading: true, trailing: false }
+  );
+
+  useEffect(() => {
+    triggerPageEvent();
+  }, [pathname, language]);
+
+  //
+  // GTM
+  //
+  useEffect(() => {
+    if (window.env.PUBLIC_APP_ENV !== "production") {
+      logDebug("GTM", "Not in production");
+      return;
+    }
+
+    (function (w: any, d: any, s: string, l: string, i: string) {
+      w[l] = w[l] || [];
+      w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+      const f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != "dataLayer" ? "&l=" + l : "";
+      j.async = true;
+      j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, "script", "dataLayer", GTM_ID);
+  }, []);
+
+  return <Outlet />;
+}
+
+export default App;
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  let message = "Oops!";
+  let details = "An unexpected error occurred.";
+  let stack: string | undefined;
+
+  if (isRouteErrorResponse(error)) {
+    message = error.status === 404 ? "404" : "Error";
+    details = error.status === 404 ? "The requested page could not be found." : error.statusText || details;
+  } else if (error && error instanceof ReadableError) {
+    details = error.detail;
+  } else if (error && error instanceof Error) {
+    details = error.message;
+    if (import.meta.env.DEV) {
+      stack = error.stack;
+    }
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center h-screen gap-4 p-4">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold">{message}</h1>
+        <p className="text-sm text-muted-foreground mt-2">{details}</p>
+      </div>
+      {stack && <pre className="text-xs bg-muted p-4 rounded-lg overflow-auto max-w-4xl w-full">{stack}</pre>}
+    </div>
+  );
+}
