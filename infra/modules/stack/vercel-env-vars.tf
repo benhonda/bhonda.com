@@ -106,6 +106,10 @@ resource "vercel_custom_environment" "staging" {
   count      = var.env == "staging" && var.enable_vercel_integration ? 1 : 0
   project_id = var.vercel_project_id
   name       = "staging"
+  branch_tracking = {
+    pattern = "staging"
+    type    = "equals"
+  }
 }
 
 ########################################################################################################################
