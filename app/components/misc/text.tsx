@@ -12,8 +12,8 @@ export const text = cva("", {
       "display-xs": "font-display text-1.5xl sm:text-2.5xl font-normal tracking-tight",
 
       // Heading styles (body font)
-      "heading-md": "font-body text-1.5xl sm:text-2xl font-semibold tracking-tight",
-      "heading-sm": "font-body text-md-lg sm:text-lg font-semibold tracking-tight",
+      "heading-md": "font-display text-1.5xl sm:text-2xl font-normal tracking-tight",
+      "heading-sm": "font-display text-md-lg sm:text-lg font-normal tracking-tight",
 
       // Body styles (DM Sans font)
       "body-lg": "font-body text-lg sm:text-xl font-normal tracking-tight",
@@ -21,8 +21,8 @@ export const text = cva("", {
       "body-sm": "font-body text-sm sm:text-sm-md font-normal tracking-normal",
 
       // Button styles (body font)
-      "button-md": "font-body text-sm sm:text-sm-md font-semibold tracking-tight",
-      "button-sm": "font-body text-sm font-semibold tracking-tight",
+      "button-md": "font-mono text-sm sm:text-sm-md font-semibold tracking-tight",
+      "button-sm": "font-mono text-sm font-semibold tracking-tight",
 
       // Utility styles
       microcopy: "font-body text-xs font-normal tracking-normal",

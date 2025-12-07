@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { action_handler } from "~/lib/actions/_core/action-runner.server";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
+import { Text } from "~/components/misc/text";
 
 export async function loader({}: LoaderFunctionArgs) {
   return {};
@@ -12,22 +13,41 @@ export default function Index() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
-      <h1 className="text-2xl font-bold mb-2">bhonda.com</h1>
-      <p className="text-muted-foreground mb-8">
+      <Text as="h1" variant="display-xs" className="mb-2">
+        bhonda.com
+      </Text>
+      <Text as="p" variant="body" className="text-muted-foreground mb-8">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua.
-      </p>
+      </Text>
 
       {/* Tabs */}
       <Tabs defaultValue="latest" className="w-full">
-        <TabsList>
-          <TabsTrigger value="latest">latest</TabsTrigger>
-          <TabsTrigger value="ships">ships</TabsTrigger>
-          <TabsTrigger value="other">other</TabsTrigger>
+        <TabsList className="bg-transparent p-0 h-auto gap-0">
+          <TabsTrigger
+            value="latest"
+            className="rounded-none bg-muted data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-4 py-2"
+          >
+            latest
+          </TabsTrigger>
+          <TabsTrigger
+            value="ships"
+            className="rounded-none bg-muted data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-4 py-2"
+          >
+            ships
+          </TabsTrigger>
+          <TabsTrigger
+            value="other"
+            className="rounded-none bg-muted data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-4 py-2"
+          >
+            other
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="latest">
-          <h2 className="text-xl font-semibold mb-6 mt-6">Latest</h2>
+          <Text as="h2" variant="heading-md" className="mb-6 mt-6">
+            Latest
+          </Text>
           <div className="grid grid-cols-3 gap-4">
             <div className="bg-muted h-48"></div>
             <div className="bg-muted h-48"></div>
@@ -39,7 +59,9 @@ export default function Index() {
         </TabsContent>
 
         <TabsContent value="ships">
-          <h2 className="text-xl font-semibold mb-6 mt-6">Ships</h2>
+          <Text as="h2" variant="heading-md" className="mb-6 mt-6">
+            Ships
+          </Text>
           <div className="grid grid-cols-3 gap-4">
             <div className="bg-muted h-48"></div>
             <div className="bg-muted h-48"></div>
@@ -51,7 +73,9 @@ export default function Index() {
         </TabsContent>
 
         <TabsContent value="other">
-          <h2 className="text-xl font-semibold mb-6 mt-6">Other</h2>
+          <Text as="h2" variant="heading-md" className="mb-6 mt-6">
+            Other
+          </Text>
           <div className="grid grid-cols-3 gap-4">
             <div className="bg-muted h-48"></div>
             <div className="bg-muted h-48"></div>

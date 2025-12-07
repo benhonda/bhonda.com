@@ -28,24 +28,27 @@ const SITE_NAME = "bhonda.com";
 const SITE_DESC = "bhonda.com";
 
 export const links: LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  // Preload critical custom fonts
   {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
+    rel: "preload",
+    href: "/fonts/Array-Wide.woff2",
+    as: "font",
+    type: "font/woff2",
     crossOrigin: "anonymous",
   },
   {
-    rel: "stylesheet",
-    // Inter
-    // href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-    // Inter + Source Serif 4
-    // href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap",
-    // Inter + Roboto Condensed
-    // href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap",
-    // Inter + Inter Tight
-    // href: "https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-    // Poppins + Inter
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap",
+    rel: "preload",
+    href: "/fonts/Erode-Variable.woff2",
+    as: "font",
+    type: "font/woff2",
+    crossOrigin: "anonymous",
+  },
+  {
+    rel: "preload",
+    href: "/fonts/Tabular-Variable.woff2",
+    as: "font",
+    type: "font/woff2",
+    crossOrigin: "anonymous",
   },
 ];
 
