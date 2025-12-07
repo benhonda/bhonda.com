@@ -15,7 +15,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   try {
     // 1. Verify Vercel cron authentication
     const authHeader = request.headers.get("authorization");
-    const expectedAuth = `Bearer ${shiplogEnv.VERCEL_CRON_SECRET}`;
+    const expectedAuth = `Bearer ${shiplogEnv.CRON_SECRET}`;
 
     if (authHeader !== expectedAuth) {
       console.error("[Shiplog Cron] Unauthorized request");
@@ -54,10 +54,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
 
     // 4. Synthesize shiplog with Claude
-    const publicContent = await synthesizeShiplog(repoCommits, startDate, endDate);
+    const shiplogContent = await synthesizeShiplog(repoCommits, startDate, endDate);
 
     // 5. Upload to S3
-    const { publicKey, internalKey } = await uploadShiplogToS3(publicContent, repoCommits, endDate);
+    const { publicKey, internalKey } = await uploadShiplogToS3(shiplogContent, repoCommits, endDate);
 
     // 6. Calculate summary stats
     const totalCommits = repoCommits.reduce((sum, r) => sum + r.commits.length, 0);

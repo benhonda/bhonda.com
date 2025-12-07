@@ -1,0 +1,93 @@
+/* Array Wide - Display & Sans-serif Font */
+@font-face {
+  font-family: "Array";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/Array-Wide.eot");
+  src:
+    url("/fonts/Array-Wide.woff2") format("woff2"),
+    url("/fonts/Array-Wide.woff") format("woff"),
+    url("/fonts/Array-Wide.ttf") format("truetype"),
+    url("/fonts/Array-Wide.eot?#iefix") format("embedded-opentype");
+}
+
+@font-face {
+  font-family: "Array";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/Array-SemiboldWide.eot");
+  src:
+    url("/fonts/Array-SemiboldWide.woff2") format("woff2"),
+    url("/fonts/Array-SemiboldWide.woff") format("woff"),
+    url("/fonts/Array-SemiboldWide.ttf") format("truetype"),
+    url("/fonts/Array-SemiboldWide.eot?#iefix") format("embedded-opentype");
+}
+
+@font-face {
+  font-family: "Array";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/Array-BoldWide.eot");
+  src:
+    url("/fonts/Array-BoldWide.woff2") format("woff2"),
+    url("/fonts/Array-BoldWide.woff") format("woff"),
+    url("/fonts/Array-BoldWide.ttf") format("truetype"),
+    url("/fonts/Array-BoldWide.eot?#iefix") format("embedded-opentype");
+}
+
+/* Erode Variable - Body & Serif Font */
+@font-face {
+  font-family: "Erode";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/Erode-Variable.eot");
+  src:
+    url("/fonts/Erode-Variable.woff2") format("woff2"),
+    url("/fonts/Erode-Variable.woff") format("woff"),
+    url("/fonts/Erode-Variable.ttf") format("truetype"),
+    url("/fonts/Erode-Variable.eot?#iefix") format("embedded-opentype");
+}
+
+@font-face {
+  font-family: "Erode";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/Erode-VariableItalic.eot");
+  src:
+    url("/fonts/Erode-VariableItalic.woff2") format("woff2"),
+    url("/fonts/Erode-VariableItalic.woff") format("woff"),
+    url("/fonts/Erode-VariableItalic.ttf") format("truetype"),
+    url("/fonts/Erode-VariableItalic.eot?#iefix") format("embedded-opentype");
+}
+
+/* Tabular Variable - Monospace Font */
+@font-face {
+  font-family: "Tabular";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/Tabular-Variable.eot");
+  src:
+    url("/fonts/Tabular-Variable.woff2") format("woff2"),
+    url("/fonts/Tabular-Variable.woff") format("woff"),
+    url("/fonts/Tabular-Variable.ttf") format("truetype"),
+    url("/fonts/Tabular-Variable.eot?#iefix") format("embedded-opentype");
+}
+
+@font-face {
+  font-family: "Tabular";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/Tabular-VariableItalic.eot");
+  src:
+    url("/fonts/Tabular-VariableItalic.woff2") format("woff2"),
+    url("/fonts/Tabular-VariableItalic.woff") format("woff"),
+    url("/fonts/Tabular-VariableItalic.ttf") format("truetype"),
+    url("/fonts/Tabular-VariableItalic.eot?#iefix") format("embedded-opentype");
+}

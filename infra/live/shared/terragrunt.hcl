@@ -26,6 +26,13 @@ inputs = {
       ttl       = 300
       records   = ["4a329c9f48a47eb1.vercel-dns-016.com"]
     }
+    "staging-com" = {
+      domain    = "bhonda-com"
+      subdomain = "staging"
+      type      = "CNAME"
+      ttl       = 300
+      records   = ["4a329c9f48a47eb1.vercel-dns-016.com"]
+    }
   }
 
   # Production DNS records

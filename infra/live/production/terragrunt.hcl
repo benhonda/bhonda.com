@@ -17,8 +17,8 @@ dependency "shared" {
 }
 
 inputs = {
-  env         = "staging"
-  name_prefix = "bhonda-com-staging"
+  env         = "production"
+  name_prefix = "bhonda-com-production"
 
   # Shared resource IDs
   shared_assets_bucket = dependency.shared.outputs.assets_bucket_name
@@ -28,12 +28,12 @@ inputs = {
   vercel_team_slug          = "adpharm"
   vercel_project_name       = "bhonda-com"
   vercel_project_id         = "prj_omcPGOmhxn9VEVIMVLTogtofBjfp"
-  vercel_allowed_environments = ["development"]  # Staging uses custom environment with target=development
+  vercel_allowed_environments = ["production"]
   enable_vercel_preview_env = false
-  app_fqdn                  = "staging.bhonda.com"
+  app_fqdn                  = "www.bhonda.com"
 
   # BunnyNet CDN configuration
   enable_bunnynet_cdn = true
-  bunnynet_pull_zone_name = "bhonda-staging"
-  bunnynet_s3_path_prefix = "staging"
+  bunnynet_pull_zone_name = "bhonda-production"
+  bunnynet_s3_path_prefix = "production"
 }

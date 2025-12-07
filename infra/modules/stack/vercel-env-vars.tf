@@ -87,6 +87,11 @@ locals {
       comment    = "GitHub Personal Access Token - Set manually in Vercel"
       tf_managed = false
     }
+    CRON_SECRET = {
+      value      = "MANUALLY_SET_IN_VERCEL"
+      comment    = "Cron secret for webhook authentication - Set manually in Vercel"
+      tf_managed = false
+    }
   }
 
   common_env_vars_base = merge(local.tf_managed_vars_base, local.manual_vars_base)

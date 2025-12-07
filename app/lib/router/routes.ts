@@ -9,6 +9,8 @@ import { components, hooks, utils } from "~/lib/router/generouted-components";
 export const routePaths = [
   "/",
   "/:lang",
+  "/api/cron/weekly-shiplog",
+  "/api/cron/weekly-shiplog/ts",
   "/login",
   "/oauth2/google/callback",
 ] as const;

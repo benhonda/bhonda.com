@@ -23,7 +23,7 @@ const shiplogEnvSchema = z.object({
   /**
    * Secret for verifying Vercel cron requests
    */
-  VERCEL_CRON_SECRET: z.string(),
+  CRON_SECRET: z.string(),
 });
 
 const shiplogEnv = shiplogEnvSchema.parse({

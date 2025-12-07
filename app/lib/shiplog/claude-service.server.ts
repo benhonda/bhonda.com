@@ -2,6 +2,12 @@ import Anthropic from "@anthropic-ai/sdk";
 import { shiplogEnv } from "~/lib/env/shiplog-env.server";
 import type { RepoCommits } from "./github-service.server";
 
+export interface ShiplogContent {
+  title: string;
+  description: string;
+  content: string;
+}
+
 /**
  * Synthesizes commits into a cohesive weekly shiplog using Claude
  */
@@ -9,7 +15,7 @@ export async function synthesizeShiplog(
   repoCommits: RepoCommits[],
   startDate: Date,
   endDate: Date
-): Promise<string> {
+): Promise<ShiplogContent> {
   const anthropic = new Anthropic({
     apiKey: shiplogEnv.CLAUDE_CODE_OAUTH_TOKEN,
   });
@@ -34,8 +40,16 @@ export async function synthesizeShiplog(
 **Input:** Commits grouped by repository from the past week.
 
 **Output Requirements:**
-- Write a concise, blog-post style markdown document
-- Organize content by project/repository
+Return a JSON object with exactly these three fields:
+
+{
+  "title": "Creative, engaging title for the shiplog (keep it punchy and exciting)",
+  "description": "1-2 sentence preview/summary for listing pages (make it compelling)",
+  "content": "Full markdown blog post content (concise, organized by project, focus on what shipped)"
+}
+
+**Content Guidelines:**
+- Organize by project/repository
 - Focus on what shipped: features, fixes, improvements
 - Emphasize user-facing impact and meaningful changes
 - Keep it readable and engaging
@@ -47,7 +61,7 @@ export async function synthesizeShiplog(
 
 ${formattedCommits}
 
-Write the weekly shiplog now:`;
+Return only the JSON object, no additional text:`;
 
   try {
     const response = await anthropic.messages.create({
@@ -66,9 +80,33 @@ Write the weekly shiplog now:`;
       throw new Error("Unexpected response type from Claude");
     }
 
-    console.log(`[Claude] Successfully synthesized shiplog (${content.text.length} chars)`);
+    // Parse JSON response
+    let shiplogContent: ShiplogContent;
+    try {
+      // Extract JSON from response (Claude might wrap it in markdown code blocks)
+      const jsonMatch = content.text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error("No JSON found in Claude response");
+      }
 
-    return content.text;
+      shiplogContent = JSON.parse(jsonMatch[0]);
+
+      // Validate required fields
+      if (!shiplogContent.title || !shiplogContent.description || !shiplogContent.content) {
+        throw new Error("Missing required fields in Claude response");
+      }
+    } catch (parseError) {
+      console.error("[Claude] Failed to parse JSON response:", parseError);
+      console.error("[Claude] Raw response:", content.text);
+      throw new Error(`Failed to parse Claude JSON response: ${parseError}`);
+    }
+
+    console.log(`[Claude] Successfully synthesized shiplog`);
+    console.log(`[Claude] Title: ${shiplogContent.title}`);
+    console.log(`[Claude] Description: ${shiplogContent.description}`);
+    console.log(`[Claude] Content length: ${shiplogContent.content.length} chars`);
+
+    return shiplogContent;
   } catch (error) {
     console.error("[Claude] Error synthesizing shiplog:", error);
     throw new Error(`Failed to synthesize shiplog with Claude: ${error}`);

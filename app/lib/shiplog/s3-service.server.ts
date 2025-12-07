@@ -2,6 +2,7 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "~/lib/aws/s3/s3-client.server";
 import { shiplogEnv } from "~/lib/env/shiplog-env.server";
 import type { RepoCommits } from "./github-service.server";
+import type { ShiplogContent } from "./claude-service.server";
 
 export interface ShiplogMetadata {
   dateRange: {
@@ -13,6 +14,44 @@ export interface ShiplogMetadata {
     name: string;
     commitCount: number;
   }>;
+}
+
+/**
+ * Calculates the ISO week number for a given date
+ */
+function getWeekNumber(date: Date): number {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+}
+
+/**
+ * Builds frontmatter markdown with metadata
+ */
+function buildFrontmatterMarkdown(
+  shiplogContent: ShiplogContent,
+  dateStr: string,
+  metadata: ShiplogMetadata
+): string {
+  const date = new Date(dateStr);
+  const week = getWeekNumber(date);
+
+  const frontmatter = `---
+title: "${shiplogContent.title.replace(/"/g, '\\"')}"
+description: "${shiplogContent.description.replace(/"/g, '\\"')}"
+date: "${dateStr}"
+week: ${week}
+stats:
+  repos: ${metadata.repositories.length}
+  commits: ${metadata.totalCommits}
+slug: "${dateStr}"
+---
+
+${shiplogContent.content}`;
+
+  return frontmatter;
 }
 
 /**
@@ -53,7 +92,7 @@ ${publicContent}
  * Uploads shiplog files to S3
  */
 export async function uploadShiplogToS3(
-  publicContent: string,
+  shiplogContent: ShiplogContent,
   repoCommits: RepoCommits[],
   executionDate: Date
 ): Promise<{ publicKey: string; internalKey: string }> {
@@ -78,8 +117,11 @@ export async function uploadShiplogToS3(
     })),
   };
 
+  // Build frontmatter markdown for public shiplog
+  const publicMarkdown = buildFrontmatterMarkdown(shiplogContent, dateStr, metadata);
+
   // Generate internal content
-  const internalContent = generateInternalShiplog(publicContent, metadata, repoCommits);
+  const internalContent = generateInternalShiplog(publicMarkdown, metadata, repoCommits);
 
   console.log(`[S3] Uploading shiplogs to bucket: ${bucket}`);
   console.log(`[S3] Public key: ${publicKey}`);
@@ -91,7 +133,7 @@ export async function uploadShiplogToS3(
       new PutObjectCommand({
         Bucket: bucket,
         Key: publicKey,
-        Body: publicContent,
+        Body: publicMarkdown,
         ContentType: "text/markdown",
       })
     );
