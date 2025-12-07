@@ -71,7 +71,6 @@ Once the user answers your questions, present a detailed implementation plan for
 - **User:** "Yes to all three."
 
 - **You:** "Great. Here is the implementation plan:
-
   1.  Create a global CSS file with theme variables for light and dark modes.
   2.  Implement a React hook (`useDarkMode`) to manage theme state, detect system preference, and interact with `localStorage`.
   3.  Add a theme toggle component to the main navigation.
@@ -137,3 +136,5 @@ Before considering any task complete, ensure every item on this list is checked:
 Reference [./CLAUDE-rr7-stack.md](./CLAUDE-rr7-stack.md) for details on how the stack works and UI development.
 
 We use Bun. Not NPM.
+
+This is a public repo. Do not include and private information anywhere in the codebase.

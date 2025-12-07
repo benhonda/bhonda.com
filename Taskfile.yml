@@ -251,6 +251,15 @@ tasks:
   #
   ########################################################################################################################
 
+  # `terraform init` for shared
+  tfinit-shared:
+    desc: Initialize Terraform for shared environment
+    deps:
+      - check-aws-identity
+    dir: infra/live/shared
+    cmds:
+      - terragrunt init {{.CLI_ARGS}}
+
   # `terraform init`
   tfinit:
     desc: Initialize Terraform (use ENV=staging or ENV=production)
@@ -262,6 +271,15 @@ tasks:
     cmds:
       - terragrunt init {{.CLI_ARGS}}
 
+  # `terragrunt plan` for shared
+  tfplan-shared:
+    desc: Run Terragrunt plan for shared environment
+    deps:
+      - check-aws-identity
+    dir: infra/live/shared
+    cmds:
+      - terragrunt plan {{.CLI_ARGS}}
+
   # `terragrunt plan`
   tfplan:
     desc: Run Terragrunt plan (use ENV=staging or ENV=production)
@@ -272,6 +290,16 @@ tasks:
     dir: infra/live/{{.ENV}}
     cmds:
       - terragrunt plan {{.CLI_ARGS}}
+
+  # `terragrunt apply` for shared
+  tfapply-shared:
+    desc: Run Terragrunt apply for shared environment
+    interactive: true
+    deps:
+      - check-aws-identity
+    dir: infra/live/shared
+    cmds:
+      - terragrunt apply {{.CLI_ARGS}}
 
   # `terragrunt apply`
   tfapply:
