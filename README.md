@@ -1,10 +1,13 @@
 ## About
 
-We're just going to deploy an ECS task that's going to be like just another computer and we're going to run Claude code on it in the same way we would locally allow it to do things like pull from GitHub and stuff like that in order to generate these weekly reports about developer activity, my developer activity. This, as opposed to calling the claude api directly in an app like you would with any ai api... but I am not sure what is best for my use-case.
+...
 
 ## TODOs
 
-- [ ] **Dec 7 2025**:
+**Dec 7 2025**:
+
+- [ ] Test the API and be able to backfill.
+- [ ] Once the API is working, we need to hook up the frontend to read from S3. or from the CDN. Not sure what the point of the CDN is if we're not using it for this, but also not sure if we should be using it for this.
 
 ## Nice-to-haves
 

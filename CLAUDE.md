@@ -138,3 +138,33 @@ Reference [./CLAUDE-rr7-stack.md](./CLAUDE-rr7-stack.md) for details on how the 
 We use Bun. Not NPM.
 
 This is a public repo. Do not include and private information anywhere in the codebase.
+
+## Weekly Shiplog System
+
+Automated system that generates weekly "shiplogs" (development summaries) from git commits.
+
+**How it works:**
+- Vercel cron hits `/api/cron/weekly-shiplog` every Friday 2pm ET
+- Fetches commits from past 7 days across all repos by author (bhonda89@gmail.com)
+- Filters blacklisted repos from `app/lib/shiplog/repo-blacklist.ts`
+- Sends commits to Claude for synthesis into blog post with title/description
+- Uploads to S3 as markdown with frontmatter
+
+**Key files:**
+- `app/routes/api.cron.weekly-shiplog.ts` - Main cron handler
+- `app/lib/shiplog/repo-blacklist.ts` - Editable blacklist (format: "owner/repo")
+- `app/lib/shiplog/github-service.server.ts` - GitHub API integration
+- `app/lib/shiplog/claude-service.server.ts` - Claude synthesis
+- `app/lib/shiplog/s3-service.server.ts` - S3 upload
+- `vercel.json` - Cron schedule config
+
+**Environment variables:**
+- `GITHUB_PAT` - GitHub personal access token
+- `CLAUDE_CODE_OAUTH_TOKEN` - Claude API token
+- `S3_BUCKET_NAME` - S3 bucket for shiplogs
+- `S3_BUCKET_KEY_PREFIX_NO_SLASHES` - S3 key prefix
+- `CRON_SECRET` - Auth secret for cron endpoint
+
+**Output:**
+- Public: `${prefix}/ships/2025-12-06.md` (frontmatter + content)
+- Internal: `${prefix}/ships/internal/2025-12-06.md` (metadata + raw commits)
