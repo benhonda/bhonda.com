@@ -57,14 +57,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
       console.log(`[Shiplog Cron] Manual week mode: ${year}-W${week}`);
     } else {
-      // Normal mode: past 7 days
-      endDate = new Date();
-      startDate = new Date(endDate);
-      startDate.setDate(startDate.getDate() - 7);
-      isoWeek = getISOWeekNumber(endDate);
-      isoYear = getISOWeekYear(endDate);
+      // Normal mode: ISO week range (Monday-Sunday)
+      const now = new Date();
+      isoWeek = getISOWeekNumber(now);
+      isoYear = getISOWeekYear(now);
 
-      console.log("[Shiplog Cron] Auto mode: past 7 days");
+      const dateRange = getDateRangeFromISOWeek(isoYear, isoWeek);
+      startDate = dateRange.start; // Monday
+      endDate = dateRange.end; // Sunday
+
+      console.log("[Shiplog Cron] Auto mode: ISO week range (Monday-Sunday)");
     }
 
     console.log(
@@ -94,10 +96,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
 
     // 4. Synthesize shiplog with Claude
-    const shiplogContent = await synthesizeShiplog(repoCommits, startDate, endDate);
+    const { content: shiplogContent, metadata: synthesisMetadata } = await synthesizeShiplog(repoCommits, startDate, endDate);
 
     // 5. Upload to S3
-    const { publicKey, internalKey } = await uploadShiplogToS3(shiplogContent, repoCommits, endDate, isoWeek, isoYear);
+    const { publicKey, internalKey } = await uploadShiplogToS3(shiplogContent, synthesisMetadata, repoCommits, endDate, isoWeek, isoYear);
 
     // 6. Calculate summary stats
     const totalCommits = repoCommits.reduce((sum, r) => sum + r.commits.length, 0);

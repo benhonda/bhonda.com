@@ -13,12 +13,14 @@ export const routePaths = [
   "/api/cron/weekly-shiplog/ts",
   "/login",
   "/oauth2/google/callback",
+  "/ships/:slug",
 ] as const;
 export type Path = (typeof routePaths)[number];
 
 // all params for any given path get defined here...
 export type Params = {
   "/:lang": { lang: string };
+  "/ships/:slug": { slug: string };
 };
 
 // Utility type to extract the leaf nodes of Params

@@ -139,32 +139,62 @@ We use Bun. Not NPM.
 
 This is a public repo. Do not include and private information anywhere in the codebase.
 
+## Notable commands
+
+- Verify infra changes with `task tfplan ENV=staging` where `ENV` can be `staging` or `production`
+
 ## Weekly Shiplog System
 
 Automated system that generates weekly "shiplogs" (development summaries) from git commits.
 
 **How it works:**
-- Vercel cron hits `/api/cron/weekly-shiplog` every Friday 2pm ET
-- Fetches commits from past 7 days across all repos by author (bhonda89@gmail.com)
+
+- Vercel cron hits `/api/cron/weekly-shiplog` every Sunday 2pm ET
+- Fetches commits for the full ISO week (Monday-Sunday) across all repos by author (bhonda89@gmail.com)
 - Filters blacklisted repos from `app/lib/shiplog/repo-blacklist.ts`
 - Sends commits to Claude for synthesis into blog post with title/description
 - Uploads to S3 as markdown with frontmatter
 
+**ISO Week Numbering (ISO 8601):**
+
+- Weeks run **Monday (start) to Sunday (end)**
+- Week 1 contains the first Thursday of the year
+- Weeks can span year boundaries (e.g., Dec 29, 2025 might be in 2026-W01)
+- Example: `2025-W50` = Monday Dec 8 to Sunday Dec 14, 2025
+
+**Filename format:** `YYYY-WNN.md` (e.g., `2025-W50.md`)
+**Slug format:** `YYYY-WNN` (e.g., `2025-W50`)
+**Routes:** `/ships/2025-W50`
+
 **Key files:**
+
 - `app/routes/api.cron.weekly-shiplog.ts` - Main cron handler
 - `app/lib/shiplog/repo-blacklist.ts` - Editable blacklist (format: "owner/repo")
 - `app/lib/shiplog/github-service.server.ts` - GitHub API integration
 - `app/lib/shiplog/claude-service.server.ts` - Claude synthesis
 - `app/lib/shiplog/s3-service.server.ts` - S3 upload
+- `app/lib/shiplog/date-utils.server.ts` - ISO week calculations
+- `app/lib/shiplog/fetcher.server.ts` - CDN fetching with env-aware fallback
 - `vercel.json` - Cron schedule config
 
 **Environment variables:**
+
 - `GITHUB_PAT` - GitHub personal access token
 - `CLAUDE_CODE_OAUTH_TOKEN` - Claude Code OAuth token (uses print mode subprocess)
 - `S3_BUCKET_NAME` - S3 bucket for shiplogs
-- `S3_BUCKET_KEY_PREFIX_NO_SLASHES` - S3 key prefix
+- `S3_BUCKET_KEY_PREFIX_NO_SLASHES` - S3 key prefix (environment name: production/staging)
 - `CRON_SECRET` - Auth secret for cron endpoint
+- `PUBLIC_CDN_URL_PRODUCTION` - Production BunnyNet CDN URL
+- `PUBLIC_CDN_URL_STAGING` - Staging BunnyNet CDN URL
 
 **Output:**
-- Public: `${prefix}/ships/2025-12-06.md` (frontmatter + content)
-- Internal: `${prefix}/ships/internal/2025-12-06.md` (metadata + raw commits)
+
+- Public: `${prefix}/public/ships/2025-W50.md` (frontmatter + content, CDN accessible)
+- Internal: `${prefix}/internal/ships/2025-W50.md` (metadata + raw commits, NOT CDN accessible)
+- Frontmatter `date` field: Sunday (end of ISO week) in YYYY-MM-DD format
+
+**Frontend:**
+
+- List view: Client-side fetch via action (`fetch-shiplogs`) with 5min cache
+- Detail view: SSR for SEO via `/ships/2025-W50` route
+- Dev environment: Reads from both production + staging CDN (staging wins)

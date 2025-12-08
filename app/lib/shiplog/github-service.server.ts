@@ -1,12 +1,13 @@
 import { Octokit } from "@octokit/rest";
 import { shiplogEnv } from "~/lib/env/shiplog-env.server";
-import { BLACKLISTED_REPOS } from "./repo-blacklist";
+import { WHITELISTED_REPOS } from "./repo-whitelist";
 
 export interface CommitData {
   sha: string;
   message: string;
   date: string;
   author: string;
+  authorEmail: string;
   url: string;
 }
 
@@ -77,8 +78,8 @@ export async function fetchCommitsForDateRange(
 
     // Execute search for each scope and merge results
     for (const scope of searchScopes) {
-      const searchQuery = `author:${authorEmail} ${scope} committer-date:${startDateStr}..${endDateStr}`;
-      console.log(`[GitHub] Searching ${scope}...`);
+      const searchQuery = `author-email:${authorEmail} ${scope} author-date:${startDateStr}..${endDateStr}`;
+      console.log(`[GitHub] Searching ${scope}: ${searchQuery}`);
 
       let page = 1;
       const perPage = 100;
@@ -88,19 +89,34 @@ export async function fetchCommitsForDateRange(
           q: searchQuery,
           per_page: perPage,
           page,
-          sort: "committer-date",
+          sort: "author-date",
           order: "desc",
         });
 
         if (response.data.items.length === 0) break;
 
-        const commits = response.data.items.map((item) => ({
-          sha: item.sha,
-          message: item.commit.message,
-          date: item.commit.committer?.date || item.commit.author?.date || "",
-          author: item.commit.author?.name || "Unknown",
-          url: item.html_url,
-        }));
+        const commits = response.data.items
+          .map((item) => {
+            const authorEmail = item.commit.author?.email || "unknown";
+            const authorName = item.commit.author?.name || "Unknown";
+
+            return {
+              sha: item.sha,
+              message: item.commit.message,
+              date: item.commit.committer?.date || item.commit.author?.date || "",
+              author: authorName,
+              authorEmail: authorEmail,
+              url: item.html_url,
+            };
+          })
+          .filter((commit) => {
+            // Double-check that the author email matches (safety net against API false positives)
+            const matches = commit.authorEmail.toLowerCase() === authorEmail.toLowerCase();
+            if (!matches) {
+              console.log(`[GitHub]     Filtered out commit ${commit.sha.substring(0, 7)} - author mismatch: ${commit.authorEmail} !== ${authorEmail}`);
+            }
+            return matches;
+          });
 
         allCommits.push(...commits);
 
@@ -124,9 +140,9 @@ export async function fetchCommitsForDateRange(
 
       const repo = repoMatch[1];
 
-      // Skip blacklisted repos
-      if (BLACKLISTED_REPOS.includes(repo)) {
-        console.log(`[GitHub] Skipping blacklisted repo: ${repo}`);
+      // Only include whitelisted repos
+      if (!WHITELISTED_REPOS.includes(repo)) {
+        console.log(`[GitHub] Skipping non-whitelisted repo: ${repo}`);
         continue;
       }
 

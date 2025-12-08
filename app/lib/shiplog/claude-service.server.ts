@@ -11,6 +11,15 @@ export interface ShiplogContent {
   content: string;
 }
 
+export interface SynthesisMetadata {
+  model: string;
+  prompt: string;
+  timestamp: string;
+  cliCommand: string;
+}
+
+const MODEL_ID = "claude-sonnet-4-5-20250929";
+
 /**
  * Synthesizes commits into a cohesive weekly shiplog using Claude Code print mode
  */
@@ -18,7 +27,7 @@ export async function synthesizeShiplog(
   repoCommits: RepoCommits[],
   startDate: Date,
   endDate: Date
-): Promise<ShiplogContent> {
+): Promise<{ content: ShiplogContent; metadata: SynthesisMetadata }> {
   console.log(`[Claude] Synthesizing shiplog for ${repoCommits.length} repositories`);
 
   // Format commits for Claude
@@ -62,10 +71,13 @@ ${formattedCommits}
 
 Return only the JSON object, no additional text:`;
 
+  const cliCommand = `echo <prompt> | claude -p --model ${MODEL_ID} --max-turns 1 --tools ""`;
+  const timestamp = new Date().toISOString();
+
   try {
     // Use stdin to pass the prompt (safer than command-line args)
     const { stdout, stderr } = await execPromise(
-      `echo ${JSON.stringify(prompt)} | claude -p --max-turns 1 --tools ""`,
+      `echo ${JSON.stringify(prompt)} | claude -p --model ${MODEL_ID} --max-turns 1 --tools ""`,
       {
         env: {
           ...process.env,
@@ -102,11 +114,19 @@ Return only the JSON object, no additional text:`;
     }
 
     console.log(`[Claude] Successfully synthesized shiplog`);
+    console.log(`[Claude] Model: ${MODEL_ID}`);
     console.log(`[Claude] Title: ${shiplogContent.title}`);
     console.log(`[Claude] Description: ${shiplogContent.description}`);
     console.log(`[Claude] Content length: ${shiplogContent.content.length} chars`);
 
-    return shiplogContent;
+    const metadata: SynthesisMetadata = {
+      model: MODEL_ID,
+      prompt,
+      timestamp,
+      cliCommand,
+    };
+
+    return { content: shiplogContent, metadata };
   } catch (error) {
     console.error("[Claude] Error synthesizing shiplog:", error);
     throw new Error(`Failed to synthesize shiplog with Claude: ${error}`);

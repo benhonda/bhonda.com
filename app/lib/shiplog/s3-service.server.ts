@@ -2,7 +2,7 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "~/lib/aws/s3/s3-client.server";
 import { shiplogEnv } from "~/lib/env/shiplog-env.server";
 import type { RepoCommits } from "./github-service.server";
-import type { ShiplogContent } from "./claude-service.server";
+import type { ShiplogContent, SynthesisMetadata } from "./claude-service.server";
 
 export interface ShiplogMetadata {
   dateRange: {
@@ -26,6 +26,8 @@ function buildFrontmatterMarkdown(
   isoWeek: number,
   isoYear: number
 ): string {
+  const slug = `${isoYear}-W${isoWeek.toString().padStart(2, "0")}`;
+
   const frontmatter = `---
 title: "${shiplogContent.title.replace(/"/g, '\\"')}"
 description: "${shiplogContent.description.replace(/"/g, '\\"')}"
@@ -35,7 +37,7 @@ year: ${isoYear}
 stats:
   repos: ${metadata.repositories.length}
   commits: ${metadata.totalCommits}
-slug: "${dateStr}"
+slug: "${slug}"
 ---
 
 ${shiplogContent.content}`;
@@ -49,6 +51,7 @@ ${shiplogContent.content}`;
 function generateInternalShiplog(
   publicContent: string,
   metadata: ShiplogMetadata,
+  synthesisMetadata: SynthesisMetadata,
   repoCommits: RepoCommits[]
 ): string {
   const repoList = metadata.repositories
@@ -58,12 +61,24 @@ function generateInternalShiplog(
   const rawData = JSON.stringify(repoCommits, null, 2);
 
   return `# Weekly Shiplog - Internal
-Date Range: ${metadata.dateRange.start} to ${metadata.dateRange.end}
-Total Commits: ${metadata.totalCommits}
-Repositories: ${metadata.repositories.length}
+
+## Generation Metadata
+- **Generated:** ${synthesisMetadata.timestamp}
+- **Model:** ${synthesisMetadata.model}
+- **CLI Command:** \`${synthesisMetadata.cliCommand}\`
+
+## Shiplog Statistics
+- **Date Range:** ${metadata.dateRange.start} to ${metadata.dateRange.end}
+- **Total Commits:** ${metadata.totalCommits}
+- **Repositories:** ${metadata.repositories.length}
 
 ## Repositories Processed
 ${repoList}
+
+## Claude Synthesis Prompt
+\`\`\`
+${synthesisMetadata.prompt}
+\`\`\`
 
 ## Raw Commit Data
 \`\`\`json
@@ -82,22 +97,22 @@ ${publicContent}
  */
 export async function uploadShiplogToS3(
   shiplogContent: ShiplogContent,
+  synthesisMetadata: SynthesisMetadata,
   repoCommits: RepoCommits[],
   executionDate: Date,
   isoWeek: number,
   isoYear: number
 ): Promise<{ publicKey: string; internalKey: string }> {
-  const dateStr = executionDate.toISOString().split("T")[0]; // YYYY-MM-DD
-  const monthDay = dateStr.substring(5); // MM-DD
+  const dateStr = executionDate.toISOString().split("T")[0]; // YYYY-MM-DD (for frontmatter)
   const prefix = shiplogEnv.S3_BUCKET_KEY_PREFIX_NO_SLASHES;
   const bucket = shiplogEnv.S3_BUCKET_NAME;
 
-  // Generate filename with ISO week: YYYY-WNN-MM-DD.md
-  const filename = `${isoYear}-W${isoWeek.toString().padStart(2, "0")}-${monthDay}.md`;
+  // Generate filename with ISO week: YYYY-WNN.md
+  const filename = `${isoYear}-W${isoWeek.toString().padStart(2, "0")}.md`;
 
   // Generate keys
-  const publicKey = `${prefix}/ships/${filename}`;
-  const internalKey = `${prefix}/ships/internal/${filename}`;
+  const publicKey = `${prefix}/public/ships/${filename}`;
+  const internalKey = `${prefix}/internal/ships/${filename}`;
 
   // Calculate metadata
   const metadata: ShiplogMetadata = {
@@ -116,7 +131,7 @@ export async function uploadShiplogToS3(
   const publicMarkdown = buildFrontmatterMarkdown(shiplogContent, dateStr, metadata, isoWeek, isoYear);
 
   // Generate internal content
-  const internalContent = generateInternalShiplog(publicMarkdown, metadata, repoCommits);
+  const internalContent = generateInternalShiplog(publicMarkdown, metadata, synthesisMetadata, repoCommits);
 
   console.log(`[S3] Uploading shiplogs to bucket: ${bucket}`);
   console.log(`[S3] Public key: ${publicKey}`);

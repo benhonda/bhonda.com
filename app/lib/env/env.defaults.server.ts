@@ -19,6 +19,14 @@ const serverEnvSchema = z.object({
    * The fully qualified domain name of the app (exposed to client)
    */
   PUBLIC_APP_FQDN: z.string(),
+  /**
+   * Production CDN URL
+   */
+  PUBLIC_CDN_URL_PRODUCTION: z.string().optional(),
+  /**
+   * Staging CDN URL
+   */
+  PUBLIC_CDN_URL_STAGING: z.string().optional(),
 });
 
 const vercelEnv = process.env.VERCEL_ENV;
