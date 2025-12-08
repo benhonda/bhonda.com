@@ -3,35 +3,74 @@ import { shiplogEnv } from "~/lib/env/shiplog-env.server";
 import { fetchCommitsForDateRange } from "~/lib/shiplog/github-service.server";
 import { synthesizeShiplog } from "~/lib/shiplog/claude-service.server";
 import { uploadShiplogToS3 } from "~/lib/shiplog/s3-service.server";
+import { getDateRangeFromISOWeek, getISOWeekNumber, getISOWeekYear } from "~/lib/shiplog/date-utils.server";
 
 /**
  * Vercel Cron handler for weekly shiplog generation
  * Triggered every Friday at 2pm ET (6pm UTC)
+ *
+ * Query params:
+ * - week: ISO week number (e.g., ?week=49) - for testing/manual generation
  */
 export async function loader({ request }: LoaderFunctionArgs) {
   const startTime = Date.now();
   console.log("[Shiplog Cron] Starting weekly shiplog generation");
 
   try {
-    // 1. Verify Vercel cron authentication
-    const authHeader = request.headers.get("authorization");
-    const expectedAuth = `Bearer ${shiplogEnv.CRON_SECRET}`;
+    // 1. Verify Vercel cron authentication (skip in development)
+    const isDevelopment = process.env.NODE_ENV === "development";
 
-    if (authHeader !== expectedAuth) {
-      console.error("[Shiplog Cron] Unauthorized request");
-      return new Response("Unauthorized", { status: 401 });
+    if (!isDevelopment) {
+      const authHeader = request.headers.get("authorization");
+      const expectedAuth = `Bearer ${shiplogEnv.CRON_SECRET}`;
+
+      if (authHeader !== expectedAuth) {
+        console.error("[Shiplog Cron] Unauthorized request");
+        return new Response("Unauthorized", { status: 401 });
+      }
+
+      console.log("[Shiplog Cron] Authentication verified");
+    } else {
+      console.log("[Shiplog Cron] Running in development mode, skipping auth");
     }
 
-    console.log("[Shiplog Cron] Authentication verified");
+    // 2. Calculate date range
+    const url = new URL(request.url);
+    const weekParam = url.searchParams.get("week");
 
-    // 2. Calculate date range (past 7 days)
-    const endDate = new Date(); // Now
-    const startDate = new Date(endDate);
-    startDate.setDate(startDate.getDate() - 7);
+    let startDate: Date;
+    let endDate: Date;
+    let isoWeek: number;
+    let isoYear: number;
+
+    if (weekParam) {
+      // Manual week specification for testing
+      const week = parseInt(weekParam, 10);
+      const now = new Date();
+      const year = getISOWeekYear(now);
+
+      const dateRange = getDateRangeFromISOWeek(year, week);
+      startDate = dateRange.start;
+      endDate = dateRange.end;
+      isoWeek = week;
+      isoYear = year;
+
+      console.log(`[Shiplog Cron] Manual week mode: ${year}-W${week}`);
+    } else {
+      // Normal mode: past 7 days
+      endDate = new Date();
+      startDate = new Date(endDate);
+      startDate.setDate(startDate.getDate() - 7);
+      isoWeek = getISOWeekNumber(endDate);
+      isoYear = getISOWeekYear(endDate);
+
+      console.log("[Shiplog Cron] Auto mode: past 7 days");
+    }
 
     console.log(
       `[Shiplog Cron] Date range: ${startDate.toISOString()} to ${endDate.toISOString()}`
     );
+    console.log(`[Shiplog Cron] ISO week: ${isoYear}-W${isoWeek}`);
 
     // 3. Fetch commits from GitHub
     const authorEmail = "bhonda89@gmail.com";
@@ -43,6 +82,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         JSON.stringify({
           success: true,
           message: "No commits found for the specified date range",
+          week: `${isoYear}-W${isoWeek}`,
           repos: 0,
           commits: 0,
         }),
@@ -57,7 +97,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const shiplogContent = await synthesizeShiplog(repoCommits, startDate, endDate);
 
     // 5. Upload to S3
-    const { publicKey, internalKey } = await uploadShiplogToS3(shiplogContent, repoCommits, endDate);
+    const { publicKey, internalKey } = await uploadShiplogToS3(shiplogContent, repoCommits, endDate, isoWeek, isoYear);
 
     // 6. Calculate summary stats
     const totalCommits = repoCommits.reduce((sum, r) => sum + r.commits.length, 0);

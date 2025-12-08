@@ -17,32 +17,21 @@ export interface ShiplogMetadata {
 }
 
 /**
- * Calculates the ISO week number for a given date
- */
-function getWeekNumber(date: Date): number {
-  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  const dayNum = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
-}
-
-/**
  * Builds frontmatter markdown with metadata
  */
 function buildFrontmatterMarkdown(
   shiplogContent: ShiplogContent,
   dateStr: string,
-  metadata: ShiplogMetadata
+  metadata: ShiplogMetadata,
+  isoWeek: number,
+  isoYear: number
 ): string {
-  const date = new Date(dateStr);
-  const week = getWeekNumber(date);
-
   const frontmatter = `---
 title: "${shiplogContent.title.replace(/"/g, '\\"')}"
 description: "${shiplogContent.description.replace(/"/g, '\\"')}"
 date: "${dateStr}"
-week: ${week}
+week: ${isoWeek}
+year: ${isoYear}
 stats:
   repos: ${metadata.repositories.length}
   commits: ${metadata.totalCommits}
@@ -94,15 +83,21 @@ ${publicContent}
 export async function uploadShiplogToS3(
   shiplogContent: ShiplogContent,
   repoCommits: RepoCommits[],
-  executionDate: Date
+  executionDate: Date,
+  isoWeek: number,
+  isoYear: number
 ): Promise<{ publicKey: string; internalKey: string }> {
   const dateStr = executionDate.toISOString().split("T")[0]; // YYYY-MM-DD
+  const monthDay = dateStr.substring(5); // MM-DD
   const prefix = shiplogEnv.S3_BUCKET_KEY_PREFIX_NO_SLASHES;
   const bucket = shiplogEnv.S3_BUCKET_NAME;
 
+  // Generate filename with ISO week: YYYY-WNN-MM-DD.md
+  const filename = `${isoYear}-W${isoWeek.toString().padStart(2, "0")}-${monthDay}.md`;
+
   // Generate keys
-  const publicKey = `${prefix}/ships/${dateStr}.md`;
-  const internalKey = `${prefix}/ships/internal/${dateStr}.md`;
+  const publicKey = `${prefix}/ships/${filename}`;
+  const internalKey = `${prefix}/ships/internal/${filename}`;
 
   // Calculate metadata
   const metadata: ShiplogMetadata = {
@@ -118,7 +113,7 @@ export async function uploadShiplogToS3(
   };
 
   // Build frontmatter markdown for public shiplog
-  const publicMarkdown = buildFrontmatterMarkdown(shiplogContent, dateStr, metadata);
+  const publicMarkdown = buildFrontmatterMarkdown(shiplogContent, dateStr, metadata, isoWeek, isoYear);
 
   // Generate internal content
   const internalContent = generateInternalShiplog(publicMarkdown, metadata, repoCommits);

@@ -1,6 +1,9 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { exec } from "child_process";
+import { promisify } from "util";
 import { shiplogEnv } from "~/lib/env/shiplog-env.server";
 import type { RepoCommits } from "./github-service.server";
+
+const execPromise = promisify(exec);
 
 export interface ShiplogContent {
   title: string;
@@ -9,17 +12,13 @@ export interface ShiplogContent {
 }
 
 /**
- * Synthesizes commits into a cohesive weekly shiplog using Claude
+ * Synthesizes commits into a cohesive weekly shiplog using Claude Code print mode
  */
 export async function synthesizeShiplog(
   repoCommits: RepoCommits[],
   startDate: Date,
   endDate: Date
 ): Promise<ShiplogContent> {
-  const anthropic = new Anthropic({
-    apiKey: shiplogEnv.CLAUDE_CODE_OAUTH_TOKEN,
-  });
-
   console.log(`[Claude] Synthesizing shiplog for ${repoCommits.length} repositories`);
 
   // Format commits for Claude
@@ -64,27 +63,28 @@ ${formattedCommits}
 Return only the JSON object, no additional text:`;
 
   try {
-    const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 4096,
-      messages: [
-        {
-          role: "user",
-          content: prompt,
+    // Use stdin to pass the prompt (safer than command-line args)
+    const { stdout, stderr } = await execPromise(
+      `echo ${JSON.stringify(prompt)} | claude -p --max-turns 1 --tools ""`,
+      {
+        env: {
+          ...process.env,
+          CLAUDE_CODE_OAUTH_TOKEN: shiplogEnv.CLAUDE_CODE_OAUTH_TOKEN,
         },
-      ],
-    });
+        maxBuffer: 10 * 1024 * 1024, // 10MB buffer for large responses
+        timeout: 60000, // 60 second timeout
+      }
+    );
 
-    const content = response.content[0];
-    if (content.type !== "text") {
-      throw new Error("Unexpected response type from Claude");
+    if (stderr) {
+      console.warn("[Claude] stderr output:", stderr);
     }
 
     // Parse JSON response
     let shiplogContent: ShiplogContent;
     try {
       // Extract JSON from response (Claude might wrap it in markdown code blocks)
-      const jsonMatch = content.text.match(/\{[\s\S]*\}/);
+      const jsonMatch = stdout.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         throw new Error("No JSON found in Claude response");
       }
@@ -97,7 +97,7 @@ Return only the JSON object, no additional text:`;
       }
     } catch (parseError) {
       console.error("[Claude] Failed to parse JSON response:", parseError);
-      console.error("[Claude] Raw response:", content.text);
+      console.error("[Claude] Raw response:", stdout);
       throw new Error(`Failed to parse Claude JSON response: ${parseError}`);
     }
 

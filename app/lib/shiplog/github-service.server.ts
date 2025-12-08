@@ -15,8 +15,11 @@ export interface RepoCommits {
   commits: CommitData[];
 }
 
+const GITHUB_USERNAME = "benhonda";
+
 /**
- * Fetches commits from GitHub for a given date range
+ * Fetches commits from GitHub Search API for a given date range
+ * Uses user filter to scope results to repos owned by the user
  */
 export async function fetchCommitsForDateRange(
   authorEmail: string,
@@ -31,44 +34,85 @@ export async function fetchCommitsForDateRange(
   const startDateStr = startDate.toISOString().split("T")[0];
   const endDateStr = endDate.toISOString().split("T")[0];
 
-  console.log(`[GitHub] Fetching commits from ${startDateStr} to ${endDateStr} for ${authorEmail}`);
-
-  // Search for commits by author and date range
-  const searchQuery = `author:${authorEmail} committer-date:${startDateStr}..${endDateStr}`;
+  console.log(`[GitHub] Fetching commits from ${startDateStr} to ${endDateStr}`);
 
   try {
-    // Fetch all commits with pagination
+    // First, verify authentication and check what repos we can access
+    const user = await octokit.rest.users.getAuthenticated();
+    console.log(`[GitHub] Authenticated as: ${user.data.login}`);
+
+    // List accessible repos to detect organizations
+    const repoList = await octokit.rest.repos.listForAuthenticatedUser({
+      per_page: 100, // Get more repos to detect all orgs
+      sort: "updated",
+    });
+
+    // Extract unique org names from repos
+    const orgs = new Set<string>();
+    repoList.data.forEach((repo) => {
+      const owner = repo.owner?.login;
+      if (owner && owner !== GITHUB_USERNAME) {
+        orgs.add(owner);
+      }
+    });
+
+    console.log(`[GitHub] Detected orgs: ${Array.from(orgs).join(", ") || "none"}`);
+    console.log(`[GitHub] Sample repos (first 5):`);
+    repoList.data.slice(0, 5).forEach((repo) => {
+      console.log(`  - ${repo.full_name} (${repo.private ? "private" : "public"})`);
+    });
+
+    // Commit search doesn't support OR operators, so we need multiple searches
+    // Search scopes: user:benhonda + org:adpharm + org:other...
+    const searchScopes = [
+      `user:${GITHUB_USERNAME}`,
+      ...Array.from(orgs).map((org) => `org:${org}`),
+    ];
+
+    console.log(`[GitHub] Will search ${searchScopes.length} scopes: ${searchScopes.join(", ")}`);
+
     const allCommits: CommitData[] = [];
-    let page = 1;
-    const perPage = 100;
+    const isDevelopment = process.env.NODE_ENV === "development";
+    const maxPagesPerScope = isDevelopment ? 2 : 10; // Limit pages in dev to avoid rate limits
 
-    while (true) {
-      const response = await octokit.rest.search.commits({
-        q: searchQuery,
-        per_page: perPage,
-        page,
-        sort: "committer-date",
-        order: "desc",
-      });
+    // Execute search for each scope and merge results
+    for (const scope of searchScopes) {
+      const searchQuery = `author:${authorEmail} ${scope} committer-date:${startDateStr}..${endDateStr}`;
+      console.log(`[GitHub] Searching ${scope}...`);
 
-      if (response.data.items.length === 0) break;
+      let page = 1;
+      const perPage = 100;
 
-      const commits = response.data.items.map((item) => ({
-        sha: item.sha,
-        message: item.commit.message,
-        date: item.commit.committer?.date || item.commit.author?.date || "",
-        author: item.commit.author?.name || "Unknown",
-        url: item.html_url,
-      }));
+      while (page <= maxPagesPerScope) {
+        const response = await octokit.rest.search.commits({
+          q: searchQuery,
+          per_page: perPage,
+          page,
+          sort: "committer-date",
+          order: "desc",
+        });
 
-      allCommits.push(...commits);
+        if (response.data.items.length === 0) break;
 
-      // Check if we've fetched all pages
-      if (response.data.items.length < perPage) break;
-      page++;
+        const commits = response.data.items.map((item) => ({
+          sha: item.sha,
+          message: item.commit.message,
+          date: item.commit.committer?.date || item.commit.author?.date || "",
+          author: item.commit.author?.name || "Unknown",
+          url: item.html_url,
+        }));
+
+        allCommits.push(...commits);
+
+        console.log(`[GitHub]   Page ${page}: ${commits.length} commits`);
+
+        // Check if we've fetched all pages
+        if (response.data.items.length < perPage) break;
+        page++;
+      }
     }
 
-    console.log(`[GitHub] Found ${allCommits.length} total commits`);
+    console.log(`[GitHub] Found ${allCommits.length} total commits across all scopes`);
 
     // Group by repository
     const commitsByRepo = new Map<string, CommitData[]>();
@@ -105,6 +149,6 @@ export async function fetchCommitsForDateRange(
     return result;
   } catch (error) {
     console.error("[GitHub] Error fetching commits:", error);
-    throw new Error(`Failed to fetch commits from GitHub: ${error}`);
+    throw new Error(`Failed to fetch commits from GitHub Search API: ${error}`);
   }
 }

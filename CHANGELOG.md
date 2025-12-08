@@ -1,5 +1,15 @@
 # Changelog
 
+## 2025-12-08
+
+- refactor: Replaced Anthropic SDK with Claude Code subprocess in print mode to reduce dependencies and leverage CLI authentication
+- feat: Shiplog filenames now include ISO week number (YYYY-WNN-MM-DD.md) for better chronological organization
+- feat: Shiplog frontmatter now includes year field for filtering and display purposes
+- feat: GitHub service now supports multi-org commit search with automatic org detection from accessible repositories
+- feat: Weekly shiplog cron supports manual week specification via ?week=N query parameter for testing and backfilling
+- feat: Added development mode auth bypass for local testing of cron endpoints
+- feat: ISO week utilities for calculating week numbers and date ranges following ISO 8601 standard
+
 ## 2025-12-07
 
 - feat: Shiplog generation now produces structured content with frontmatter metadata (title, description, date, week number, stats) enabling better listing pages and SEO

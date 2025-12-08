@@ -160,7 +160,7 @@ Automated system that generates weekly "shiplogs" (development summaries) from g
 
 **Environment variables:**
 - `GITHUB_PAT` - GitHub personal access token
-- `CLAUDE_CODE_OAUTH_TOKEN` - Claude API token
+- `CLAUDE_CODE_OAUTH_TOKEN` - Claude Code OAuth token (uses print mode subprocess)
 - `S3_BUCKET_NAME` - S3 bucket for shiplogs
 - `S3_BUCKET_KEY_PREFIX_NO_SLASHES` - S3 key prefix
 - `CRON_SECRET` - Auth secret for cron endpoint
