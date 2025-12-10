@@ -31,6 +31,22 @@ When asked for changes:
 3. Propose type-safe solutions
 4. Ask permission only if `as any` is truly the last resort
 
+### Server Module Import Rules
+
+**Code imported from `.server.ts` files can ONLY be used in loaders, actions, or other `.server.ts` files.** Using server code in components or client code will cause runtime errors.
+
+```typescript
+// ✅ ALLOWED - used in loader/action
+import { someServerFunction } from "~/lib/utils.server";
+export const loader = () => someServerFunction();
+
+// ❌ FORBIDDEN - used in component
+import { someServerFunction } from "~/lib/utils.server";
+export default function MyComponent() {
+  someServerFunction(); // Runtime error
+}
+```
+
 ---
 
 ## 2. Architecture Overview
@@ -362,7 +378,7 @@ serverRedirect({ rawAbsolutePath: "/jobs?q=123#hash" });
 serverRedirect({ externalUrl: "https://example.com/jobs?q=123#hash" });
 ```
 
-**Note:** `.server.ts` imports only work in loaders/actions.
+**Note:** `.server.ts` imports only work in loaders/actions (see Server Module Import Rules in Critical Policies).
 
 #### Client-Side Redirects
 

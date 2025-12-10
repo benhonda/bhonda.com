@@ -2,6 +2,9 @@
 
 ## 2025-12-10
 
+- feat: Shiplog reactions system allowing readers to add GitHub-style emoji reactions (thumbs up/down, heart, rocket, etc) tracked by anonymous session ID
+- feat: Shiplog version history with S3-backed versioning, side-by-side diff viewer, and one-click restoration for admins
+- feat: Analytics configuration with Silo write key "bhondacom" and environment-scoped cookie/localStorage keys for proper event tracking
 - feat: Shiplog database storage with slug, title, description, published_at tracking and S3 key references
 - feat: Admin authentication system with email-based access control and requireAdmin helper
 - feat: Shiplog fetcher refactored to query database first then fetch content from CDN using S3 public keys
@@ -10,6 +13,7 @@
 - refactor: Typography improvements with button font-mono, heading-xs variant, and muted text colors in markdown
 - refactor: Shiplog frontmatter changed from 'date' field to 'published_at' for consistency with database schema
 - refactor: Admin authorization restricted to single email address (ben@theadpharm.com)
+- docs: Added critical policy documenting that .server.ts imports can only be used in loaders/actions to prevent runtime errors
 - chore: Added /other and /ships routes to router configuration
 
 ## 2025-12-08

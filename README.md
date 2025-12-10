@@ -17,9 +17,9 @@ Other
 
 - [ ] Backend review system, with ability to prompt to make changes
 - [ ] DB entries to fill "Latest" tab, and better s3 listings
-- [ ] Github-style Reactions to posts/ships
-- [ ] Silo event tracking
-- [ ] Versioning of ships
+- [x] Github-style Reactions to posts/ships
+- [x] Silo event tracking
+- [x] Versioning of ships
 
 **Dec 8 2025**:
 

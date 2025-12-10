@@ -1,4 +1,4 @@
-import { pgTable, text, uuid, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, uuid, integer, pgEnum, unique } from "drizzle-orm/pg-core";
 import { timestamps, timelineFields } from "~/lib/db/schema-utils";
 
 export const shiplogsTable = pgTable(
@@ -15,4 +15,37 @@ export const shiplogsTable = pgTable(
     stats_repos: integer().notNull(),
     stats_commits: integer().notNull(),
   }
+);
+
+export const reactionTypeEnum = pgEnum("reaction_type", [
+  "thumbs_up",
+  "thumbs_down",
+  "laugh",
+  "hooray",
+  "confused",
+  "heart",
+  "rocket",
+  "eyes",
+]);
+
+export const shiplogReactionsTable = pgTable(
+  "shiplog_reactions",
+  {
+    ...timestamps,
+
+    id: uuid().defaultRandom().primaryKey(),
+    shiplog_id: uuid()
+      .notNull()
+      .references(() => shiplogsTable.id),
+    reaction_type: reactionTypeEnum().notNull(),
+    anon_session_id: text().notNull(),
+    user_id: uuid(), // Future: link to authenticated users
+  },
+  (table) => [
+    unique("unique_shiplog_reaction").on(
+      table.shiplog_id,
+      table.anon_session_id,
+      table.reaction_type
+    ),
+  ]
 );
