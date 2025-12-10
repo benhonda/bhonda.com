@@ -14,9 +14,10 @@ import editShiplog from "~/lib/actions/edit-shiplog/action-handler.server";
 import fetchShiplogs from "~/lib/actions/fetch-shiplogs/action-handler.server";
 import authRegisterWithForm from "~/lib/actions/auth-register-with-form/action-handler.server";
 import exampleAction from "~/lib/actions/example-action/action-handler.server";
+import updateShiplogStatus from "~/lib/actions/update-shiplog-status/action-handler.server";
 import authLoginWithGoogle from "~/lib/actions/auth-login-with-google/action-handler.server";
 
-export type ActionName = "toggle-shiplog-reaction" | "fetch-shiplog-reactions" | "restore-shiplog-version" | "auth-login-with-form" | "auth-logout" | "fetch-shiplog-versions" | "edit-shiplog" | "fetch-shiplogs" | "auth-register-with-form" | "example-action" | "auth-login-with-google";
+export type ActionName = "toggle-shiplog-reaction" | "fetch-shiplog-reactions" | "restore-shiplog-version" | "auth-login-with-form" | "auth-logout" | "fetch-shiplog-versions" | "edit-shiplog" | "fetch-shiplogs" | "auth-register-with-form" | "example-action" | "update-shiplog-status" | "auth-login-with-google";
 
 const handlerMap: Record<ActionName, any> = {
   "toggle-shiplog-reaction": toggleShiplogReaction,
@@ -29,6 +30,7 @@ const handlerMap: Record<ActionName, any> = {
   "fetch-shiplogs": fetchShiplogs,
   "auth-register-with-form": authRegisterWithForm,
   "example-action": exampleAction,
+  "update-shiplog-status": updateShiplogStatus,
   "auth-login-with-google": authLoginWithGoogle,
 };
 

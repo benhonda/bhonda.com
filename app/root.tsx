@@ -99,9 +99,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content={SITE_NAME} />
 
-        {/* make this site not indexed by search engines */}
-        <meta name="robots" content="noindex, nofollow" />
-
         <Meta />
         <Links />
 
@@ -206,6 +203,9 @@ export function ErrorBoundary() {
       <div className="text-center">
         <h1 className="text-2xl font-bold">{message}</h1>
         <p className="text-sm text-muted-foreground mt-2">{details}</p>
+        <a href="/" className="inline-block mt-4 text-sm underline hover:no-underline">
+          Go back home
+        </a>
       </div>
       {stack && <pre className="text-xs bg-muted p-4 rounded-lg overflow-auto max-w-4xl w-full">{stack}</pre>}
     </div>

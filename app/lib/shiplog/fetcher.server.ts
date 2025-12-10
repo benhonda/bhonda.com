@@ -1,5 +1,5 @@
 import { serverEnv } from "~/lib/env/env.defaults.server";
-import { getLatestShiplogs, getShiplogBySlug as getShiplogBySlugFromDB } from "./db-service.server";
+import { getLatestShiplogs, getShiplogBySlug as getShiplogBySlugFromDB, type ShiplogStatus } from "./db-service.server";
 
 export interface ShiplogMeta {
   titleText: string;
@@ -13,6 +13,7 @@ export interface ShiplogMeta {
     repos: number;
     commits: number;
   };
+  status: ShiplogStatus;
 }
 
 export interface Shiplog extends ShiplogMeta {
@@ -22,7 +23,7 @@ export interface Shiplog extends ShiplogMeta {
 /**
  * Parse frontmatter and content from markdown file
  */
-function parseFrontmatter(raw: string): Shiplog {
+function parseFrontmatter(raw: string, status: ShiplogStatus): Shiplog {
   const frontmatterMatch = raw.match(/^---\n([\s\S]+?)\n---\n([\s\S]*)$/);
 
   if (!frontmatterMatch) {
@@ -85,6 +86,7 @@ function parseFrontmatter(raw: string): Shiplog {
     year: meta.year,
     slug: meta.slug,
     stats: meta.stats,
+    status,
     content: content.trim(),
   };
 }
@@ -128,7 +130,7 @@ async function fetchShiplogContentFromCDN(cdnUrl: string, s3PublicKey: string): 
 /**
  * Fetch shiplogs from database and CDN
  */
-export async function fetchShiplogs(): Promise<Shiplog[]> {
+export async function fetchShiplogs(isAdmin: boolean = false): Promise<Shiplog[]> {
   const env = serverEnv.PUBLIC_APP_ENV;
   const prodCDN = serverEnv.PUBLIC_CDN_URL_PRODUCTION;
   const stagingCDN = serverEnv.PUBLIC_CDN_URL_STAGING;
@@ -140,7 +142,7 @@ export async function fetchShiplogs(): Promise<Shiplog[]> {
   const cdnUrl = env === "production" ? prodCDN : stagingCDN;
 
   // Query database for latest shiplogs
-  const records = await getLatestShiplogs(6);
+  const records = await getLatestShiplogs(6, isAdmin);
   console.log(`[Shiplog Fetcher] Found ${records.length} records in database`);
 
   // Fetch content from CDN for each record
@@ -153,7 +155,7 @@ export async function fetchShiplogs(): Promise<Shiplog[]> {
         return null;
       }
 
-      const parsed = parseFrontmatter(raw);
+      const parsed = parseFrontmatter(raw, record.status);
       console.log(`[Shiplog Fetcher] ✓ Loaded ${record.slug}`);
       return parsed;
     })
@@ -167,7 +169,7 @@ export async function fetchShiplogs(): Promise<Shiplog[]> {
 /**
  * Fetch a single shiplog by slug (slug format: YYYY-WNN)
  */
-export async function fetchShiplogBySlug(slug: string): Promise<Shiplog | null> {
+export async function fetchShiplogBySlug(slug: string, isAdmin: boolean = false): Promise<Shiplog | null> {
   const env = serverEnv.PUBLIC_APP_ENV;
   const prodCDN = serverEnv.PUBLIC_CDN_URL_PRODUCTION;
   const stagingCDN = serverEnv.PUBLIC_CDN_URL_STAGING;
@@ -178,7 +180,7 @@ export async function fetchShiplogBySlug(slug: string): Promise<Shiplog | null> 
   const cdnUrl = env === "production" ? prodCDN : stagingCDN;
 
   // Query database for shiplog record
-  const record = await getShiplogBySlugFromDB(slug);
+  const record = await getShiplogBySlugFromDB(slug, isAdmin);
 
   if (!record) {
     console.warn(`[Shiplog Fetcher] No database record found for slug: ${slug}`);
@@ -193,7 +195,7 @@ export async function fetchShiplogBySlug(slug: string): Promise<Shiplog | null> 
     return null;
   }
 
-  const parsed = parseFrontmatter(raw);
+  const parsed = parseFrontmatter(raw, record.status);
   console.log(`[Shiplog Fetcher] ✓ Loaded ${slug}`);
   return parsed;
 }

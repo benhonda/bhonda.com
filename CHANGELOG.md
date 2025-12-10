@@ -2,6 +2,11 @@
 
 ## 2025-12-10
 
+- feat: Shiplog status workflow with draft/published/archived states allowing admins to control visibility before public release
+- feat: SEO optimization with canonical URLs, page-specific meta descriptions, and OG image for social sharing
+- refactor: Removed robots noindex meta tag to allow search engine indexing of production site
+- refactor: Brand assets updated with new favicon, apple-touch-icon, and web manifest icons
+- feat: Error boundary now includes home link for better user recovery from errors
 - feat: Dark mode support with system preference detection and manual toggle persisted to localStorage
 - feat: Shared page header and footer components with GitHub link and theme toggle for consistent navigation
 - refactor: Shiplog schema changed from title/description to titleText/previewText/introText for clearer content structure

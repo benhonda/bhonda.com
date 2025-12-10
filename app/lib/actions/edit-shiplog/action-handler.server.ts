@@ -6,6 +6,8 @@ import { serverEnv } from "~/lib/env/env.defaults.server";
 import { shiplogEnv } from "~/lib/env/shiplog-env.server";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "~/lib/aws/s3/s3-client.server";
+import { getShiplogBySlug } from "~/lib/shiplog/db-service.server";
+import type { ShiplogStatus } from "~/lib/shiplog/db-service.server";
 
 /**
  * Fetch raw markdown from CDN
@@ -32,7 +34,7 @@ async function fetchRawMarkdown(slug: string): Promise<string> {
 /**
  * Parse frontmatter and content from markdown
  */
-function parseFrontmatter(raw: string) {
+function parseFrontmatter(raw: string, status: ShiplogStatus) {
   const frontmatterMatch = raw.match(/^---\n([\s\S]+?)\n---\n([\s\S]*)$/);
 
   if (!frontmatterMatch) {
@@ -86,6 +88,7 @@ function parseFrontmatter(raw: string) {
     year: meta.year,
     slug: meta.slug,
     stats: meta.stats,
+    status,
     content: content.trim(),
   };
 }
@@ -100,6 +103,12 @@ export default createActionHandler(
     const { slug, editPrompt } = inputData;
 
     console.log(`[Edit Shiplog] Starting edit for ${slug}`);
+
+    // Get current status from database
+    const shiplogFromDb = await getShiplogBySlug(slug, true);
+    if (!shiplogFromDb) {
+      throw new Error(`Shiplog not found: ${slug}`);
+    }
 
     const currentMarkdown = await fetchRawMarkdown(slug);
 
@@ -121,7 +130,7 @@ export default createActionHandler(
 
     console.log(`[Edit Shiplog] Successfully uploaded edited shiplog to S3`);
 
-    const shiplog = parseFrontmatter(updatedMarkdown);
+    const shiplog = parseFrontmatter(updatedMarkdown, shiplogFromDb.status);
 
     return {
       shiplog,

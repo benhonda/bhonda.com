@@ -1,18 +1,13 @@
-import type { LoaderFunctionArgs } from "react-router";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { useLoaderData } from "react-router";
 import { Link } from "~/lib/router/routes";
 import { fetchShiplogBySlug } from "~/lib/shiplog/fetcher.server";
+import type { ShiplogStatus } from "~/lib/shiplog/db-service.server";
 import { Text } from "~/components/misc/text";
 import { MarkdownContent } from "~/components/misc/markdown-content";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { ArrowLeftIcon, EditIcon, HistoryIcon } from "lucide-react";
 import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
 import { useState, useEffect } from "react";
@@ -20,6 +15,7 @@ import { action_handler } from "~/lib/actions/_core/action-runner.server";
 import { useAction } from "~/hooks/use-action";
 import { editShiplogActionDefinition } from "~/lib/actions/edit-shiplog/action-definition";
 import { fetchShiplogVersionsActionDefinition } from "~/lib/actions/fetch-shiplog-versions/action-definition";
+import { updateShiplogStatusActionDefinition } from "~/lib/actions/update-shiplog-status/action-definition";
 import { VersionDiffModal } from "~/components/shiplog/version-diff-modal";
 import { useRevalidator } from "react-router";
 import { ShiplogReactions } from "~/components/shiplog/shiplog-reactions";
@@ -28,6 +24,24 @@ import { shiplogsTable, shiplogReactionsTable } from "~/lib/db/schemas/shiplog-s
 import { eq } from "drizzle-orm";
 import { getAnonymousIdFromRequest } from "~/lib/analytics/get-anonymous-id.server";
 
+export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
+  if (!data?.shiplog) {
+    return [
+      { title: "Shiplog Not Found | Ben Honda's Dev Blog" },
+      { name: "description", content: "The requested shiplog could not be found." },
+    ];
+  }
+
+  const { shiplog } = data;
+  const slug = params.slug || "";
+
+  return [
+    { title: `${shiplog.titleText} | Ben Honda's Dev Blog` },
+    { name: "description", content: shiplog.previewText },
+    { tagName: "link", rel: "canonical", href: `https://bhonda.com/ships/${slug}` },
+  ];
+};
+
 export async function loader({ params, request }: LoaderFunctionArgs) {
   const { slug } = params;
 
@@ -35,22 +49,20 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const shiplog = await fetchShiplogBySlug(slug);
+  const user = await getUser(request);
+  const userIsAdmin = isAdmin(user);
+
+  const shiplog = await fetchShiplogBySlug(slug, userIsAdmin);
 
   if (!shiplog) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const user = await getUser(request);
-  const userIsAdmin = isAdmin(user);
-
   // Get anonymous ID from Segment cookie
   const anonymousId = getAnonymousIdFromRequest(request);
 
   // Get shiplog from DB to get ID
-  const shiplogFromDb = (
-    await db.select().from(shiplogsTable).where(eq(shiplogsTable.slug, slug))
-  ).at(0);
+  const shiplogFromDb = (await db.select().from(shiplogsTable).where(eq(shiplogsTable.slug, slug))).at(0);
 
   let reactionCounts: Record<string, number> = {};
   let userReactions: string[] = [];
@@ -68,9 +80,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     });
 
     // Get user's reactions
-    userReactions = allReactions
-      .filter((r) => r.anon_session_id === anonymousId)
-      .map((r) => r.reaction_type);
+    userReactions = allReactions.filter((r) => r.anon_session_id === anonymousId).map((r) => r.reaction_type);
   }
 
   return { shiplog, userIsAdmin, reactionCounts, userReactions };
@@ -91,6 +101,7 @@ export default function ShiplogPage() {
 
   const { data: editData, isLoading: isEditLoading, submit: submitEdit } = useAction(editShiplogActionDefinition);
   const { data: versionsData, submit: submitVersions } = useAction(fetchShiplogVersionsActionDefinition);
+  const { submit: submitStatusUpdate } = useAction(updateShiplogStatusActionDefinition);
 
   const shiplog = editData?.shiplog ?? initialShiplog;
   const versions = versionsData?.versions ?? [];
@@ -120,6 +131,14 @@ export default function ShiplogPage() {
     submitVersions({ slug: shiplog.slug });
   };
 
+  const handleStatusChange = async (newStatus: ShiplogStatus) => {
+    await submitStatusUpdate({
+      slug: shiplog.slug,
+      status: newStatus,
+    });
+    revalidator.revalidate();
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Back link */}
@@ -138,6 +157,16 @@ export default function ShiplogPage() {
           </Text>
           {userIsAdmin && !isEditing && (
             <div className="flex gap-2">
+              <Select value={shiplog.status} onValueChange={(value) => handleStatusChange(value as ShiplogStatus)}>
+                <SelectTrigger size="sm">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="published">Published</SelectItem>
+                  <SelectItem value="archived">Archived</SelectItem>
+                </SelectContent>
+              </Select>
               <Button variant="secondary-filled" size="sm" onClick={() => setIsEditing(true)}>
                 <EditIcon className="w-4 h-4" />
                 <span>Edit</span>
@@ -147,7 +176,7 @@ export default function ShiplogPage() {
                   value={dropdownValue}
                   onValueChange={(versionId) => {
                     setDropdownValue(versionId);
-                    const version = versions.find(v => v.versionId === versionId);
+                    const version = versions.find((v) => v.versionId === versionId);
                     if (version) {
                       setSelectedVersion({
                         versionId: version.versionId,
@@ -174,7 +203,7 @@ export default function ShiplogPage() {
           )}
         </div>
         <Text as="p" variant="body" className="text-muted-foreground mb-4">
-          {shiplog.previewText}
+          {shiplog.introText}
         </Text>
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <time dateTime={shiplog.publishedAt}>{shiplog.publishedAt}</time>

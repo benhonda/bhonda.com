@@ -1,6 +1,8 @@
 import { pgTable, text, uuid, integer, pgEnum, unique } from "drizzle-orm/pg-core";
 import { timestamps, timelineFields } from "~/lib/db/schema-utils";
 
+export const shiplogStatusEnum = pgEnum("shiplog_status", ["draft", "published", "archived"]);
+
 export const shiplogsTable = pgTable(
   "shiplogs",
   {
@@ -14,6 +16,7 @@ export const shiplogsTable = pgTable(
     s3_internal_key: text().notNull(),
     stats_repos: integer().notNull(),
     stats_commits: integer().notNull(),
+    status: shiplogStatusEnum().notNull().default("draft"),
   }
 );
 

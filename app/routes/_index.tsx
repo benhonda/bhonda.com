@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from "react-router";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { action_handler } from "~/lib/actions/_core/action-runner.server";
 import { Text } from "~/components/misc/text";
 import { Link } from "~/lib/router/routes";
@@ -6,6 +6,14 @@ import { useAction } from "~/hooks/use-action";
 import { fetchShiplogsActionDefinition } from "~/lib/actions/fetch-shiplogs/action-definition";
 import { useEffect } from "react";
 import { PageHeader } from "~/components/misc/page-header";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Ben Honda's Dev Blog" },
+    { name: "description", content: "Weekly development shiplogs and projects" },
+    { tagName: "link", rel: "canonical", href: "https://bhonda.com/" },
+  ];
+};
 
 export async function loader({}: LoaderFunctionArgs) {
   return {};
@@ -51,7 +59,7 @@ export default function Index() {
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-mono text-muted-foreground uppercase">ship</span>
+                      <span className="text-xs font-mono text-muted-foreground uppercase">shiplog</span>
                     </div>
                     <Text as="h3" variant="heading-sm" className="mb-2">
                       {shiplog.titleText}
