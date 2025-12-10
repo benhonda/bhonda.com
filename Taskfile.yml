@@ -87,7 +87,7 @@ tasks:
     cmds:
       - |
         # Check if dev server is running on port 3000
-        if ! curl -s -f -o /dev/null http://localhost:3000 2>/dev/null; then
+        if ! curl -k -s -f -o /dev/null https://localhost:3000 2>/dev/null; then
           echo "❌ Dev server is not running on port 3000"
           echo "   Start it with: task start"
           exit 1
@@ -96,7 +96,7 @@ tasks:
         echo "✅ Dev server is running on port 3000"
         echo "🚀 Triggering shiplog for week {{.WEEK}}..."
         echo ""
-        curl "http://localhost:3000/api/cron/weekly-shiplog?week={{.WEEK}}"
+        curl -k "https://localhost:3000/api/cron/weekly-shiplog?week={{.WEEK}}"
         echo ""
 
   # --------------------------------------------------------------------------------------------------------------------

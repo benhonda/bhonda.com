@@ -2,12 +2,14 @@ import { exec } from "child_process";
 import { promisify } from "util";
 import { shiplogEnv } from "~/lib/env/shiplog-env.server";
 import type { RepoCommits } from "./github-service.server";
+import { REPO_CONFIG } from "./repo-whitelist";
 
 const execPromise = promisify(exec);
 
 export interface ShiplogContent {
-  title: string;
-  description: string;
+  titleText: string;
+  previewText: string;
+  introText: string;
   content: string;
 }
 
@@ -37,7 +39,8 @@ export async function synthesizeShiplog(
         .map((c) => `  - ${c.message.split("\n")[0]} (${c.date.split("T")[0]})`)
         .join("\n");
 
-      return `### ${repoData.repo}\n${commitList}`;
+      const displayName = REPO_CONFIG[repoData.repo as keyof typeof REPO_CONFIG]?.displayName ?? repoData.repo;
+      return `### ${displayName}\n${commitList}`;
     })
     .join("\n\n");
 
@@ -51,20 +54,22 @@ ${startDate.toISOString().split("T")[0]} to ${endDate.toISOString().split("T")[0
 Return a JSON object with exactly these three fields:
 
 {
-  "title": "Creative, engaging title for the shiplog (keep it punchy and exciting)",
-  "description": "1-2 sentence preview/summary for listing pages (make it compelling)",
+  "titleText": "Creative, engaging title for the shiplog (keep it punchy and exciting)",
+  "previewText": "1-2 sentence preview/summary for listing pages (make it compelling)",
+  "introText": "1-3 sentences introducing the content (will be used as the first paragraph of the blog post)",
   "content": "Full markdown blog post content (concise, organized by project, focus on what shipped)"
 }
 </output_requirements>
 
 <content_guidelines>
 - Organize by project/repository
-- Focus on what shipped: features, fixes, improvements
-- Emphasize user-facing impact and meaningful changes
+- Focus on what shipped: features, fixes, improvements (ONLY user-facing impact and meaningful changes)
+- It's possible for a given project that no user-facing meaningful changes were shipped. If that's the case, then just don't include this project.
 - Keep it readable and engaging
-- Use appropriate markdown formatting (headings, lists, etc.)
+- Use appropriate markdown formatting (headings, lists, etc.) following this spec:
+    - The frontmatter's titleText and introText will be used as the h1/"#" heading at the start of the markdown and introduction paragraph - so you should not include an h1/"#" heading at the start of the markdown or introduction paragraph - this will be handled by the frontmatter.
 - Do NOT include commit hashes, URLs, or technical metadata
-- Do NOT include trivial changes or internal refactoring unless significant
+- Do NOT include trivial changes or internal refactoring
 </content_guidelines>
 
 <commits>
@@ -106,7 +111,7 @@ Return only the JSON object, no additional text:`;
       shiplogContent = JSON.parse(jsonMatch[0]);
 
       // Validate required fields
-      if (!shiplogContent.title || !shiplogContent.description || !shiplogContent.content) {
+      if (!shiplogContent.titleText || !shiplogContent.previewText || !shiplogContent.introText || !shiplogContent.content) {
         throw new Error("Missing required fields in Claude response");
       }
     } catch (parseError) {
@@ -117,8 +122,8 @@ Return only the JSON object, no additional text:`;
 
     console.log(`[Claude] Successfully synthesized shiplog`);
     console.log(`[Claude] Model: ${MODEL_ID}`);
-    console.log(`[Claude] Title: ${shiplogContent.title}`);
-    console.log(`[Claude] Description: ${shiplogContent.description}`);
+    console.log(`[Claude] Title: ${shiplogContent.titleText}`);
+    console.log(`[Claude] Preview: ${shiplogContent.previewText}`);
 
     const metadata: SynthesisMetadata = {
       model: MODEL_ID,

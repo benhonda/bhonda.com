@@ -2,6 +2,19 @@
 
 ## 2025-12-10
 
+- feat: Dark mode support with system preference detection and manual toggle persisted to localStorage
+- feat: Shared page header and footer components with GitHub link and theme toggle for consistent navigation
+- refactor: Shiplog schema changed from title/description to titleText/previewText/introText for clearer content structure
+- refactor: Repo whitelist converted to config object with display names for better shiplog presentation
+- refactor: Claude edit service instructions improved to prevent duplicate h1 headings and introduction paragraphs
+- refactor: Claude synthesis now uses repo display names and excludes projects with no meaningful user-facing changes
+- refactor: Action handler now gracefully handles aborted requests (common during tab focus revalidation)
+- refactor: Button typography changed from semibold to medium weight for lighter visual hierarchy
+- refactor: Markdown list items now use proper list-outside styling and HR elements render with border-border class
+- refactor: Shiplog reaction buttons redesigned with consistent height and improved icon/count alignment
+
+## 2025-12-10
+
 - feat: Shiplog reactions system allowing readers to add GitHub-style emoji reactions (thumbs up/down, heart, rocket, etc) tracked by anonymous session ID
 - feat: Shiplog version history with S3-backed versioning, side-by-side diff viewer, and one-click restoration for admins
 - feat: Analytics configuration with Silo write key "bhondacom" and environment-scoped cookie/localStorage keys for proper event tracking

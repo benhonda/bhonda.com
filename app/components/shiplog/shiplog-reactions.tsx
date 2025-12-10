@@ -95,7 +95,7 @@ export function ShiplogReactions({
             onClick={() => handleReactionClick(reactionType)}
             disabled={isLoading}
             className={cn(
-              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all",
+              "inline-flex items-center gap-1.5 h-8 px-3 rounded-full border transition-all",
               "hover:bg-muted/50 disabled:opacity-50 disabled:cursor-not-allowed",
               isActive
                 ? "bg-primary/10 border-primary text-primary font-medium"
@@ -103,7 +103,7 @@ export function ShiplogReactions({
             )}
           >
             <span className="text-base leading-none">{REACTION_EMOJI_MAP[reactionType]}</span>
-            <span className="text-sm font-mono">{count}</span>
+            <span className="text-sm font-mono leading-none">{count}</span>
           </button>
         );
       })}
@@ -111,9 +111,16 @@ export function ShiplogReactions({
       {/* Add reaction popover */}
       <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
         <PopoverTrigger asChild>
-          <Button variant="secondary-outline" size="sm" disabled={isLoading}>
+          <button
+            disabled={isLoading}
+            className={cn(
+              "inline-flex items-center justify-center h-9 w-9 rounded-full border transition-all",
+              "hover:bg-muted/50 disabled:opacity-50 disabled:cursor-not-allowed",
+              "bg-background border-border text-muted-foreground"
+            )}
+          >
             <SmilePlus className="w-4 h-4" />
-          </Button>
+          </button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-2" align="start">
           <div className="grid grid-cols-4 gap-1">

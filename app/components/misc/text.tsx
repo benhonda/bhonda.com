@@ -22,8 +22,8 @@ export const text = cva("", {
       "body-sm": "font-body text-sm sm:text-sm-md font-normal tracking-normal",
 
       // Button styles (body font)
-      "button-md": "font-mono text-sm sm:text-sm-md font-semibold tracking-tight",
-      "button-sm": "font-mono text-sm font-semibold tracking-tight",
+      "button-md": "font-mono text-sm sm:text-sm-md font-medium tracking-tight",
+      "button-sm": "font-mono text-sm font-medium tracking-tight",
 
       // Utility styles
       microcopy: "font-body text-xs font-normal tracking-normal",
@@ -36,7 +36,7 @@ export const text = cva("", {
 });
 
 export type TextProps = {
-  as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span" | "div";
+  as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span" | "div" | "li";
   variant: NonNullable<VariantProps<typeof text>["variant"]>;
   className?: string;
   children: React.ReactNode;

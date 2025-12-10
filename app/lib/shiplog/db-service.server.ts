@@ -4,8 +4,9 @@ import { eq, desc } from "drizzle-orm";
 
 export interface ShiplogRecord {
   slug: string;
-  title: string;
-  description: string;
+  titleText: string;
+  previewText: string;
+  introText: string;
   publishedAt: string; // YYYY-MM-DD
   week: number;
   year: number;
@@ -30,8 +31,9 @@ export async function insertShiplogRecord(data: ShiplogRecord): Promise<void> {
     await db
       .update(shiplogsTable)
       .set({
-        title: data.title,
-        description: data.description,
+        title_text: data.titleText,
+        preview_text: data.previewText,
+        intro_text: data.introText,
         published_at: data.publishedAt,
         week: data.week,
         year: data.year,
@@ -47,8 +49,9 @@ export async function insertShiplogRecord(data: ShiplogRecord): Promise<void> {
     // Insert new record
     await db.insert(shiplogsTable).values({
       slug: data.slug,
-      title: data.title,
-      description: data.description,
+      title_text: data.titleText,
+      preview_text: data.previewText,
+      intro_text: data.introText,
       published_at: data.publishedAt,
       week: data.week,
       year: data.year,

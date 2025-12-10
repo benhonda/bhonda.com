@@ -23,6 +23,7 @@ import { useEffect } from "react";
 import { useRouteError } from "react-router";
 import { getThemeFromRequest } from "~/lib/theme/theme.server";
 import { cn } from "~/lib/utils";
+import { Footer } from "~/components/misc/footer";
 
 const SITE_NAME = "bhonda.com";
 const SITE_DESC = "bhonda.com";
@@ -125,7 +126,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
           ></noscript>
         )}
 
-        {children}
+        <div className="min-h-[85svh]">{children}</div>
+        <Footer />
         <ScrollRestoration />
         <Scripts />
         <Toaster richColors />

@@ -1,36 +1,41 @@
 /**
  * Repositories to INCLUDE in weekly shiplog generation.
- * Only repos in this whitelist will appear in shiplogs.
- * Format: "owner/repo"
+ * Only repos in this config will appear in shiplogs.
  *
  * IMPORTANT: Whitelist approach ensures client work is never accidentally published.
  */
-export const WHITELISTED_REPOS: string[] = [
-  // Add personal/public repositories to include in shiplogs here
+
+export interface RepoConfig {
+  displayName: string;
+}
+
+export type RepoWhitelistConfig = Record<string, RepoConfig>;
+
+export const REPO_CONFIG = {
   // benhonda
-  "benhonda/bhonda.com",
+  "benhonda/bhonda.com": { displayName: "bhonda.com" },
   // adpharm
-  "adpharm/form-gen",
-  "adpharm/adpharm-shad",
-  "adpharm/agentic-editor",
-  "adpharm/silo-cdp",
-  "adpharm/silo-event-store-api",
-  "adpharm/adapts-tracking-link-templates",
-  "adpharm/adapts",
-  "adpharm/adpharm-toolshed",
-  "adpharm/earlydays.dev",
-  "adpharm/inspiration-index-pipeline",
-  "adpharm/inspiration-index-app",
-  "adpharm/inspiration-index-terraform",
-  "adpharm/ga4-reporter",
-  "adpharm/autoscroll-recorder-web",
-  "adpharm/autoscroll-recorder-api",
-  "adpharm/gtm-proxy",
-  "adpharm/link-scraper",
+  "adpharm/form-gen": { displayName: "Formgen" },
+  "adpharm/adpharm-shad": { displayName: "Adpharm Shad Registry" },
+  "adpharm/agentic-editor": { displayName: "Agentic Editor" },
+  "adpharm/silo-cdp": { displayName: "Silo CDP" },
+  "adpharm/silo-event-store-api": { displayName: "Silo Event Store API" },
+  "adpharm/adapts-tracking-link-templates": { displayName: "ADAPTS Tracking Link Templates" },
+  "adpharm/adapts": { displayName: "ADAPTS" },
+  "adpharm/adpharm-toolshed": { displayName: "Adpharm Toolshed" },
+  "adpharm/earlydays.dev": { displayName: "earlydays.dev" },
+  "adpharm/inspiration-index-pipeline": { displayName: "Inspiration Index Pipeline" },
+  "adpharm/inspiration-index-app": { displayName: "Inspiration Index App" },
+  "adpharm/inspiration-index-terraform": { displayName: "Inspiration Index Terraform" },
+  "adpharm/ga4-reporter": { displayName: "GA4 Reporter" },
+  "adpharm/autoscroll-recorder-web": { displayName: "Autoscroll Recorder Web" },
+  "adpharm/autoscroll-recorder-api": { displayName: "Autoscroll Recorder API" },
+  "adpharm/gtm-proxy": { displayName: "GTM Proxy" },
+  "adpharm/link-scraper": { displayName: "Link Scraper" },
   // synapse
-  "adpharm/synapsemedcom.ca",
-  "adpharm/synapse-crm",
-  "adpharm/synapse-crm-contacts-db",
+  "adpharm/synapsemedcom.ca": { displayName: "synapsemedcom.ca" },
+  "adpharm/synapse-crm": { displayName: "Synapse CRM" },
+  "adpharm/synapse-crm-contacts-db": { displayName: "Synapse CRM Contacts DB" },
   // other
-  "adpharm/postgresdk",
-];
+  "adpharm/postgresdk": { displayName: "PostgreSDK" },
+} satisfies RepoWhitelistConfig;

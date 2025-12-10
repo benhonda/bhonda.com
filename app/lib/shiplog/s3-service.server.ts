@@ -29,8 +29,9 @@ function buildFrontmatterMarkdown(
   const slug = `${isoYear}-W${isoWeek.toString().padStart(2, "0")}`;
 
   const frontmatter = `---
-title: "${shiplogContent.title.replace(/"/g, '\\"')}"
-description: "${shiplogContent.description.replace(/"/g, '\\"')}"
+titleText: "${shiplogContent.titleText.replace(/"/g, '\\"')}"
+previewText: "${shiplogContent.previewText.replace(/"/g, '\\"')}"
+introText: "${shiplogContent.introText.replace(/"/g, '\\"')}"
 published_at: "${dateStr}"
 week: ${isoWeek}
 year: ${isoYear}

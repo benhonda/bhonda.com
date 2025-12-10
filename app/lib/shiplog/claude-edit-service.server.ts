@@ -9,10 +9,7 @@ const MODEL_ID = "claude-sonnet-4-5-20250929";
 /**
  * Edits a shiplog using Claude Code print mode
  */
-export async function editShiplogWithClaude(
-  currentMarkdown: string,
-  editPrompt: string
-): Promise<string> {
+export async function editShiplogWithClaude(currentMarkdown: string, editPrompt: string): Promise<string> {
   console.log(`[Claude Edit] Starting edit with prompt: ${editPrompt.substring(0, 100)}...`);
 
   const systemPrompt = `You are editing a weekly shiplog markdown file.
@@ -28,9 +25,10 @@ ${editPrompt}
 <instructions>
 - Return the FULL updated markdown file with frontmatter intact
 - Preserve the frontmatter structure (between ---) exactly as is
-- Only modify what the user requested
-- Maintain markdown formatting
-- Return ONLY the markdown content, no explanations
+- Perform surgical modifications only - Only modify what the user requested
+- Maintain markdown formatting following this spec:
+    - The frontmatter's title and intro will be used as the h1/"#" heading at the start of the markdown and introduction paragraph - so you should not include an h1/"#" heading at the start of the markdown or introduction paragraph - this will be handled by the frontmatter.
+- Return ONLY the markdown content, no explanations, no additional text, no markdown code blocks, no nothing.
 </instructions>
 
 Return the complete updated markdown file:`;

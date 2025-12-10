@@ -25,7 +25,8 @@ export const timestamps = {
 // Common fields for all timeline content types (ships, articles, links, etc.)
 export const timelineFields = {
   slug: text().notNull().unique(),
-  title: text().notNull(),
-  description: text().notNull(),
+  title_text: text().notNull(),
+  preview_text: text().notNull(),
+  intro_text: text().notNull(),
   published_at: date({ mode: "string" }).notNull(),
 };

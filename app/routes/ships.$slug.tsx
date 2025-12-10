@@ -134,7 +134,7 @@ export default function ShiplogPage() {
       <header className="mt-4 mb-8">
         <div className="flex items-start justify-between gap-4 mb-3">
           <Text as="h1" variant="display-xs">
-            {shiplog.title}
+            {shiplog.titleText}
           </Text>
           {userIsAdmin && !isEditing && (
             <div className="flex gap-2">
@@ -174,7 +174,7 @@ export default function ShiplogPage() {
           )}
         </div>
         <Text as="p" variant="body" className="text-muted-foreground mb-4">
-          {shiplog.description}
+          {shiplog.previewText}
         </Text>
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <time dateTime={shiplog.publishedAt}>{shiplog.publishedAt}</time>
@@ -224,6 +224,11 @@ export default function ShiplogPage() {
           initialUserReactions={userReactions}
         />
       </div>
+
+      {/* AI Generation Notice */}
+      <Text variant="microcopy" className="mt-8 text-muted-foreground">
+        This shiplog is partially AI-generated from commit history.
+      </Text>
 
       {/* Version Diff Modal */}
       {selectedVersion && (

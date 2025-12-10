@@ -77,16 +77,15 @@ function parseFrontmatter(raw: string) {
     }
   }
 
-  const slug = meta.slug || `${meta.year}-W${meta.week.toString().padStart(2, "0")}`;
-
   return {
-    title: meta.title || "",
-    description: meta.description || "",
-    publishedAt: meta.published_at || "",
-    week: meta.week || 0,
-    year: meta.year || 0,
-    slug,
-    stats: meta.stats || { repos: 0, commits: 0 },
+    titleText: meta.titleText,
+    previewText: meta.previewText,
+    introText: meta.introText,
+    publishedAt: meta.published_at,
+    week: meta.week,
+    year: meta.year,
+    slug: meta.slug,
+    stats: meta.stats,
     content: content.trim(),
   };
 }

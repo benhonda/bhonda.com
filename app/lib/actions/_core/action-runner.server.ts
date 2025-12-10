@@ -8,7 +8,28 @@ import type { ActionName } from "./action-map";
 export async function action_handler({
   request,
 }: ActionFunctionArgs): Promise<ActionHandlerReturnType<ActionDefinitionData>> {
-  const data = (await request.json()) as ActionDefinitionData;
+  let data: ActionDefinitionData;
+
+  // Parse request body with error handling
+  try {
+    data = (await request.json()) as ActionDefinitionData;
+  } catch (error) {
+    // Handle aborted/malformed requests (common when tab focus triggers revalidation then aborts)
+    if (error instanceof SyntaxError) {
+      console.warn('[Action] Ignoring malformed JSON (likely aborted request)');
+      // Return minimal payload - client has already aborted so won't process this anyway
+      return {
+        _id: Math.random().toString(36).substring(7),
+        success: false,
+        currentAction: '__aborted__',
+        error: {
+          message_unsafe: 'Request aborted',
+          message_safe: 'Request was cancelled',
+        },
+      };
+    }
+    throw error;
+  }
 
   // try to handle the action
   try {

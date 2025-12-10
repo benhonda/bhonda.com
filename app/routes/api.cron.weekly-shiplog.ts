@@ -105,8 +105,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const totalCommits = repoCommits.reduce((sum, r) => sum + r.commits.length, 0);
     await insertShiplogRecord({
       slug: `${isoYear}-W${isoWeek.toString().padStart(2, "0")}`,
-      title: shiplogContent.title,
-      description: shiplogContent.description,
+      titleText: shiplogContent.titleText,
+      previewText: shiplogContent.previewText,
+      introText: shiplogContent.introText,
       publishedAt: endDate.toISOString().split("T")[0],
       week: isoWeek,
       year: isoYear,

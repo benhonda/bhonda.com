@@ -15,8 +15,8 @@ What do I need to do to get this live TODAY?
 
 Other
 
-- [ ] Backend review system, with ability to prompt to make changes
-- [ ] DB entries to fill "Latest" tab, and better s3 listings
+- [x] Backend review system, with ability to prompt to make changes
+- [x] DB entries to fill "Latest" tab, and better s3 listings
 - [x] Github-style Reactions to posts/ships
 - [x] Silo event tracking
 - [x] Versioning of ships
@@ -25,7 +25,7 @@ Other
 
 - [x] How to handle staging + prod data in dev? (Solved: read from both, staging wins)
 - [x] Hook up frontend to read from CDN (Solved: client-side list, SSR detail)
-- [ ] re-upload with explicit repos now. then test double cdn changes.
+- [x] re-upload with explicit repos now. then test double cdn changes.
 
 **Dec 7 2025**:
 

@@ -37,11 +37,9 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
         ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-2">{children}</ul>,
         ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-2">{children}</ol>,
         li: ({ children }) => (
-          <li>
-            <Text as="p" variant="body">
-              {children}
-            </Text>
-          </li>
+          <Text as="li" variant="body" className="text-muted-foreground ml-4 list-outside">
+            {children}
+          </Text>
         ),
         code: ({ children, className }) => {
           const isInline = !className;
@@ -69,6 +67,7 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
         blockquote: ({ children }) => (
           <blockquote className="border-l-4 border-muted-foreground pl-4 italic my-4">{children}</blockquote>
         ),
+        hr: () => <hr className="my-4 border-border" />,
       }}
     >
       {content}

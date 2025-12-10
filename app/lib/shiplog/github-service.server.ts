@@ -1,6 +1,6 @@
 import { Octokit } from "@octokit/rest";
 import { shiplogEnv } from "~/lib/env/shiplog-env.server";
-import { WHITELISTED_REPOS } from "./repo-whitelist";
+import { REPO_CONFIG } from "./repo-whitelist";
 
 export interface CommitData {
   sha: string;
@@ -131,7 +131,7 @@ export async function fetchCommitsForDateRange(
       const repo = repoMatch[1];
 
       // Only include whitelisted repos
-      if (!WHITELISTED_REPOS.includes(repo)) {
+      if (!(repo in REPO_CONFIG)) {
         skippedRepos.add(repo);
         continue;
       }
