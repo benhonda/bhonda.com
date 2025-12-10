@@ -153,8 +153,8 @@ Automated system that generates weekly "shiplogs" (development summaries) from g
 
 - Vercel cron hits `/api/cron/weekly-shiplog` every Sunday 2pm ET
 - Fetches commits for the full ISO week (Monday-Sunday) across all repos by author (bhonda89@gmail.com)
-- Filters blacklisted repos from `app/lib/shiplog/repo-blacklist.ts`
-- Sends commits to Claude for synthesis into blog post with title/description
+- Filters repos using whitelist from `app/lib/shiplog/repo-whitelist.ts`
+- Sends commits to Claude for synthesis into blog post with titleText/previewText/introText
 - Uploads to S3 as markdown with frontmatter
 
 **ISO Week Numbering (ISO 8601):**
@@ -171,7 +171,7 @@ Automated system that generates weekly "shiplogs" (development summaries) from g
 **Key files:**
 
 - `app/routes/api.cron.weekly-shiplog.ts` - Main cron handler
-- `app/lib/shiplog/repo-blacklist.ts` - Editable blacklist (format: "owner/repo")
+- `app/lib/shiplog/repo-whitelist.ts` - Editable whitelist with repo display names
 - `app/lib/shiplog/github-service.server.ts` - GitHub API integration
 - `app/lib/shiplog/claude-service.server.ts` - Claude synthesis
 - `app/lib/shiplog/s3-service.server.ts` - S3 upload
@@ -193,7 +193,7 @@ Automated system that generates weekly "shiplogs" (development summaries) from g
 
 - Public: `${prefix}/public/ships/2025-W50.md` (frontmatter + content, CDN accessible)
 - Internal: `${prefix}/internal/ships/2025-W50.md` (metadata + raw commits, NOT CDN accessible)
-- Frontmatter `date` field: Sunday (end of ISO week) in YYYY-MM-DD format
+- Frontmatter `published_at` field: Sunday (end of ISO week) in YYYY-MM-DD format
 
 **Frontend:**
 

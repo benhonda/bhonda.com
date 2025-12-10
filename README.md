@@ -38,6 +38,7 @@ Other
 
 ## Other notables
 
+- **Dec 10 2025**: Dark mode uses system preference detection with manual toggle persisted to localStorage.
 - **Dec 8 2025**: ISO weeks run Monday-Sunday. Filenames use `YYYY-WNN.md` format (not dates).
 - **Dec 8 2025**: BunnyNet CDN authenticates to S3 via IAM user (S3 bucket stays private).
 - **Dec 7 2025**: GitHub removed commit data from the events api at some point in 2025.
@@ -70,6 +71,25 @@ Automated system that generates weekly development summaries from git commits.
   - Internal files: `${prefix}/internal/ships/` (not CDN accessible)
 - BunnyNet CDN with IAM auth (restricted to `/public` subfolder)
 - Terraform manages CDN URLs in Vercel env vars
+
+**Frontmatter Structure:**
+
+```yaml
+---
+titleText: "Creative, engaging title"
+previewText: "1-2 sentence preview for listing pages"
+introText: "1-3 sentences introducing the content"
+published_at: "2025-12-14" # Sunday (end of ISO week)
+week: 50
+year: 2025
+slug: "2025-W50"
+stats: { repos: 5, commits: 42 }
+---
+```
+
+**Repo Configuration:**
+
+Repos are whitelisted in `app/lib/shiplog/repo-whitelist.ts` with display names for better presentation.
 
 **Endpoints:**
 
