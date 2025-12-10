@@ -22,11 +22,11 @@ const serverEnvSchema = z.object({
   /**
    * Production CDN URL
    */
-  PUBLIC_CDN_URL_PRODUCTION: z.string().optional(),
+  PUBLIC_CDN_URL_PRODUCTION: z.string(),
   /**
    * Staging CDN URL
    */
-  PUBLIC_CDN_URL_STAGING: z.string().optional(),
+  PUBLIC_CDN_URL_STAGING: z.string(),
 });
 
 const vercelEnv = process.env.VERCEL_ENV;

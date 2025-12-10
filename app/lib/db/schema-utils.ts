@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { timestamp } from "drizzle-orm/pg-core";
+import { timestamp, text, date } from "drizzle-orm/pg-core";
 
 /***************************************************************
  *
@@ -15,4 +15,17 @@ export const timestamps = {
     .default(sql`(now() AT TIME ZONE 'utc'::text)`)
     .notNull()
     .$onUpdate(() => sql`(now() AT TIME ZONE 'utc'::text)`),
+};
+
+/***************************************************************
+ *
+ * Timeline Content
+ *
+ ****************************************************************/
+// Common fields for all timeline content types (ships, articles, links, etc.)
+export const timelineFields = {
+  slug: text().notNull().unique(),
+  title: text().notNull(),
+  description: text().notNull(),
+  published_at: date({ mode: "string" }).notNull(),
 };

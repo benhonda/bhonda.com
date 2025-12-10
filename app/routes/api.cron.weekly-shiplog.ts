@@ -4,6 +4,7 @@ import { fetchCommitsForDateRange } from "~/lib/shiplog/github-service.server";
 import { synthesizeShiplog } from "~/lib/shiplog/claude-service.server";
 import { uploadShiplogToS3 } from "~/lib/shiplog/s3-service.server";
 import { getDateRangeFromISOWeek, getISOWeekNumber, getISOWeekYear } from "~/lib/shiplog/date-utils.server";
+import { insertShiplogRecord } from "~/lib/shiplog/db-service.server";
 
 /**
  * Vercel Cron handler for weekly shiplog generation
@@ -72,7 +73,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
     console.log(
       `[Shiplog Cron] Date range: ${startDate.toISOString()} to ${endDate.toISOString()}`
     );
-    console.log(`[Shiplog Cron] ISO week: ${isoYear}-W${isoWeek}`);
 
     // 3. Fetch commits from GitHub
     const authorEmail = "bhonda89@gmail.com";
@@ -101,15 +101,27 @@ export async function loader({ request }: LoaderFunctionArgs) {
     // 5. Upload to S3
     const { publicKey, internalKey } = await uploadShiplogToS3(shiplogContent, synthesisMetadata, repoCommits, endDate, isoWeek, isoYear);
 
-    // 6. Calculate summary stats
+    // 6. Insert database record
     const totalCommits = repoCommits.reduce((sum, r) => sum + r.commits.length, 0);
+    await insertShiplogRecord({
+      slug: `${isoYear}-W${isoWeek.toString().padStart(2, "0")}`,
+      title: shiplogContent.title,
+      description: shiplogContent.description,
+      publishedAt: endDate.toISOString().split("T")[0],
+      week: isoWeek,
+      year: isoYear,
+      s3PublicKey: publicKey,
+      s3InternalKey: internalKey,
+      statsRepos: repoCommits.length,
+      statsCommits: totalCommits,
+    });
+
+    // 7. Calculate summary stats
     const duration = Date.now() - startTime;
 
     console.log(`[Shiplog Cron] Successfully completed in ${duration}ms`);
-    console.log(`[Shiplog Cron] Total repos: ${repoCommits.length}`);
-    console.log(`[Shiplog Cron] Total commits: ${totalCommits}`);
 
-    // 7. Return success response
+    // 8. Return success response
     return new Response(
       JSON.stringify({
         success: true,

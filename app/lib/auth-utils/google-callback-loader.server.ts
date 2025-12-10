@@ -9,7 +9,7 @@ import { eq } from "drizzle-orm";
 import { serverRedirect } from "~/lib/router/server-responses.server";
 import { userFromSessionSchema } from "~/lib/types/user";
 
-const validEmailDomains = ["theadpharm.com", "synapsemedcom.ca"];
+const ADMIN_EMAIL = "ben@theadpharm.com";
 
 /**
  * Must be called in a loader
@@ -45,9 +45,9 @@ export async function callbackLoader(request: LoaderFunctionArgs["request"]) {
   // Exchange the code for a token and user info
   const oauth2Profile = await getGoogleProfile(code);
 
-  // validate the email domain
-  if (!validEmailDomains.includes(oauth2Profile.email.split("@")[1])) {
-    throw new Error("Invalid email domain");
+  // Only allow admin email
+  if (oauth2Profile.email !== ADMIN_EMAIL) {
+    throw new Error("Unauthorized email");
   }
 
   logDebug("attempting to update user");

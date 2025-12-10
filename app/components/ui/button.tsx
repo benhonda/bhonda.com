@@ -6,7 +6,10 @@ import { cn } from "~/lib/utils";
 import { text } from "~/components/misc/text";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-lg transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
+  cn(
+    "inline-flex items-center justify-center gap-2 rounded-lg transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
+    "font-mono font-normal"
+  ),
   {
     variants: {
       variant: {
@@ -45,8 +48,7 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 

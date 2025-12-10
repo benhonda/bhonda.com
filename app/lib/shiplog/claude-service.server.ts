@@ -43,11 +43,11 @@ export async function synthesizeShiplog(
 
   const prompt = `You are synthesizing a weekly shiplog from git commits.
 
-**Date Range:** ${startDate.toISOString().split("T")[0]} to ${endDate.toISOString().split("T")[0]}
+<date_range>
+${startDate.toISOString().split("T")[0]} to ${endDate.toISOString().split("T")[0]}
+</date_range>
 
-**Input:** Commits grouped by repository from the past week.
-
-**Output Requirements:**
+<output_requirements>
 Return a JSON object with exactly these three fields:
 
 {
@@ -55,8 +55,9 @@ Return a JSON object with exactly these three fields:
   "description": "1-2 sentence preview/summary for listing pages (make it compelling)",
   "content": "Full markdown blog post content (concise, organized by project, focus on what shipped)"
 }
+</output_requirements>
 
-**Content Guidelines:**
+<content_guidelines>
 - Organize by project/repository
 - Focus on what shipped: features, fixes, improvements
 - Emphasize user-facing impact and meaningful changes
@@ -64,10 +65,11 @@ Return a JSON object with exactly these three fields:
 - Use appropriate markdown formatting (headings, lists, etc.)
 - Do NOT include commit hashes, URLs, or technical metadata
 - Do NOT include trivial changes or internal refactoring unless significant
+</content_guidelines>
 
-**Commits:**
-
+<commits>
 ${formattedCommits}
+</commits>
 
 Return only the JSON object, no additional text:`;
 
@@ -117,7 +119,6 @@ Return only the JSON object, no additional text:`;
     console.log(`[Claude] Model: ${MODEL_ID}`);
     console.log(`[Claude] Title: ${shiplogContent.title}`);
     console.log(`[Claude] Description: ${shiplogContent.description}`);
-    console.log(`[Claude] Content length: ${shiplogContent.content.length} chars`);
 
     const metadata: SynthesisMetadata = {
       model: MODEL_ID,

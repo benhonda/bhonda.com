@@ -31,7 +31,7 @@ function buildFrontmatterMarkdown(
   const frontmatter = `---
 title: "${shiplogContent.title.replace(/"/g, '\\"')}"
 description: "${shiplogContent.description.replace(/"/g, '\\"')}"
-date: "${dateStr}"
+published_at: "${dateStr}"
 week: ${isoWeek}
 year: ${isoYear}
 stats:
@@ -133,9 +133,7 @@ export async function uploadShiplogToS3(
   // Generate internal content
   const internalContent = generateInternalShiplog(publicMarkdown, metadata, synthesisMetadata, repoCommits);
 
-  console.log(`[S3] Uploading shiplogs to bucket: ${bucket}`);
-  console.log(`[S3] Public key: ${publicKey}`);
-  console.log(`[S3] Internal key: ${internalKey}`);
+  console.log(`[S3] Uploading to bucket: ${bucket} (public + internal)`);
 
   try {
     // Upload public shiplog
@@ -148,8 +146,6 @@ export async function uploadShiplogToS3(
       })
     );
 
-    console.log(`[S3] Successfully uploaded public shiplog`);
-
     // Upload internal shiplog
     await s3Client.send(
       new PutObjectCommand({
@@ -160,7 +156,7 @@ export async function uploadShiplogToS3(
       })
     );
 
-    console.log(`[S3] Successfully uploaded internal shiplog`);
+    console.log(`[S3] Successfully uploaded public + internal shiplogs`);
 
     return { publicKey, internalKey };
   } catch (error) {

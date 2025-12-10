@@ -14,7 +14,7 @@ export async function loader({}: LoaderFunctionArgs) {
 
 export const action = action_handler;
 
-export default function Index() {
+export default function ShipsIndex() {
   const location = useLocation();
   const { data, isLoading, submit } = useAction(fetchShiplogsActionDefinition);
   const shiplogs = data?.shiplogs ?? [];
@@ -80,17 +80,17 @@ export default function Index() {
           </Link>
         </div>
 
-        {/* Latest Timeline Content */}
+        {/* Ships Content */}
         <Text as="h2" variant="heading-md" className="mb-6">
-          Latest
+          Ships
         </Text>
         {isLoading ? (
           <Text as="p" variant="body" className="text-muted-foreground">
-            Loading...
+            Loading shiplogs...
           </Text>
         ) : shiplogs.length === 0 ? (
           <Text as="p" variant="body" className="text-muted-foreground">
-            No content found.
+            No shiplogs found.
           </Text>
         ) : (
           <div className="space-y-4">
@@ -103,9 +103,6 @@ export default function Index() {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-mono text-muted-foreground uppercase">ship</span>
-                    </div>
                     <Text as="h3" variant="heading-sm" className="mb-2">
                       {shiplog.title}
                     </Text>

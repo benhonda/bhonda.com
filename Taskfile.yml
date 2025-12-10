@@ -79,6 +79,26 @@ tasks:
     cmds:
       - bun install {{.CLI_ARGS}}
 
+  upload-shiplog:
+    desc: Upload weekly shiplog for a specific week number (use WEEK=49)
+    requires:
+      vars:
+        - WEEK
+    cmds:
+      - |
+        # Check if dev server is running on port 3000
+        if ! curl -s -f -o /dev/null http://localhost:3000 2>/dev/null; then
+          echo "❌ Dev server is not running on port 3000"
+          echo "   Start it with: task start"
+          exit 1
+        fi
+
+        echo "✅ Dev server is running on port 3000"
+        echo "🚀 Triggering shiplog for week {{.WEEK}}..."
+        echo ""
+        curl "http://localhost:3000/api/cron/weekly-shiplog?week={{.WEEK}}"
+        echo ""
+
   # --------------------------------------------------------------------------------------------------------------------
   # Build commands
   # --------------------------------------------------------------------------------------------------------------------

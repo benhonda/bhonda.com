@@ -1,6 +1,9 @@
 import { BasicRateLimit } from "./rateLimit.server";
 import { cookieSessionStorage } from "./session.server";
 import { serverRedirect } from "~/lib/router/server-responses.server";
+import type { UserFromSession } from "~/lib/types/user";
+
+const ADMIN_EMAIL = "ben@theadpharm.com";
 
 /**
  *
@@ -46,6 +49,26 @@ export const requireUser = async (request: Request) => {
 
   if (!user) {
     throw new Error("User not found");
+  }
+
+  return user;
+};
+
+/**
+ * Check if user is admin
+ */
+export const isAdmin = (user: UserFromSession | null | undefined): boolean => {
+  return user?.email === ADMIN_EMAIL;
+};
+
+/**
+ * Require admin or throw
+ */
+export const requireAdmin = async (request: Request) => {
+  const user = await getUser(request);
+
+  if (!isAdmin(user)) {
+    throw new Error("Admin access required");
   }
 
   return user;

@@ -13,6 +13,8 @@ export const routePaths = [
   "/api/cron/weekly-shiplog/ts",
   "/login",
   "/oauth2/google/callback",
+  "/other",
+  "/ships",
   "/ships/:slug",
 ] as const;
 export type Path = (typeof routePaths)[number];

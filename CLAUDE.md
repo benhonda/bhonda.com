@@ -39,7 +39,7 @@
 ### TypeScript
 
 - **No `as any`:** Never use `as any` in TypeScript without explicit user permission.
-- **Type Checking:** After making any code changes, always run the project's type-checking script (e.g., `bun run typecheck`).
+- **Type Checking:** After making any code changes, always run the project's type-checking script (e.g., `task typecheck` or `bun run typecheck` if `task typecheck` is not available).
 
 ### Infrastructure as Code (IaC)
 
@@ -138,6 +138,8 @@ Reference [./CLAUDE-rr7-stack.md](./CLAUDE-rr7-stack.md) for details on how the 
 We use Bun. Not NPM.
 
 This is a public repo. Do not include and private information anywhere in the codebase.
+
+No migrations, no backwords compatibility. Don't ask. I will tell you directly if I ever want those.
 
 ## Notable commands
 

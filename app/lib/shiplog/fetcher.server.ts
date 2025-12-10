@@ -1,10 +1,10 @@
 import { serverEnv } from "~/lib/env/env.defaults.server";
-import { getDateRangeFromISOWeek, getISOWeekNumber, getISOWeekYear } from "./date-utils.server";
+import { getLatestShiplogs, getShiplogBySlug as getShiplogBySlugFromDB } from "./db-service.server";
 
 export interface ShiplogMeta {
   title: string;
   description: string;
-  date: string; // YYYY-MM-DD (end of week)
+  publishedAt: string; // YYYY-MM-DD (end of week)
   week: number;
   year: number;
   slug: string; // YYYY-WNN
@@ -81,7 +81,7 @@ function parseFrontmatter(raw: string): Shiplog {
   return {
     title: meta.title || "",
     description: meta.description || "",
-    date: meta.date || "",
+    publishedAt: meta.published_at || "",
     week: meta.week || 0,
     year: meta.year || 0,
     slug,
@@ -90,126 +90,79 @@ function parseFrontmatter(raw: string): Shiplog {
   };
 }
 
+
 /**
- * Generate expected shiplog filenames for the last N completed weeks
- * Skips the current week (starts from last week)
+ * Fetch a shiplog from CDN using S3 public key (returns null on 404/403)
+ * S3 key format: ${prefix}/public/ships/YYYY-WNN.md
+ * CDN URL format: ${cdnUrl}/ships/YYYY-WNN.md
  */
-function getExpectedShiplogFilenames(weeksBack: number = 6): string[] {
-  const now = new Date();
-  const filenames: string[] = [];
+async function fetchShiplogContentFromCDN(cdnUrl: string, s3PublicKey: string): Promise<string | null> {
+  // Extract path after "public/" from S3 key
+  const pathAfterPublic = s3PublicKey.split("/public/")[1];
 
-  // Start from last week (i=1 skips current week)
-  for (let i = 1; i <= weeksBack; i++) {
-    const targetDate = new Date(now);
-    targetDate.setDate(targetDate.getDate() - i * 7);
-
-    const isoWeek = getISOWeekNumber(targetDate);
-    const isoYear = getISOWeekYear(targetDate);
-
-    const filename = `${isoYear}-W${isoWeek.toString().padStart(2, "0")}.md`;
-    filenames.push(filename);
+  if (!pathAfterPublic) {
+    console.error(`[Shiplog Fetcher] Invalid S3 key format: ${s3PublicKey}`);
+    return null;
   }
 
-  return filenames;
-}
-
-/**
- * Fetch a shiplog from CDN (returns null on 404/403)
- */
-async function fetchShiplogFromCDN(cdnUrl: string, filename: string): Promise<Shiplog | null> {
-  const url = `${cdnUrl}/ships/${filename}`;
+  const url = `${cdnUrl}/${pathAfterPublic}`;
 
   try {
     const response = await fetch(url);
 
     if (!response.ok) {
-      // Silently handle expected failures (404 = not exists, 403 = CDN permissions/not exists)
       if (response.status === 404 || response.status === 403) {
         return null;
       }
-      // Only log unexpected errors
       console.error(`[Shiplog Fetcher] Unexpected error fetching ${url}: ${response.status} ${response.statusText}`);
       return null;
     }
 
     const raw = await response.text();
-    const parsed = parseFrontmatter(raw);
-    console.log(`[Shiplog Fetcher] ✓ Parsed shiplog from ${filename}:`, {
-      title: parsed.title,
-      slug: parsed.slug,
-      week: parsed.week,
-      year: parsed.year
-    });
-    return parsed;
+    return raw;
   } catch (error) {
-    // Only log actual network errors, not expected failures
     console.error(`[Shiplog Fetcher] Network error fetching ${url}:`, error);
     return null;
   }
 }
 
 /**
- * Fetch shiplogs with environment-aware fallback cascade
+ * Fetch shiplogs from database and CDN
  */
 export async function fetchShiplogs(): Promise<Shiplog[]> {
   const env = serverEnv.PUBLIC_APP_ENV;
   const prodCDN = serverEnv.PUBLIC_CDN_URL_PRODUCTION;
   const stagingCDN = serverEnv.PUBLIC_CDN_URL_STAGING;
 
-  console.log('[Shiplog Fetcher] Starting fetch...');
+  console.log('[Shiplog Fetcher] Starting fetch from database...');
   console.log('[Shiplog Fetcher] Env:', env);
-  console.log('[Shiplog Fetcher] Prod CDN:', prodCDN);
-  console.log('[Shiplog Fetcher] Staging CDN:', stagingCDN);
 
-  const filenames = getExpectedShiplogFilenames(6);
-  console.log('[Shiplog Fetcher] Looking for weeks:', filenames);
+  // Determine CDN URL based on environment
+  const cdnUrl = env === "production" ? prodCDN : stagingCDN;
 
-  if (env === "production") {
-    // Production: only read from production CDN
-    if (!prodCDN) {
-      console.warn("[Shiplog Fetcher] Production CDN URL not configured");
-      return [];
-    }
+  // Query database for latest shiplogs
+  const records = await getLatestShiplogs(6);
+  console.log(`[Shiplog Fetcher] Found ${records.length} records in database`);
 
-    const shiplogs = await Promise.all(filenames.map((filename) => fetchShiplogFromCDN(prodCDN, filename)));
-    const filtered = shiplogs.filter((log): log is Shiplog => log !== null).sort((a, b) => b.date.localeCompare(a.date));
-    console.log(`[Shiplog Fetcher] Returning ${filtered.length} shiplogs from production`);
-    return filtered;
-  } else if (env === "staging") {
-    // Staging: only read from staging CDN
-    if (!stagingCDN) {
-      console.warn("[Shiplog Fetcher] Staging CDN URL not configured");
-      return [];
-    }
+  // Fetch content from CDN for each record
+  const shiplogs = await Promise.all(
+    records.map(async (record) => {
+      const raw = await fetchShiplogContentFromCDN(cdnUrl, record.s3_public_key);
 
-    const shiplogs = await Promise.all(filenames.map((filename) => fetchShiplogFromCDN(stagingCDN, filename)));
-    const filtered = shiplogs.filter((log): log is Shiplog => log !== null).sort((a, b) => b.date.localeCompare(a.date));
-    console.log(`[Shiplog Fetcher] Returning ${filtered.length} shiplogs from staging`);
-    return filtered;
-  } else {
-    // Development: read from both, staging wins
-    if (!prodCDN || !stagingCDN) {
-      console.warn("[Shiplog Fetcher] CDN URLs not configured for development");
-      return [];
-    }
+      if (!raw) {
+        console.warn(`[Shiplog Fetcher] Failed to fetch content for ${record.slug}`);
+        return null;
+      }
 
-    const [prodShiplogs, stagingShiplogs] = await Promise.all([
-      Promise.all(filenames.map((filename) => fetchShiplogFromCDN(prodCDN, filename))),
-      Promise.all(filenames.map((filename) => fetchShiplogFromCDN(stagingCDN, filename))),
-    ]);
+      const parsed = parseFrontmatter(raw);
+      console.log(`[Shiplog Fetcher] ✓ Loaded ${record.slug}`);
+      return parsed;
+    })
+  );
 
-    // Merge: staging overwrites production
-    const merged = new Map<string, Shiplog>();
-
-    prodShiplogs.filter((log): log is Shiplog => log !== null).forEach((log) => merged.set(log.slug, log));
-
-    stagingShiplogs.filter((log): log is Shiplog => log !== null).forEach((log) => merged.set(log.slug, log));
-
-    const result = Array.from(merged.values()).sort((a, b) => b.date.localeCompare(a.date));
-    console.log(`[Shiplog Fetcher] Returning ${result.length} merged shiplogs (dev)`);
-    console.log('[Shiplog Fetcher] Slugs:', result.map(s => s.slug));
-    return result;
-  }
+  const filtered = shiplogs.filter((log): log is Shiplog => log !== null);
+  console.log(`[Shiplog Fetcher] Returning ${filtered.length} shiplogs`);
+  return filtered;
 }
 
 /**
@@ -220,22 +173,28 @@ export async function fetchShiplogBySlug(slug: string): Promise<Shiplog | null> 
   const prodCDN = serverEnv.PUBLIC_CDN_URL_PRODUCTION;
   const stagingCDN = serverEnv.PUBLIC_CDN_URL_STAGING;
 
-  // Slug is already in the right format: YYYY-WNN
-  const filename = `${slug}.md`;
+  console.log(`[Shiplog Fetcher] Fetching shiplog by slug: ${slug}`);
 
-  if (env === "production") {
-    if (!prodCDN) return null;
-    return fetchShiplogFromCDN(prodCDN, filename);
-  } else if (env === "staging") {
-    if (!stagingCDN) return null;
-    return fetchShiplogFromCDN(stagingCDN, filename);
-  } else {
-    // Dev: try staging first, then production
-    if (!prodCDN || !stagingCDN) return null;
+  // Determine CDN URL based on environment
+  const cdnUrl = env === "production" ? prodCDN : stagingCDN;
 
-    const stagingLog = await fetchShiplogFromCDN(stagingCDN, filename);
-    if (stagingLog) return stagingLog;
+  // Query database for shiplog record
+  const record = await getShiplogBySlugFromDB(slug);
 
-    return fetchShiplogFromCDN(prodCDN, filename);
+  if (!record) {
+    console.warn(`[Shiplog Fetcher] No database record found for slug: ${slug}`);
+    return null;
   }
+
+  // Fetch content from CDN
+  const raw = await fetchShiplogContentFromCDN(cdnUrl, record.s3_public_key);
+
+  if (!raw) {
+    console.warn(`[Shiplog Fetcher] Failed to fetch content for ${slug}`);
+    return null;
+  }
+
+  const parsed = parseFrontmatter(raw);
+  console.log(`[Shiplog Fetcher] ✓ Loaded ${slug}`);
+  return parsed;
 }

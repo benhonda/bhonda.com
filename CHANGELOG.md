@@ -1,5 +1,17 @@
 # Changelog
 
+## 2025-12-10
+
+- feat: Shiplog database storage with slug, title, description, published_at tracking and S3 key references
+- feat: Admin authentication system with email-based access control and requireAdmin helper
+- feat: Shiplog fetcher refactored to query database first then fetch content from CDN using S3 public keys
+- feat: Manual shiplog upload task command for backfilling weeks via local dev server
+- refactor: CDN environment variables now required (PUBLIC_CDN_URL_PRODUCTION and PUBLIC_CDN_URL_STAGING)
+- refactor: Typography improvements with button font-mono, heading-xs variant, and muted text colors in markdown
+- refactor: Shiplog frontmatter changed from 'date' field to 'published_at' for consistency with database schema
+- refactor: Admin authorization restricted to single email address (ben@theadpharm.com)
+- chore: Added /other and /ships routes to router configuration
+
 ## 2025-12-08
 
 - refactor: Replaced Anthropic SDK with Claude Code subprocess in print mode to reduce dependencies and leverage CLI authentication

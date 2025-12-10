@@ -35,8 +35,6 @@ export async function fetchCommitsForDateRange(
   const startDateStr = startDate.toISOString().split("T")[0];
   const endDateStr = endDate.toISOString().split("T")[0];
 
-  console.log(`[GitHub] Fetching commits from ${startDateStr} to ${endDateStr}`);
-
   try {
     // First, verify authentication and check what repos we can access
     const user = await octokit.rest.users.getAuthenticated();
@@ -58,10 +56,6 @@ export async function fetchCommitsForDateRange(
     });
 
     console.log(`[GitHub] Detected orgs: ${Array.from(orgs).join(", ") || "none"}`);
-    console.log(`[GitHub] Sample repos (first 5):`);
-    repoList.data.slice(0, 5).forEach((repo) => {
-      console.log(`  - ${repo.full_name} (${repo.private ? "private" : "public"})`);
-    });
 
     // Commit search doesn't support OR operators, so we need multiple searches
     // Search scopes: user:benhonda + org:adpharm + org:other...
@@ -70,8 +64,6 @@ export async function fetchCommitsForDateRange(
       ...Array.from(orgs).map((org) => `org:${org}`),
     ];
 
-    console.log(`[GitHub] Will search ${searchScopes.length} scopes: ${searchScopes.join(", ")}`);
-
     const allCommits: CommitData[] = [];
     const isDevelopment = process.env.NODE_ENV === "development";
     const maxPagesPerScope = isDevelopment ? 2 : 10; // Limit pages in dev to avoid rate limits
@@ -79,7 +71,6 @@ export async function fetchCommitsForDateRange(
     // Execute search for each scope and merge results
     for (const scope of searchScopes) {
       const searchQuery = `author-email:${authorEmail} ${scope} author-date:${startDateStr}..${endDateStr}`;
-      console.log(`[GitHub] Searching ${scope}: ${searchQuery}`);
 
       let page = 1;
       const perPage = 100;
@@ -120,8 +111,6 @@ export async function fetchCommitsForDateRange(
 
         allCommits.push(...commits);
 
-        console.log(`[GitHub]   Page ${page}: ${commits.length} commits`);
-
         // Check if we've fetched all pages
         if (response.data.items.length < perPage) break;
         page++;
@@ -132,6 +121,7 @@ export async function fetchCommitsForDateRange(
 
     // Group by repository
     const commitsByRepo = new Map<string, CommitData[]>();
+    const skippedRepos = new Set<string>();
 
     for (const commit of allCommits) {
       // Extract repo from commit URL: https://github.com/owner/repo/commit/sha
@@ -142,7 +132,7 @@ export async function fetchCommitsForDateRange(
 
       // Only include whitelisted repos
       if (!WHITELISTED_REPOS.includes(repo)) {
-        console.log(`[GitHub] Skipping non-whitelisted repo: ${repo}`);
+        skippedRepos.add(repo);
         continue;
       }
 
@@ -151,6 +141,10 @@ export async function fetchCommitsForDateRange(
       }
 
       commitsByRepo.get(repo)!.push(commit);
+    }
+
+    if (skippedRepos.size > 0) {
+      console.log(`[GitHub] Skipped ${skippedRepos.size} non-whitelisted repos: ${Array.from(skippedRepos).join(", ")}`);
     }
 
     // Convert to array format
