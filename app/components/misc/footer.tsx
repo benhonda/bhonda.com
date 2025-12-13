@@ -1,5 +1,6 @@
 import { Text } from "~/components/misc/text";
 import GithubSvg from "~/components/svgs/GithubSvg";
+import { LinkedInSvg } from "~/components/svgs/LinkedInSvg";
 import { ColorSchemeToggle } from "~/components/misc/theme-toggle";
 
 export function Footer() {
@@ -19,6 +20,16 @@ export function Footer() {
               aria-label="GitHub"
             >
               <GithubSvg />
+            </a>
+
+            <a
+              href="https://www.linkedin.com/in/benhonda/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="LinkedIn"
+            >
+              <LinkedInSvg />
             </a>
 
             <ColorSchemeToggle />

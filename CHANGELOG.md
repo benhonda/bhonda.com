@@ -2,6 +2,16 @@
 
 ## 2025-12-13
 
+- feat: Contact page with LinkedIn and GitHub profile links replacing placeholder "other" page
+- feat: Shiplog analytics tracking with events for opens, read completion, and reactions including time-to-read metrics
+- feat: User identification on app load for authenticated users with profile data sent to analytics
+- feat: Shiplog info dialog explaining what shiplogs are and how they're generated
+- refactor: Theme color refinements for better visual hierarchy and contrast in light/dark modes
+- refactor: Removed internationalization route structure (/$lang) for simpler URL patterns
+- refactor: Shiplog detail page layout improvements with better mobile responsiveness and admin controls repositioning
+
+## 2025-12-13
+
 - refactor: Simplified CDN configuration by replacing environment-specific URLs (PUBLIC_CDN_URL_PRODUCTION/STAGING) with single PUBLIC_CDN_URL per deployment
 - refactor: Database schema now stores relative S3 keys (public/ships/2025-W50.md) instead of full keys for environment portability
 - feat: S3 key builder utility centralizes key construction logic with support for environment overrides in staging reset workflows

@@ -1,6 +1,7 @@
 import { Text } from "~/components/misc/text";
 import GithubSvg from "~/components/svgs/GithubSvg";
 import { NavTabs } from "~/components/misc/nav-tabs";
+import { Spacer } from "./spacer";
 
 type PageHeaderProps = {
   description?: string;
@@ -11,7 +12,7 @@ export function PageHeader({ description }: PageHeaderProps) {
     <>
       {/* Header */}
       <div className="flex items-start justify-between mb-2">
-        <Text as="h1" variant="display-xs">
+        <Text as="h1" variant="display-sm">
           bhonda.com
         </Text>
         <a
@@ -30,12 +31,14 @@ export function PageHeader({ description }: PageHeaderProps) {
         </Text>
       )}
 
+      <Spacer size="sm" />
+
       {/* Navigation Tabs */}
       <NavTabs
         tabs={[
           { label: "latest", to: { to: "/" } },
           { label: "ships", to: { to: "/ships" } },
-          { label: "other", to: { to: "/other" } },
+          { label: "contact", to: { to: "/contact" } },
         ]}
       />
     </>

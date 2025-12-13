@@ -16,8 +16,8 @@ Ben Honda's personal website.
 What do I need to do to get this live TODAY?
 
 - [x] Backfill 5-10 weeks.
-- [ ] Verify the content of the backfilled weeks.
-- [ ] Mobile-friendly
+- [x] Verify the content of the backfilled weeks.
+- [x] Mobile-friendly
 - [x] Meta data
 
 Other

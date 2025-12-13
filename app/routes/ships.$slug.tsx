@@ -10,7 +10,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { ArrowLeftIcon, EditIcon, HistoryIcon } from "lucide-react";
 import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { action_handler } from "~/lib/actions/_core/action-runner.server";
 import { useAction } from "~/hooks/use-action";
 import { editShiplogActionDefinition } from "~/lib/actions/edit-shiplog/action-definition";
@@ -23,6 +23,8 @@ import { db } from "~/lib/db/index.server";
 import { shiplogsTable, shiplogReactionsTable } from "~/lib/db/schemas/shiplog-schema";
 import { eq } from "drizzle-orm";
 import { getAnonymousIdFromRequest } from "~/lib/analytics/get-anonymous-id.server";
+import { browserTrackEvent } from "~/lib/analytics/events.defaults.client";
+import { getOrCreateStartTime, getElapsedSeconds } from "~/lib/analytics/session-utils";
 
 export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
   if (!data?.shiplog) {
@@ -106,11 +108,53 @@ export default function ShiplogPage() {
   const shiplog = editData?.shiplog ?? initialShiplog;
   const versions = versionsData?.versions ?? [];
 
+  const hasTrackedOpenRef = useRef(false);
+  const hasTrackedReadRef = useRef(false);
+  const reactionsRef = useRef<HTMLDivElement>(null);
+  const pageStartTimeRef = useRef<number>(0);
+
   useEffect(() => {
     if (userIsAdmin) {
       submitVersions({ slug: shiplog.slug });
     }
   }, [userIsAdmin, shiplog.slug]);
+
+  useEffect(() => {
+    if (hasTrackedOpenRef.current) return;
+
+    pageStartTimeRef.current = getOrCreateStartTime();
+    browserTrackEvent("Shiplog Opened", {
+      slug: shiplog.slug,
+      week: shiplog.week,
+    });
+    hasTrackedOpenRef.current = true;
+  }, [shiplog.slug, shiplog.week]);
+
+  useEffect(() => {
+    if (!reactionsRef.current || hasTrackedReadRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasTrackedReadRef.current) {
+            const timeToReadSeconds = getElapsedSeconds(pageStartTimeRef.current);
+            browserTrackEvent("Shiplog Read", {
+              slug: shiplog.slug,
+              week: shiplog.week,
+              time_to_read_seconds: timeToReadSeconds,
+            });
+            hasTrackedReadRef.current = true;
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(reactionsRef.current);
+
+    return () => observer.disconnect();
+  }, [shiplog.slug, shiplog.week]);
 
   const handleEdit = async () => {
     if (!editPrompt.trim()) return;
@@ -151,10 +195,7 @@ export default function ShiplogPage() {
 
       {/* Header */}
       <header className="mt-4 mb-8">
-        <div className="flex items-start justify-between gap-4 mb-3">
-          <Text as="h1" variant="display-xs">
-            {shiplog.titleText}
-          </Text>
+        <div className="flex flex-col gap-3 mb-3">
           {userIsAdmin && !isEditing && (
             <div className="flex gap-2">
               <Select value={shiplog.status} onValueChange={(value) => handleStatusChange(value as ShiplogStatus)}>
@@ -201,18 +242,17 @@ export default function ShiplogPage() {
               )}
             </div>
           )}
+          <Text as="h1" variant="display-xs">
+            {shiplog.titleText}
+          </Text>
         </div>
         <Text as="p" variant="body" className="text-muted-foreground mb-4">
           {shiplog.introText}
         </Text>
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex flex-col gap-1 text-sm text-muted-foreground sm:flex-row sm:gap-4">
           <time dateTime={shiplog.publishedAt}>{shiplog.publishedAt}</time>
-          <span>•</span>
           <span>Week {shiplog.week}</span>
-          <span>•</span>
-          <span>{shiplog.stats.repos} repos</span>
-          <span>•</span>
-          <span>{shiplog.stats.commits} commits</span>
+          <span>{shiplog.stats.repos} repos · {shiplog.stats.commits} commits</span>
         </div>
       </header>
 
@@ -246,9 +286,10 @@ export default function ShiplogPage() {
       </article>
 
       {/* Reactions */}
-      <div className="mt-8 pt-8 border-t border-border">
+      <div ref={reactionsRef} className="mt-8 pt-8 border-t border-border">
         <ShiplogReactions
           shiplogSlug={shiplog.slug}
+          shiplogWeek={shiplog.week}
           initialCounts={reactionCounts}
           initialUserReactions={userReactions}
         />

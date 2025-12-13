@@ -18,12 +18,13 @@ import { Toaster } from "sonner";
 import { useI18n } from "~/hooks/use-i18n";
 import { useDebouncedCallback } from "use-debounce";
 import { logDebug } from "~/lib/logger";
-import { browserPageEvent } from "~/lib/analytics/events.defaults.client";
-import { useEffect } from "react";
+import { browserPageEvent, browserIdentifyEvent } from "~/lib/analytics/events.defaults.client";
+import { useEffect, useRef } from "react";
 import { useRouteError } from "react-router";
 import { getThemeFromRequest } from "~/lib/theme/theme.server";
 import { cn } from "~/lib/utils";
 import { Footer } from "~/components/misc/footer";
+import { getUser } from "~/lib/auth-utils/user.server";
 
 const SITE_NAME = "bhonda.com";
 const SITE_DESC = "bhonda.com";
@@ -60,10 +61,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   // Get theme preference from cookie
   const theme = getThemeFromRequest(request);
 
-  return { publicEnv, theme };
-};
+  // Get user if logged in
+  const user = await getUser(request);
 
-const GTM_ID = "GTM-XXXXXXXX";
+  return { publicEnv, theme, user };
+};
 
 /**
  * Layout component wraps the entire document structure.
@@ -113,16 +115,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
 
       <body>
-        {/* gtm */}
-        {typeof window !== "undefined" && window.env.PUBLIC_APP_ENV === "production" && (
-          <noscript
-            dangerouslySetInnerHTML={{
-              __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=${GTM_ID}"
-height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
-            }}
-          ></noscript>
-        )}
-
         <div className="min-h-[85svh]">{children}</div>
         <Footer />
         <ScrollRestoration />
@@ -134,11 +126,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
 }
 
 function App() {
-  const { publicEnv } = useLoaderData<typeof loader>();
+  const { publicEnv, user } = useLoaderData<typeof loader>();
   const { language } = useI18n();
 
   const location = useLocation();
   const pathname = location.pathname;
+
+  const hasIdentifiedRef = useRef(false);
 
   const triggerPageEvent = useDebouncedCallback(
     () => {
@@ -153,26 +147,19 @@ function App() {
     triggerPageEvent();
   }, [pathname, language]);
 
-  //
-  // GTM
-  //
   useEffect(() => {
-    if (window.env.PUBLIC_APP_ENV !== "production") {
-      logDebug("GTM", "Not in production");
-      return;
-    }
+    if (hasIdentifiedRef.current) return;
+    if (!user) return;
 
-    (function (w: any, d: any, s: string, l: string, i: string) {
-      w[l] = w[l] || [];
-      w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-      const f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s),
-        dl = l != "dataLayer" ? "&l=" + l : "";
-      j.async = true;
-      j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-      f.parentNode.insertBefore(j, f);
-    })(window, document, "script", "dataLayer", GTM_ID);
-  }, []);
+    browserIdentifyEvent({
+      userId: user.id,
+      email: user.email,
+      fullName: user.display_name ?? undefined,
+      firstName: user.first_name ?? undefined,
+      lastName: user.last_name ?? undefined,
+    });
+    hasIdentifiedRef.current = true;
+  }, [user]);
 
   return <Outlet />;
 }

@@ -8,12 +8,11 @@ import { components, hooks, utils } from "~/lib/router/generouted-components";
 // all paths get defined here...
 export const routePaths = [
   "/",
-  "/:lang",
   "/api/cron/weekly-shiplog",
   "/api/cron/weekly-shiplog/ts",
+  "/contact",
   "/login",
   "/oauth2/google/callback",
-  "/other",
   "/ships",
   "/ships/:slug",
 ] as const;
@@ -21,7 +20,6 @@ export type Path = (typeof routePaths)[number];
 
 // all params for any given path get defined here...
 export type Params = {
-  "/:lang": { lang: string };
   "/ships/:slug": { slug: string };
 };
 

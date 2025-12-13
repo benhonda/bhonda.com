@@ -87,6 +87,49 @@ export type TrackEvents = {
     sound?: number;
     total_length?: number;
   };
+
+  /**
+   * TRACK - Shiplog Opened
+   *
+   * @description Track when a user opens a shiplog detail page
+   */
+  "Shiplog Opened": {
+    slug: string;
+    week: number;
+  };
+
+  /**
+   * TRACK - Shiplog Read
+   *
+   * @description Track when a user scrolls to reactions section (read completion proxy)
+   */
+  "Shiplog Read": {
+    slug: string;
+    week: number;
+    time_to_read_seconds: number;
+  };
+
+  /**
+   * TRACK - Shiplog Reaction Added
+   *
+   * @description Track when a user adds a reaction to a shiplog
+   */
+  "Shiplog Reaction Added": {
+    slug: string;
+    week: number;
+    reaction_type: string;
+  };
+
+  /**
+   * TRACK - Shiplog Reaction Removed
+   *
+   * @description Track when a user removes a reaction from a shiplog
+   */
+  "Shiplog Reaction Removed": {
+    slug: string;
+    week: number;
+    reaction_type: string;
+  };
 };
 
 /**

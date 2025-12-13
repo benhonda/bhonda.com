@@ -7,15 +7,18 @@ import { toggleShiplogReactionActionDefinition } from "~/lib/actions/toggle-ship
 import { REACTION_TYPES, REACTION_EMOJI_MAP, type ReactionType } from "~/lib/shiplog/reactions";
 import { cn } from "~/lib/utils";
 import { analyticsBrowser } from "~/lib/analytics/analytics.defaults.client";
+import { browserTrackEvent } from "~/lib/analytics/events.defaults.client";
 
 interface ShiplogReactionsProps {
   shiplogSlug: string;
+  shiplogWeek: number;
   initialCounts: Record<string, number>;
   initialUserReactions: string[];
 }
 
 export function ShiplogReactions({
   shiplogSlug,
+  shiplogWeek,
   initialCounts,
   initialUserReactions,
 }: ShiplogReactionsProps) {
@@ -70,6 +73,21 @@ export function ShiplogReactions({
     setUserReactions(newUserReactions);
     setCounts(newCounts);
     setPopoverOpen(false);
+
+    // Track reaction event
+    if (wasActive) {
+      browserTrackEvent("Shiplog Reaction Removed", {
+        slug: shiplogSlug,
+        week: shiplogWeek,
+        reaction_type: reactionType,
+      });
+    } else {
+      browserTrackEvent("Shiplog Reaction Added", {
+        slug: shiplogSlug,
+        week: shiplogWeek,
+        reaction_type: reactionType,
+      });
+    }
 
     // Submit to server
     await submit({
