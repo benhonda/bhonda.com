@@ -52,14 +52,9 @@ locals {
         comment    = "App fully qualified domain name - Managed by Terraform"
         tf_managed = true
       }
-      PUBLIC_CDN_URL_PRODUCTION = {
-        value      = var.env == "production" && var.enable_bunnynet_cdn ? "https://${bunnynet_pullzone.cdn[0].name}.b-cdn.net" : "https://bhonda-production.b-cdn.net"
-        comment    = "Production CDN URL - Managed by Terraform"
-        tf_managed = true
-      }
-      PUBLIC_CDN_URL_STAGING = {
-        value      = var.env == "staging" && var.enable_bunnynet_cdn ? "https://${bunnynet_pullzone.cdn[0].name}.b-cdn.net" : ""
-        comment    = "Staging CDN URL - Managed by Terraform"
+      PUBLIC_CDN_URL = {
+        value      = var.enable_bunnynet_cdn ? "https://${bunnynet_pullzone.cdn[0].name}.b-cdn.net" : ""
+        comment    = "CDN URL - Managed by Terraform"
         tf_managed = true
       }
     } : {}

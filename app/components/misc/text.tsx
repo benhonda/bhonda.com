@@ -12,7 +12,7 @@ export const text = cva("", {
       "display-xs": "font-display text-1.5xl sm:text-2.5xl font-normal tracking-tight",
 
       // Heading styles (body font)
-      "heading-md": "font-display text-1.5xl sm:text-2xl font-normal tracking-tight",
+      "heading-md": "font-display text-xl sm:text-1.5xl font-normal tracking-tight",
       "heading-sm": "font-display text-md-lg sm:text-lg font-normal tracking-tight",
       "heading-xs": "font-display text-base sm:text-md-lg font-normal tracking-tight",
 

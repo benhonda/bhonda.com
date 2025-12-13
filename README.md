@@ -8,14 +8,14 @@ Ben Honda's personal website.
 
 **Dec 11 2025**:
 
-- [ ] Figure out staging/prod split. I almost want to be able to do what I do with neon - which is reset staging from prod every once in a while. So this would be a script that resets staging s3 from prod... but not sure yet how this would work.
+- [x] Figure out staging/prod split. I almost want to be able to do what I do with neon - which is reset staging from prod every once in a while. So this would be a script that resets staging s3 from prod... but not sure yet how this would work.
 - [ ] Verify that the status thing works with versioning? I assume status is a step above versioning... in that if something is "published", whatever is the live version is published, even if you switch versions.
 
 **Dec 10 2025**:
 
 What do I need to do to get this live TODAY?
 
-- [ ] Backfill 5-10 weeks.
+- [x] Backfill 5-10 weeks.
 - [ ] Verify the content of the backfilled weeks.
 - [ ] Mobile-friendly
 - [x] Meta data

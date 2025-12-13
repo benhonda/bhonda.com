@@ -80,10 +80,14 @@ tasks:
       - bun install {{.CLI_ARGS}}
 
   upload-shiplog:
-    desc: Upload weekly shiplog for a specific week number (use WEEK=49)
+    desc: Upload weekly shiplog for a specific week number (use WEEK=49 ENV=staging|production)
     requires:
       vars:
         - WEEK
+    vars:
+      ENV: '{{default "staging" .ENV}}'
+    prompt: '{{if eq .ENV "production"}}⚠️  You are uploading to PRODUCTION. Verify DATABASE_URL is set to the production database. Continue?{{end}}'
+    interactive: true
     cmds:
       - |
         # Check if dev server is running on port 3000
@@ -94,9 +98,9 @@ tasks:
         fi
 
         echo "✅ Dev server is running on port 3000"
-        echo "🚀 Triggering shiplog for week {{.WEEK}}..."
+        echo "🚀 Triggering shiplog for week {{.WEEK}} (environment: {{.ENV}})..."
         echo ""
-        curl -k "https://localhost:3000/api/cron/weekly-shiplog?week={{.WEEK}}"
+        curl -k "https://localhost:3000/api/cron/weekly-shiplog?week={{.WEEK}}&env={{.ENV}}"
         echo ""
 
   # --------------------------------------------------------------------------------------------------------------------
@@ -264,6 +268,46 @@ tasks:
     interactive: true
     cmds:
       - bunx vercel link
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Environment reset commands
+  # --------------------------------------------------------------------------------------------------------------------
+  reset-staging:
+    desc: Reset staging environment (Neon DB + S3) to production state
+    interactive: true
+    prompt: "⚠️  This will COMPLETELY OVERWRITE staging with production data. All staging changes will be LOST. Continue?"
+    deps:
+      - check-aws-identity
+    requires:
+      vars:
+        - NEON_API_KEY
+        - S3_BUCKET_NAME
+    vars:
+      NEON_PROJECT_ID: "shy-surf-98176918"
+      NEON_PRODUCTION_BRANCH_ID: "br-purple-water-ae0ylkm3"
+      NEON_STAGING_BRANCH_ID: "br-little-breeze-aec2kf8t"
+    cmds:
+      - |
+        echo "🔄 Resetting Neon staging branch to production..."
+        curl -X POST \
+          "https://console.neon.tech/api/v2/projects/{{.NEON_PROJECT_ID}}/branches/{{.NEON_STAGING_BRANCH_ID}}/restore" \
+          -H "Authorization: Bearer ${NEON_API_KEY}" \
+          -H "Content-Type: application/json" \
+          -d '{"source_branch_id": "{{.NEON_PRODUCTION_BRANCH_ID}}"}'
+        echo ""
+        echo "✅ Neon reset initiated"
+        echo ""
+      - |
+        echo "🔄 Syncing S3 from production/ to staging/..."
+        aws s3 sync \
+          s3://${S3_BUCKET_NAME}/production/ \
+          s3://${S3_BUCKET_NAME}/staging/ \
+          --profile {{.AWS_PROFILE}} \
+          --delete
+        echo ""
+        echo "✅ S3 sync complete"
+        echo ""
+        echo "🎉 Staging environment reset complete!"
 
   ########################################################################################################################
   #

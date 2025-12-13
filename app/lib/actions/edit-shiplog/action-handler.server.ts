@@ -6,6 +6,7 @@ import { serverEnv } from "~/lib/env/env.defaults.server";
 import { shiplogEnv } from "~/lib/env/shiplog-env.server";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "~/lib/aws/s3/s3-client.server";
+import { buildS3Key, buildShiplogKeys } from "~/lib/aws/s3/s3-key-builder.server";
 import { getShiplogBySlug } from "~/lib/shiplog/db-service.server";
 import type { ShiplogStatus } from "~/lib/shiplog/db-service.server";
 
@@ -13,14 +14,8 @@ import type { ShiplogStatus } from "~/lib/shiplog/db-service.server";
  * Fetch raw markdown from CDN
  */
 async function fetchRawMarkdown(slug: string): Promise<string> {
-  const env = serverEnv.PUBLIC_APP_ENV;
+  const cdnUrl = serverEnv.PUBLIC_CDN_URL;
   const filename = `${slug}.md`;
-
-  const cdnUrl =
-    env === "production"
-      ? serverEnv.PUBLIC_CDN_URL_PRODUCTION
-      : serverEnv.PUBLIC_CDN_URL_STAGING;
-
   const url = `${cdnUrl}/ships/${filename}`;
   const response = await fetch(url);
 
@@ -114,10 +109,9 @@ export default createActionHandler(
 
     const updatedMarkdown = await editShiplogWithClaude(currentMarkdown, editPrompt);
 
-    const prefix = shiplogEnv.S3_BUCKET_KEY_PREFIX_NO_SLASHES;
     const bucket = shiplogEnv.S3_BUCKET_NAME;
-    const filename = `${slug}.md`;
-    const publicKey = `${prefix}/public/ships/${filename}`;
+    const { publicRelative } = buildShiplogKeys(slug);
+    const publicKey = buildS3Key(publicRelative);
 
     await s3Client.send(
       new PutObjectCommand({

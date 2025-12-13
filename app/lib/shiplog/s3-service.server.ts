@@ -1,6 +1,7 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "~/lib/aws/s3/s3-client.server";
 import { shiplogEnv } from "~/lib/env/shiplog-env.server";
+import { buildS3Key, buildShiplogKeys } from "~/lib/aws/s3/s3-key-builder.server";
 import type { RepoCommits } from "./github-service.server";
 import type { ShiplogContent, SynthesisMetadata } from "./claude-service.server";
 
@@ -55,9 +56,7 @@ function generateInternalShiplog(
   synthesisMetadata: SynthesisMetadata,
   repoCommits: RepoCommits[]
 ): string {
-  const repoList = metadata.repositories
-    .map((r) => `- ${r.name} (${r.commitCount} commits)`)
-    .join("\n");
+  const repoList = metadata.repositories.map((r) => `- ${r.name} (${r.commitCount} commits)`).join("\n");
 
   const rawData = JSON.stringify(repoCommits, null, 2);
 
@@ -96,24 +95,26 @@ ${publicContent}
 /**
  * Uploads shiplog files to S3
  */
-export async function uploadShiplogToS3(
-  shiplogContent: ShiplogContent,
-  synthesisMetadata: SynthesisMetadata,
-  repoCommits: RepoCommits[],
-  executionDate: Date,
-  isoWeek: number,
-  isoYear: number
-): Promise<{ publicKey: string; internalKey: string }> {
+export async function uploadShiplogToS3(args: {
+  shiplogContent: ShiplogContent;
+  synthesisMetadata: SynthesisMetadata;
+  repoCommits: RepoCommits[];
+  executionDate: Date;
+  isoWeek: number;
+  isoYear: number;
+  envOverride?: "staging" | "production";
+}): Promise<{ publicKeyRelative: string; internalKeyRelative: string }> {
+  const { shiplogContent, synthesisMetadata, repoCommits, executionDate, isoWeek, isoYear, envOverride } = args;
   const dateStr = executionDate.toISOString().split("T")[0]; // YYYY-MM-DD (for frontmatter)
-  const prefix = shiplogEnv.S3_BUCKET_KEY_PREFIX_NO_SLASHES;
   const bucket = shiplogEnv.S3_BUCKET_NAME;
+  const slug = `${isoYear}-W${isoWeek.toString().padStart(2, "0")}`;
 
-  // Generate filename with ISO week: YYYY-WNN.md
-  const filename = `${isoYear}-W${isoWeek.toString().padStart(2, "0")}.md`;
+  // Build relative keys
+  const { publicRelative, internalRelative } = buildShiplogKeys(slug);
 
-  // Generate keys
-  const publicKey = `${prefix}/public/ships/${filename}`;
-  const internalKey = `${prefix}/internal/ships/${filename}`;
+  // Build full S3 keys for upload
+  const publicKey = buildS3Key(publicRelative, envOverride);
+  const internalKey = buildS3Key(internalRelative, envOverride);
 
   // Calculate metadata
   const metadata: ShiplogMetadata = {
@@ -159,7 +160,7 @@ export async function uploadShiplogToS3(
 
     console.log(`[S3] Successfully uploaded public + internal shiplogs`);
 
-    return { publicKey, internalKey };
+    return { publicKeyRelative: publicRelative, internalKeyRelative: internalRelative };
   } catch (error) {
     console.error("[S3] Error uploading shiplogs:", error);
     throw new Error(`Failed to upload shiplogs to S3: ${error}`);

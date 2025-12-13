@@ -12,8 +12,8 @@ export interface ShiplogRecord {
   publishedAt: string; // YYYY-MM-DD
   week: number;
   year: number;
-  s3PublicKey: string;
-  s3InternalKey: string;
+  s3PublicKeyRelative: string;
+  s3InternalKeyRelative: string;
   statsRepos: number;
   statsCommits: number;
   status: ShiplogStatus;
@@ -40,8 +40,8 @@ export async function insertShiplogRecord(data: Omit<ShiplogRecord, 'status'>): 
         published_at: data.publishedAt,
         week: data.week,
         year: data.year,
-        s3_public_key: data.s3PublicKey,
-        s3_internal_key: data.s3InternalKey,
+        s3_public_key_relative: data.s3PublicKeyRelative,
+        s3_internal_key_relative: data.s3InternalKeyRelative,
         stats_repos: data.statsRepos,
         stats_commits: data.statsCommits,
       })
@@ -58,8 +58,8 @@ export async function insertShiplogRecord(data: Omit<ShiplogRecord, 'status'>): 
       published_at: data.publishedAt,
       week: data.week,
       year: data.year,
-      s3_public_key: data.s3PublicKey,
-      s3_internal_key: data.s3InternalKey,
+      s3_public_key_relative: data.s3PublicKeyRelative,
+      s3_internal_key_relative: data.s3InternalKeyRelative,
       stats_repos: data.statsRepos,
       stats_commits: data.statsCommits,
       status: "draft",

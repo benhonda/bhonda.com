@@ -1,7 +1,7 @@
 import { ListObjectVersionsCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "~/lib/aws/s3/s3-client.server";
 import { shiplogEnv } from "~/lib/env/shiplog-env.server";
-import { serverEnv } from "~/lib/env/env.defaults.server";
+import { buildS3Key, buildShiplogKeys } from "~/lib/aws/s3/s3-key-builder.server";
 
 export interface ShiplogVersion {
   versionId: string;
@@ -13,11 +13,9 @@ export interface ShiplogVersion {
  * List all versions of a shiplog file in S3
  */
 export async function listShiplogVersions(slug: string): Promise<ShiplogVersion[]> {
-  const env = serverEnv.PUBLIC_APP_ENV;
-  const prefix = shiplogEnv.S3_BUCKET_KEY_PREFIX_NO_SLASHES;
   const bucket = shiplogEnv.S3_BUCKET_NAME;
-  const filename = `${slug}.md`;
-  const key = `${prefix}/public/ships/${filename}`;
+  const { publicRelative } = buildShiplogKeys(slug);
+  const key = buildS3Key(publicRelative);
 
   console.log(`[S3 Versions] Listing versions for ${key}`);
 
@@ -55,10 +53,9 @@ export async function listShiplogVersions(slug: string): Promise<ShiplogVersion[
  * Fetch a specific version of a shiplog from S3
  */
 export async function fetchShiplogVersion(slug: string, versionId: string): Promise<string> {
-  const prefix = shiplogEnv.S3_BUCKET_KEY_PREFIX_NO_SLASHES;
   const bucket = shiplogEnv.S3_BUCKET_NAME;
-  const filename = `${slug}.md`;
-  const key = `${prefix}/public/ships/${filename}`;
+  const { publicRelative } = buildShiplogKeys(slug);
+  const key = buildS3Key(publicRelative);
 
   console.log(`[S3 Versions] Fetching version ${versionId} for ${key}`);
 

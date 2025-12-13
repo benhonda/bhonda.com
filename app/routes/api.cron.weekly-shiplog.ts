@@ -35,9 +35,23 @@ export async function loader({ request }: LoaderFunctionArgs) {
       console.log("[Shiplog Cron] Running in development mode, skipping auth");
     }
 
-    // 2. Calculate date range
+    // 2. Calculate date range and env override
     const url = new URL(request.url);
     const weekParam = url.searchParams.get("week");
+    const envParam = url.searchParams.get("env");
+
+    // Validate env override (development only)
+    let envOverride: "staging" | "production" | undefined;
+    if (isDevelopment && envParam) {
+      if (envParam !== "staging" && envParam !== "production") {
+        return new Response(
+          JSON.stringify({ success: false, error: "env param must be 'staging' or 'production'" }),
+          { status: 400, headers: { "Content-Type": "application/json" } }
+        );
+      }
+      envOverride = envParam;
+      console.log(`[Shiplog Cron] Environment override: ${envOverride}`);
+    }
 
     let startDate: Date;
     let endDate: Date;
@@ -96,10 +110,22 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
 
     // 4. Synthesize shiplog with Claude
-    const { content: shiplogContent, metadata: synthesisMetadata } = await synthesizeShiplog(repoCommits, startDate, endDate);
+    const { content: shiplogContent, metadata: synthesisMetadata } = await synthesizeShiplog({
+      repoCommits,
+      startDate,
+      endDate,
+    });
 
     // 5. Upload to S3
-    const { publicKey, internalKey } = await uploadShiplogToS3(shiplogContent, synthesisMetadata, repoCommits, endDate, isoWeek, isoYear);
+    const { publicKeyRelative, internalKeyRelative } = await uploadShiplogToS3({
+      shiplogContent,
+      synthesisMetadata,
+      repoCommits,
+      executionDate: endDate,
+      isoWeek,
+      isoYear,
+      envOverride,
+    });
 
     // 6. Insert database record
     const totalCommits = repoCommits.reduce((sum, r) => sum + r.commits.length, 0);
@@ -111,8 +137,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
       publishedAt: endDate.toISOString().split("T")[0],
       week: isoWeek,
       year: isoYear,
-      s3PublicKey: publicKey,
-      s3InternalKey: internalKey,
+      s3PublicKeyRelative: publicKeyRelative,
+      s3InternalKeyRelative: internalKeyRelative,
       statsRepos: repoCommits.length,
       statsCommits: totalCommits,
     });
@@ -133,8 +159,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
           duration: `${duration}ms`,
         },
         s3Keys: {
-          public: publicKey,
-          internal: internalKey,
+          public: publicKeyRelative,
+          internal: internalKeyRelative,
         },
       }),
       {

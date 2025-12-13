@@ -1,5 +1,16 @@
 # Changelog
 
+## 2025-12-13
+
+- refactor: Simplified CDN configuration by replacing environment-specific URLs (PUBLIC_CDN_URL_PRODUCTION/STAGING) with single PUBLIC_CDN_URL per deployment
+- refactor: Database schema now stores relative S3 keys (public/ships/2025-W50.md) instead of full keys for environment portability
+- feat: S3 key builder utility centralizes key construction logic with support for environment overrides in staging reset workflows
+- feat: Staging reset command (task reset-staging) syncs both Neon database and S3 content from production for consistent test environments
+- feat: Upload task now supports environment override (task upload-shiplog WEEK=50 ENV=production) for manual backfill operations
+- refactor: Shiplog service functions refactored to use object params instead of positional args for better maintainability
+- feat: Shiplog list item extracted to reusable component with status badge and admin controls
+- refactor: Markdown strong tags now render with font-semibold styling, heading-md size reduced to xl/1.5xl for better visual hierarchy
+
 ## 2025-12-10
 
 - feat: Shiplog status workflow with draft/published/archived states allowing admins to control visibility before public release

@@ -26,8 +26,16 @@ const shiplogEnvSchema = z.object({
   CRON_SECRET: z.string(),
 });
 
-const shiplogEnv = shiplogEnvSchema.parse({
-  ...process.env,
-});
+/**
+ * Get shiplog environment variables (reads fresh from process.env each time)
+ */
+function getShiplogEnv() {
+  return shiplogEnvSchema.parse({
+    ...process.env,
+  });
+}
 
-export { shiplogEnv };
+// Export singleton for backwards compatibility, but also export getter
+const shiplogEnv = getShiplogEnv();
+
+export { shiplogEnv, getShiplogEnv };

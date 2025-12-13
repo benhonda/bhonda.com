@@ -12,7 +12,6 @@
 
 import { authEnv } from "./auth-env.server";
 import { dbEnv } from "./db-env.server";
-import { shiplogEnv } from "./shiplog-env.server";
 
 /**
  * Extract public environment variables from all sources
@@ -23,7 +22,6 @@ export const getAllPublicEnv = () => {
   const allEnvs = {
     ...authEnv,
     ...dbEnv,
-    ...shiplogEnv,
   };
   
   // Filter only PUBLIC_ prefixed variables
@@ -38,5 +36,4 @@ export const getAllPublicEnv = () => {
 export {
   authEnv,
   dbEnv,
-  shiplogEnv,
 };

@@ -94,15 +94,15 @@ function parseFrontmatter(raw: string, status: ShiplogStatus): Shiplog {
 
 /**
  * Fetch a shiplog from CDN using S3 public key (returns null on 404/403)
- * S3 key format: ${prefix}/public/ships/YYYY-WNN.md
+ * S3 key format: public/ships/YYYY-WNN.md (relative)
  * CDN URL format: ${cdnUrl}/ships/YYYY-WNN.md
  */
-async function fetchShiplogContentFromCDN(cdnUrl: string, s3PublicKey: string): Promise<string | null> {
-  // Extract path after "public/" from S3 key
-  const pathAfterPublic = s3PublicKey.split("/public/")[1];
+async function fetchShiplogContentFromCDN(cdnUrl: string, s3KeyRelative: string): Promise<string | null> {
+  // Extract path after "public/" from relative key
+  const pathAfterPublic = s3KeyRelative.split("public/")[1];
 
   if (!pathAfterPublic) {
-    console.error(`[Shiplog Fetcher] Invalid S3 key format: ${s3PublicKey}`);
+    console.error(`[Shiplog Fetcher] Invalid S3 key format: ${s3KeyRelative}`);
     return null;
   }
 
@@ -131,15 +131,10 @@ async function fetchShiplogContentFromCDN(cdnUrl: string, s3PublicKey: string): 
  * Fetch shiplogs from database and CDN
  */
 export async function fetchShiplogs(isAdmin: boolean = false): Promise<Shiplog[]> {
-  const env = serverEnv.PUBLIC_APP_ENV;
-  const prodCDN = serverEnv.PUBLIC_CDN_URL_PRODUCTION;
-  const stagingCDN = serverEnv.PUBLIC_CDN_URL_STAGING;
+  const cdnUrl = serverEnv.PUBLIC_CDN_URL;
 
   console.log('[Shiplog Fetcher] Starting fetch from database...');
-  console.log('[Shiplog Fetcher] Env:', env);
-
-  // Determine CDN URL based on environment
-  const cdnUrl = env === "production" ? prodCDN : stagingCDN;
+  console.log('[Shiplog Fetcher] CDN URL:', cdnUrl);
 
   // Query database for latest shiplogs
   const records = await getLatestShiplogs(6, isAdmin);
@@ -148,7 +143,7 @@ export async function fetchShiplogs(isAdmin: boolean = false): Promise<Shiplog[]
   // Fetch content from CDN for each record
   const shiplogs = await Promise.all(
     records.map(async (record) => {
-      const raw = await fetchShiplogContentFromCDN(cdnUrl, record.s3_public_key);
+      const raw = await fetchShiplogContentFromCDN(cdnUrl, record.s3_public_key_relative);
 
       if (!raw) {
         console.warn(`[Shiplog Fetcher] Failed to fetch content for ${record.slug}`);
@@ -170,14 +165,9 @@ export async function fetchShiplogs(isAdmin: boolean = false): Promise<Shiplog[]
  * Fetch a single shiplog by slug (slug format: YYYY-WNN)
  */
 export async function fetchShiplogBySlug(slug: string, isAdmin: boolean = false): Promise<Shiplog | null> {
-  const env = serverEnv.PUBLIC_APP_ENV;
-  const prodCDN = serverEnv.PUBLIC_CDN_URL_PRODUCTION;
-  const stagingCDN = serverEnv.PUBLIC_CDN_URL_STAGING;
+  const cdnUrl = serverEnv.PUBLIC_CDN_URL;
 
   console.log(`[Shiplog Fetcher] Fetching shiplog by slug: ${slug}`);
-
-  // Determine CDN URL based on environment
-  const cdnUrl = env === "production" ? prodCDN : stagingCDN;
 
   // Query database for shiplog record
   const record = await getShiplogBySlugFromDB(slug, isAdmin);
@@ -188,7 +178,7 @@ export async function fetchShiplogBySlug(slug: string, isAdmin: boolean = false)
   }
 
   // Fetch content from CDN
-  const raw = await fetchShiplogContentFromCDN(cdnUrl, record.s3_public_key);
+  const raw = await fetchShiplogContentFromCDN(cdnUrl, record.s3_public_key_relative);
 
   if (!raw) {
     console.warn(`[Shiplog Fetcher] Failed to fetch content for ${slug}`);

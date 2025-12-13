@@ -25,11 +25,12 @@ const MODEL_ID = "claude-sonnet-4-5-20250929";
 /**
  * Synthesizes commits into a cohesive weekly shiplog using Claude Code print mode
  */
-export async function synthesizeShiplog(
-  repoCommits: RepoCommits[],
-  startDate: Date,
-  endDate: Date
-): Promise<{ content: ShiplogContent; metadata: SynthesisMetadata }> {
+export async function synthesizeShiplog(args: {
+  repoCommits: RepoCommits[];
+  startDate: Date;
+  endDate: Date;
+}): Promise<{ content: ShiplogContent; metadata: SynthesisMetadata }> {
+  const { repoCommits, startDate, endDate } = args;
   console.log(`[Claude] Synthesizing shiplog for ${repoCommits.length} repositories`);
 
   // Format commits for Claude

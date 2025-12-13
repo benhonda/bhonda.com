@@ -176,7 +176,7 @@ Automated system that generates weekly "shiplogs" (development summaries) from g
 - `app/lib/shiplog/claude-service.server.ts` - Claude synthesis
 - `app/lib/shiplog/s3-service.server.ts` - S3 upload
 - `app/lib/shiplog/date-utils.server.ts` - ISO week calculations
-- `app/lib/shiplog/fetcher.server.ts` - CDN fetching with env-aware fallback
+- `app/lib/shiplog/fetcher.server.ts` - CDN fetching
 - `vercel.json` - Cron schedule config
 
 **Environment variables:**
@@ -186,8 +186,7 @@ Automated system that generates weekly "shiplogs" (development summaries) from g
 - `S3_BUCKET_NAME` - S3 bucket for shiplogs
 - `S3_BUCKET_KEY_PREFIX_NO_SLASHES` - S3 key prefix (environment name: production/staging)
 - `CRON_SECRET` - Auth secret for cron endpoint
-- `PUBLIC_CDN_URL_PRODUCTION` - Production BunnyNet CDN URL
-- `PUBLIC_CDN_URL_STAGING` - Staging BunnyNet CDN URL
+- `PUBLIC_CDN_URL` - BunnyNet CDN URL (environment-specific)
 
 **Output:**
 
@@ -199,4 +198,3 @@ Automated system that generates weekly "shiplogs" (development summaries) from g
 
 - List view: Client-side fetch via action (`fetch-shiplogs`) with 5min cache
 - Detail view: SSR for SEO via `/ships/2025-W50` route
-- Dev environment: Reads from both production + staging CDN (staging wins)
