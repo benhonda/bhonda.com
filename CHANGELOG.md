@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-01-05
+
+- feat: Dynamic robots.txt route blocks bots in non-production environments while allowing all bots in production with sitemap reference
+- feat: Dynamic sitemap.xml route generates XML sitemap with static routes and all published shiplog entries including lastmod dates
+
 ## 2025-12-13
 
 - feat: Contact page with LinkedIn and GitHub profile links replacing placeholder "other" page
