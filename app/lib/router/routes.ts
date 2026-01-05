@@ -13,8 +13,12 @@ export const routePaths = [
   "/contact",
   "/login",
   "/oauth2/google/callback",
+  "/robots[/]txt",
+  "/robots[/]txt/ts",
   "/ships",
   "/ships/:slug",
+  "/sitemap[/]xml",
+  "/sitemap[/]xml/ts",
 ] as const;
 export type Path = (typeof routePaths)[number];
 
