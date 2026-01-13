@@ -114,12 +114,6 @@ export default function ShiplogPage() {
   const pageStartTimeRef = useRef<number>(0);
 
   useEffect(() => {
-    if (userIsAdmin) {
-      submitVersions({ slug: shiplog.slug });
-    }
-  }, [userIsAdmin, shiplog.slug]);
-
-  useEffect(() => {
     if (hasTrackedOpenRef.current) return;
 
     pageStartTimeRef.current = getOrCreateStartTime();
@@ -156,10 +150,10 @@ export default function ShiplogPage() {
     return () => observer.disconnect();
   }, [shiplog.slug, shiplog.week]);
 
-  const handleEdit = async () => {
+  const handleEdit = () => {
     if (!editPrompt.trim()) return;
 
-    await submitEdit({
+    submitEdit({
       slug: shiplog.slug,
       editPrompt,
     });
@@ -175,8 +169,8 @@ export default function ShiplogPage() {
     submitVersions({ slug: shiplog.slug });
   };
 
-  const handleStatusChange = async (newStatus: ShiplogStatus) => {
-    await submitStatusUpdate({
+  const handleStatusChange = (newStatus: ShiplogStatus) => {
+    submitStatusUpdate({
       slug: shiplog.slug,
       status: newStatus,
     });
@@ -212,34 +206,43 @@ export default function ShiplogPage() {
                 <EditIcon className="w-4 h-4" />
                 <span>Edit</span>
               </Button>
-              {versions.length > 1 && (
-                <Select
-                  value={dropdownValue}
-                  onValueChange={(versionId) => {
-                    setDropdownValue(versionId);
-                    const version = versions.find((v) => v.versionId === versionId);
-                    if (version) {
-                      setSelectedVersion({
-                        versionId: version.versionId,
-                        timestamp: version.lastModified,
-                      });
-                    }
-                  }}
-                >
-                  <SelectTrigger size="sm">
-                    <HistoryIcon className="w-4 h-4" />
-                    <SelectValue placeholder="Versions" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {versions.map((version, index) => (
+              <Select
+                value={dropdownValue}
+                onValueChange={(versionId) => {
+                  setDropdownValue(versionId);
+                  const version = versions.find((v) => v.versionId === versionId);
+                  if (version) {
+                    setSelectedVersion({
+                      versionId: version.versionId,
+                      timestamp: version.lastModified,
+                    });
+                  }
+                }}
+                onOpenChange={(open) => {
+                  if (open && versions.length === 0) {
+                    submitVersions({ slug: shiplog.slug });
+                  }
+                }}
+              >
+                <SelectTrigger size="sm">
+                  <HistoryIcon className="w-4 h-4" />
+                  <SelectValue placeholder="Versions" />
+                </SelectTrigger>
+                <SelectContent>
+                  {versions.length === 0 ? (
+                    <SelectItem value="loading" disabled>
+                      Loading...
+                    </SelectItem>
+                  ) : (
+                    versions.map((version, index) => (
                       <SelectItem key={version.versionId} value={version.versionId}>
                         v{versions.length - index} - {new Date(version.lastModified).toLocaleString()}
                         {version.isLatest && " (current)"}
                       </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
             </div>
           )}
           <Text as="h1" variant="display-xs">

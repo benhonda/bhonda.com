@@ -48,9 +48,11 @@ resource "aws_iam_role_policy" "vercel" {
         Effect = "Allow"
         Action = [
           "s3:GetObject",
+          "s3:GetObjectVersion",
           "s3:PutObject",
           "s3:DeleteObject",
-          "s3:ListBucket"
+          "s3:ListBucket",
+          "s3:ListObjectVersions"
         ]
         Resource = [
           "arn:aws:s3:::${var.shared_assets_bucket}",

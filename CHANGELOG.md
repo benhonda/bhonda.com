@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-01-13
+
+- refactor: Shiplog version history now loads on-demand when dropdown opens instead of eagerly fetching on page load for better performance
+- feat: IAM role policy updated to support S3 versioning operations (GetObjectVersion, ListObjectVersions) enabling full version history functionality
+
 ## 2026-01-05
 
 - feat: Dynamic robots.txt route blocks bots in non-production environments while allowing all bots in production with sitemap reference
