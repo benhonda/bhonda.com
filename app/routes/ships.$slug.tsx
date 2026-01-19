@@ -180,10 +180,10 @@ export default function ShiplogPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Back link */}
-      <Link to="/">
+      <Link to="/ships">
         <Button variant="secondary-link" size="sm">
           <ArrowLeftIcon className="w-4 h-4" />
-          <span>Back to home</span>
+          <span>Back to ships</span>
         </Button>
       </Link>
 

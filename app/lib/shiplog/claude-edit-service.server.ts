@@ -29,6 +29,7 @@ ${editPrompt}
 - Maintain markdown formatting following this spec:
     - The frontmatter's title and intro will be used as the h1/"#" heading at the start of the markdown and introduction paragraph - so you should not include an h1/"#" heading at the start of the markdown or introduction paragraph - this will be handled by the frontmatter.
 - Return ONLY the markdown content, no explanations, no additional text, no markdown code blocks, no nothing.
+- Do NOT include any client-specific information including names, brands, or other proprietary information. Only information about the projects in the commit list can be mentioned.
 </instructions>
 
 Return the complete updated markdown file:`;

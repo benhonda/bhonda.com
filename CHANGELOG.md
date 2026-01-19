@@ -7,6 +7,8 @@
 - refactor: Database queries for non-admin users now filter by published status earlier in the query chain for better performance
 - feat: Homepage now includes "View all shiplogs" button and "Shiplogs" subsection heading for clearer navigation
 - refactor: Shiplog pagination refactored to use ref-based page tracking and layout effects to prevent content flickering on load
+- feat: IAM role policy now includes S3 ListBucketVersions permission for complete version history access
+- refactor: Shiplog detail page back link now navigates to /ships instead of home for better navigation hierarchy
 
 - feat: Manual shiplog upload task now supports explicit year parameter for generating shiplogs from previous years (YEAR=2025)
 - feat: Shiplog list now supports pagination with "Load More" button for browsing full shiplog history beyond initial 12 entries
