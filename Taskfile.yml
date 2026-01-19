@@ -85,7 +85,7 @@ tasks:
       vars:
         - WEEK
     vars:
-      ENV: '{{default "staging" .ENV}}'
+      ENV: '{{default "production" .ENV}}'
     prompt: '{{if eq .ENV "production"}}⚠️  You are uploading to PRODUCTION. Verify DATABASE_URL is set to the production database. NOTE: This needs to be done BEFORE you run the dev server. Continue?{{end}}'
     interactive: true
     cmds:
@@ -102,6 +102,28 @@ tasks:
         echo ""
         curl -k "https://localhost:3000/api/cron/weekly-shiplog?week={{.WEEK}}&env={{.ENV}}"
         echo ""
+
+  show-weeks:
+    desc: Show week numbers with their date ranges
+    cmds:
+      - |
+        current_week=$(date +%-V)
+        current_year=$(date +%G)
+
+        echo "ISO Week Numbers for ${current_year}:"
+        echo ""
+
+        for week in {1..52}; do
+          # Calculate the Monday of this ISO week
+          monday=$(date -d "${current_year}-01-04 +$(((week - 1) * 7)) days -$(date -d ${current_year}-01-04 +%u) days +1 day" +%a\ %b\ %-d 2>/dev/null || echo "N/A")
+          sunday=$(date -d "${current_year}-01-04 +$(((week - 1) * 7)) days -$(date -d ${current_year}-01-04 +%u) days +7 days" +%a\ %b\ %-d 2>/dev/null || echo "N/A")
+
+          if [ "$week" -eq "$current_week" ]; then
+            echo "Week $week: $monday - $sunday [current week]"
+          else
+            echo "Week $week: $monday - $sunday"
+          fi
+        done
 
   # --------------------------------------------------------------------------------------------------------------------
   # Build commands
