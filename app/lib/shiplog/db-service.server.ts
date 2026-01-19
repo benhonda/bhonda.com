@@ -73,18 +73,22 @@ export async function insertShiplogRecord(data: Omit<ShiplogRecord, 'status'>): 
  * Get latest shiplogs ordered by published_at descending
  */
 export async function getLatestShiplogs(limit: number = 6, isAdmin: boolean = false, offset: number = 0) {
-  const query = db
+  if (!isAdmin) {
+    return db
+      .select()
+      .from(shiplogsTable)
+      .where(eq(shiplogsTable.status, "published"))
+      .orderBy(desc(shiplogsTable.published_at))
+      .limit(limit)
+      .offset(offset);
+  }
+
+  return db
     .select()
     .from(shiplogsTable)
     .orderBy(desc(shiplogsTable.published_at))
     .limit(limit)
     .offset(offset);
-
-  if (!isAdmin) {
-    return query.where(eq(shiplogsTable.status, "published"));
-  }
-
-  return query;
 }
 
 /**

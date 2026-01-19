@@ -71,6 +71,7 @@ Return a JSON object with exactly these three fields:
     - The frontmatter's titleText and introText will be used as the h1/"#" heading at the start of the markdown and introduction paragraph - so you should not include an h1/"#" heading at the start of the markdown or introduction paragraph - this will be handled by the frontmatter.
 - Do NOT include commit hashes, URLs, or technical metadata
 - Do NOT include trivial changes or internal refactoring
+- Do NOT include any client-specific information including names, brands, or other proprietary information. Only information about the projects in the commit list can be mentioned.
 </content_guidelines>
 
 <commits>

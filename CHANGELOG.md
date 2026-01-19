@@ -2,6 +2,12 @@
 
 ## 2026-01-19
 
+- feat: Production deployments now use Vercel OIDC for AWS authentication instead of static credentials for improved security
+- feat: Claude shiplog synthesis now filters out client-specific information (names, brands, proprietary data) to prevent accidental disclosure
+- refactor: Database queries for non-admin users now filter by published status earlier in the query chain for better performance
+- feat: Homepage now includes "View all shiplogs" button and "Shiplogs" subsection heading for clearer navigation
+- refactor: Shiplog pagination refactored to use ref-based page tracking and layout effects to prevent content flickering on load
+
 - feat: Manual shiplog upload task now supports explicit year parameter for generating shiplogs from previous years (YEAR=2025)
 - feat: Shiplog list now supports pagination with "Load More" button for browsing full shiplog history beyond initial 12 entries
 - feat: Contact page now displays profile photo alongside contact information

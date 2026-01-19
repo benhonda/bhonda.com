@@ -32,6 +32,7 @@
         "@react-router/serve": "7.10.1",
         "@segment/analytics-next": "^1.81.1",
         "@segment/analytics-node": "^2.3.0",
+        "@vercel/functions": "^3.3.6",
         "@vercel/react-router": "^1.2.4",
         "chalk": "^5.6.2",
         "class-variance-authority": "^0.7.1",
@@ -755,6 +756,10 @@
     "@types/youtube": ["@types/youtube@0.1.2", "", {}, "sha512-n1/KqusanheyQRWHamNZv8K3kydlRqyEsZEKxMTeNWXQTC15lZprITCUt+WgL1vAIvKHCjPBIWz/gf/KQLsB3g=="],
 
     "@ungap/structured-clone": ["@ungap/structured-clone@1.3.0", "", {}, "sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g=="],
+
+    "@vercel/functions": ["@vercel/functions@3.3.6", "", { "dependencies": { "@vercel/oidc": "3.1.0" }, "peerDependencies": { "@aws-sdk/credential-provider-web-identity": "*" }, "optionalPeers": ["@aws-sdk/credential-provider-web-identity"] }, "sha512-mLKK3H+v1XjzTiksYN7XV4sl/n8tqb0DeavoUzjFKRQMmx5x+vy1jIl24GY4C8D2dinQPV1ZuCSPhJptBeeE/A=="],
+
+    "@vercel/oidc": ["@vercel/oidc@3.1.0", "", {}, "sha512-Fw28YZpRnA3cAHHDlkt7xQHiJ0fcL+NRcIqsocZQUSmbzeIKRpwttJjik5ZGanXP+vlA4SbTg+AbA3bP363l+w=="],
 
     "@vercel/react-router": ["@vercel/react-router@1.2.4", "", { "dependencies": { "@vercel/static-config": "3.1.2", "ts-morph": "12.0.0" }, "peerDependencies": { "@react-router/dev": "7", "@react-router/node": "7", "isbot": "5", "react": ">=18", "react-dom": ">=18" } }, "sha512-ep4yczB3O24yMQ+08IBB/zamNTAW0BzgEv1urnhLnsvN6wrjACk/2M28obmyE0EEgW5YLNaYVbGKcYI3QSMcQw=="],
 

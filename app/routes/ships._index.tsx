@@ -3,7 +3,7 @@ import { action_handler } from "~/lib/actions/_core/action-runner.server";
 import { Text } from "~/components/misc/text";
 import { useAction } from "~/hooks/use-action";
 import { fetchShiplogsActionDefinition } from "~/lib/actions/fetch-shiplogs/action-definition";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState, useRef } from "react";
 import { PageHeader } from "~/components/misc/page-header";
 import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
 import { useLoaderData } from "react-router";
@@ -30,29 +30,31 @@ export const action = action_handler;
 export default function ShipsIndex() {
   const { userIsAdmin } = useLoaderData<typeof loader>();
   const { data, isLoading, submit } = useAction(fetchShiplogsActionDefinition);
-  const [currentPage, setCurrentPage] = useState(1);
+  const currentPageRef = useRef(1);
   const [allShiplogs, setAllShiplogs] = useState<Shiplog[]>([]);
+  const isInitialLoad = useRef(true);
 
   // Load initial shiplogs on mount
   useEffect(() => {
     submit({ page: 1, limit: 12 });
   }, []);
 
-  // Accumulate shiplogs when new data arrives
-  useEffect(() => {
+  // Accumulate shiplogs when new data arrives (use layout effect to prevent flash)
+  useLayoutEffect(() => {
     if (data?.shiplogs) {
-      if (currentPage === 1) {
-        setAllShiplogs(data.shiplogs);
-      } else {
-        setAllShiplogs((prev) => [...prev, ...data.shiplogs]);
-      }
+      setAllShiplogs((prev) => {
+        if (isInitialLoad.current) {
+          isInitialLoad.current = false;
+          return data.shiplogs;
+        }
+        return [...prev, ...data.shiplogs];
+      });
     }
-  }, [data?.shiplogs, currentPage]);
+  }, [data?.shiplogs]);
 
   const handleLoadMore = () => {
-    const nextPage = currentPage + 1;
-    setCurrentPage(nextPage);
-    submit({ page: nextPage, limit: 12 });
+    currentPageRef.current += 1;
+    submit({ page: currentPageRef.current, limit: 12 });
   };
 
   const hasMore = data?.hasMore ?? false;
@@ -67,7 +69,7 @@ export default function ShipsIndex() {
         <Text as="h2" variant="heading-md" className="mb-6">
           Shiplogs
         </Text>
-        {isLoading && currentPage === 1 ? (
+        {isLoading && currentPageRef.current === 1 ? (
           <Text as="p" variant="body" className="text-muted-foreground">
             Loading shiplogs...
           </Text>

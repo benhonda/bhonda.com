@@ -24,6 +24,10 @@ const shiplogEnvSchema = z.object({
    * Secret for verifying Vercel cron requests
    */
   CRON_SECRET: z.string(),
+  /**
+   * AWS IAM role ARN for Vercel OIDC (production only)
+   */
+  AWS_ROLE_ARN: z.string().optional(),
 });
 
 /**

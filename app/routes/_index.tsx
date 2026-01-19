@@ -8,6 +8,8 @@ import { PageHeader } from "~/components/misc/page-header";
 import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
 import { useLoaderData } from "react-router";
 import { ShiplogListItem } from "~/components/shiplog/shiplog-list-item";
+import { Button } from "~/components/ui/button";
+import { Link } from "~/lib/router/routes";
 
 export const meta: MetaFunction = () => {
   return [
@@ -32,7 +34,7 @@ export default function Index() {
 
   // Load shiplogs on mount
   useEffect(() => {
-    submit({});
+    submit({ page: 1, limit: 6 });
   }, []);
 
   return (
@@ -40,9 +42,14 @@ export default function Index() {
       <PageHeader />
 
       <div className="w-full">
-        {/* Latest Timeline Content */}
+        {/* Latest Section */}
         <Text as="h2" variant="heading-md" className="mb-6">
           Latest
+        </Text>
+
+        {/* Shiplogs Subsection */}
+        <Text as="h3" variant="heading-sm" className="mb-4">
+          Shiplogs
         </Text>
         {isLoading ? (
           <Text as="p" variant="body" className="text-muted-foreground">
@@ -53,16 +60,24 @@ export default function Index() {
             No content found.
           </Text>
         ) : (
-          <div className="space-y-4">
-            {shiplogs.map((shiplog) => (
-              <ShiplogListItem
-                key={shiplog.slug}
-                shiplog={shiplog}
-                userIsAdmin={userIsAdmin}
-                showTypeLabel
-              />
-            ))}
-          </div>
+          <>
+            <div className="space-y-4">
+              {shiplogs.map((shiplog) => (
+                <ShiplogListItem
+                  key={shiplog.slug}
+                  shiplog={shiplog}
+                  userIsAdmin={userIsAdmin}
+                />
+              ))}
+            </div>
+            <div className="mt-8">
+              <Link to="/ships">
+                <Button variant="secondary-filled">
+                  View all shiplogs
+                </Button>
+              </Link>
+            </div>
+          </>
         )}
       </div>
     </div>
