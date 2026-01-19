@@ -14,9 +14,16 @@ export default function Contact() {
       <PageHeader />
 
       <div className="w-full">
-        <Text as="h2" variant="heading-md" className="mb-6">
-          Contact
-        </Text>
+        <div className="flex items-center gap-6 mb-6">
+          <img
+            src="/images/greyscale-1x2.webp"
+            alt="Ben Honda"
+            className="size-40 rounded-full object-cover shrink-0"
+          />
+          <Text as="h2" variant="heading-md">
+            Contact
+          </Text>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
           <a

@@ -130,14 +130,15 @@ async function fetchShiplogContentFromCDN(cdnUrl: string, s3KeyRelative: string)
 /**
  * Fetch shiplogs from database and CDN
  */
-export async function fetchShiplogs(isAdmin: boolean = false): Promise<Shiplog[]> {
+export async function fetchShiplogs(isAdmin: boolean = false, limit: number = 6, offset: number = 0): Promise<Shiplog[]> {
   const cdnUrl = serverEnv.PUBLIC_CDN_URL;
 
   console.log('[Shiplog Fetcher] Starting fetch from database...');
   console.log('[Shiplog Fetcher] CDN URL:', cdnUrl);
+  console.log(`[Shiplog Fetcher] Pagination: limit=${limit}, offset=${offset}`);
 
   // Query database for latest shiplogs
-  const records = await getLatestShiplogs(6, isAdmin);
+  const records = await getLatestShiplogs(limit, isAdmin, offset);
   console.log(`[Shiplog Fetcher] Found ${records.length} records in database`);
 
   // Fetch content from CDN for each record

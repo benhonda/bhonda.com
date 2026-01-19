@@ -4,13 +4,15 @@ import type { Shiplog } from "~/lib/shiplog/fetcher.server";
 
 export const fetchShiplogsActionDefinition = defineAction<{
   shiplogs: Shiplog[];
+  hasMore: boolean;
 }>()({
   actionDirectoryName: "fetch-shiplogs",
-  inputDataSchema: z.object({}),
+  inputDataSchema: z.object({
+    page: z.number().int().min(1).optional(),
+    limit: z.number().int().min(1).max(50).optional(),
+  }),
   type: "query",
   cache: {
-    enabled: true,
-    staleTime: 60 * 1000 * 5, // 5 minutes
-    cacheTime: 60 * 1000 * 10, // 10 minutes
+    enabled: false, // Disable cache for paginated queries
   },
 });

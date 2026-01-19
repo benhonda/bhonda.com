@@ -3,6 +3,8 @@
 ## 2026-01-19
 
 - feat: Manual shiplog upload task now supports explicit year parameter for generating shiplogs from previous years (YEAR=2025)
+- feat: Shiplog list now supports pagination with "Load More" button for browsing full shiplog history beyond initial 12 entries
+- feat: Contact page now displays profile photo alongside contact information
 
 ## 2026-01-13
 
