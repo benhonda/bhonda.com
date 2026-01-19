@@ -80,12 +80,13 @@ tasks:
       - bun install {{.CLI_ARGS}}
 
   upload-shiplog:
-    desc: Upload weekly shiplog for a specific week number (use WEEK=49 ENV=staging|production)
+    desc: Upload weekly shiplog for a specific week number (use WEEK=49 YEAR=2025 ENV=staging|production)
     requires:
       vars:
         - WEEK
     vars:
       ENV: '{{default "production" .ENV}}'
+      YEAR: '{{default "" .YEAR}}'
     prompt: '{{if eq .ENV "production"}}⚠️  You are uploading to PRODUCTION. Verify DATABASE_URL is set to the production database. NOTE: This needs to be done BEFORE you run the dev server. Continue?{{end}}'
     interactive: true
     cmds:
@@ -98,9 +99,15 @@ tasks:
         fi
 
         echo "✅ Dev server is running on port 3000"
+        {{if .YEAR}}
+        echo "🚀 Triggering shiplog for {{.YEAR}} week {{.WEEK}} (environment: {{.ENV}})..."
+        echo ""
+        curl -k "https://localhost:3000/api/cron/weekly-shiplog?week={{.WEEK}}&year={{.YEAR}}&env={{.ENV}}"
+        {{else}}
         echo "🚀 Triggering shiplog for week {{.WEEK}} (environment: {{.ENV}})..."
         echo ""
         curl -k "https://localhost:3000/api/cron/weekly-shiplog?week={{.WEEK}}&env={{.ENV}}"
+        {{end}}
         echo ""
 
   show-weeks:

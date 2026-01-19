@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-01-19
+
+- feat: Manual shiplog upload task now supports explicit year parameter for generating shiplogs from previous years (YEAR=2025)
+
 ## 2026-01-13
 
 - refactor: Shiplog version history now loads on-demand when dropdown opens instead of eagerly fetching on page load for better performance

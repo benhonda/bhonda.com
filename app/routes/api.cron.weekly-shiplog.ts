@@ -12,6 +12,7 @@ import { insertShiplogRecord } from "~/lib/shiplog/db-service.server";
  *
  * Query params:
  * - week: ISO week number (e.g., ?week=49) - for testing/manual generation
+ * - year: ISO year (e.g., ?year=2025) - defaults to current year if not specified
  */
 export async function loader({ request }: LoaderFunctionArgs) {
   const startTime = Date.now();
@@ -38,6 +39,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     // 2. Calculate date range and env override
     const url = new URL(request.url);
     const weekParam = url.searchParams.get("week");
+    const yearParam = url.searchParams.get("year");
     const envParam = url.searchParams.get("env");
 
     // Validate env override (development only)
@@ -62,7 +64,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       // Manual week specification for testing
       const week = parseInt(weekParam, 10);
       const now = new Date();
-      const year = getISOWeekYear(now);
+      const year = yearParam ? parseInt(yearParam, 10) : getISOWeekYear(now);
 
       const dateRange = getDateRangeFromISOWeek(year, week);
       startDate = dateRange.start;
