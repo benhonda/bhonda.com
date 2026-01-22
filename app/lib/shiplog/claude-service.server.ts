@@ -72,6 +72,7 @@ Return a JSON object with exactly these three fields:
 - Do NOT include commit hashes, URLs, or technical metadata
 - Do NOT include trivial changes or internal refactoring
 - Do NOT include any client-specific information including names, brands, or other proprietary information. Only information about the projects in the commit list can be mentioned.
+- Do NOT include any brand/company names if not necessary - the generated shiplog is about the projects themselves, not the client.
 </content_guidelines>
 
 <commits>
