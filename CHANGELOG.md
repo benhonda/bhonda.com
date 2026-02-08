@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-02-08
+
+- refactor: Devcontainer setup simplified to use official Claude CLI installer and removed Playwright MCP configuration
+- refactor: Claude shiplog prompts now exclude website names that are scraped or crawled to prevent data source attribution
+
 ## 2026-01-19
 
 - feat: Production deployments now use Vercel OIDC for AWS authentication instead of static credentials for improved security

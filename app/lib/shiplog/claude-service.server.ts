@@ -73,6 +73,7 @@ Return a JSON object with exactly these three fields:
 - Do NOT include trivial changes or internal refactoring
 - Do NOT include any client-specific information including names, brands, or other proprietary information. Only information about the projects in the commit list can be mentioned.
 - Do NOT include any brand/company names if not necessary - the generated shiplog is about the projects themselves, not the client.
+- Do NOT include any website names that we "scrape" or "crawl" from.
 </content_guidelines>
 
 <commits>
@@ -114,7 +115,12 @@ Return only the JSON object, no additional text:`;
       shiplogContent = JSON.parse(jsonMatch[0]);
 
       // Validate required fields
-      if (!shiplogContent.titleText || !shiplogContent.previewText || !shiplogContent.introText || !shiplogContent.content) {
+      if (
+        !shiplogContent.titleText ||
+        !shiplogContent.previewText ||
+        !shiplogContent.introText ||
+        !shiplogContent.content
+      ) {
         throw new Error("Missing required fields in Claude response");
       }
     } catch (parseError) {
