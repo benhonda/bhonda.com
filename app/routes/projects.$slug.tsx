@@ -6,6 +6,7 @@ import { useAction } from "~/hooks/use-action";
 import { fetchProjectShiplogsActionDefinition } from "~/lib/actions/fetch-project-shiplogs/action-definition";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PageHeader } from "~/components/misc/page-header";
+import { Breadcrumbs } from "~/components/misc/breadcrumbs";
 import { ShiplogListItem } from "~/components/shiplog/shiplog-list-item";
 import { Button } from "~/components/ui/button";
 import { getProjectBySlug } from "~/lib/shiplog/project-db-service.server";
@@ -75,6 +76,8 @@ export default function ProjectDetail() {
       <PageHeader />
 
       <div className="w-full">
+        <Breadcrumbs crumbs={[{ label: "Projects", to: "/projects" }, { label: project.display_name }]} />
+
         <Text as="h2" variant="heading-md" className="mb-1">
           {project.display_name}
         </Text>

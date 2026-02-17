@@ -7,6 +7,9 @@
 - feat: DB schema extended with `projects` and `shiplog_projects` tables to model the many-to-many relationship between shiplogs and repos
 - feat: `insertShiplogRecord` now returns the inserted/updated record ID so downstream steps (project linking) can reference it without a second query
 - refactor: Claude synthesis and edit prompts updated to suppress week number disclosure in generated content
+- feat: Projects index now renders as a responsive grid and filters out repos with no shiplogs, reducing noise in the listing
+- feat: Project detail page now includes breadcrumb navigation back to the projects index
+- feat: Breadcrumbs component added as a reusable navigation primitive
 
 ## 2026-02-08
 

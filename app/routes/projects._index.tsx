@@ -44,34 +44,32 @@ export default function ProjectsIndex() {
             No projects found.
           </Text>
         ) : (
-          <div className="space-y-4">
-            {projects.map((project) => (
-              <Link
-                key={project.slug}
-                to="/projects/:slug"
-                params={{ slug: project.slug }}
-                className="block border border-border rounded-lg p-6 hover:bg-muted/50 transition-colors"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <Text as="h3" variant="heading-sm" className="mb-1">
-                      {project.display_name}
-                    </Text>
-                    <Text as="p" variant="body" className="text-muted-foreground text-sm font-mono">
-                      {project.repo_identifier}
-                    </Text>
-                  </div>
-                  <div className="text-right text-sm text-muted-foreground shrink-0">
-                    <div>{project.shiplogCount} {project.shiplogCount === 1 ? "shiplog" : "shiplogs"}</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            {projects
+              .filter((p) => p.shiplogCount > 0)
+              .map((project) => (
+                <Link
+                  key={project.slug}
+                  to="/projects/:slug"
+                  params={{ slug: project.slug }}
+                  className="flex flex-col border border-border rounded-lg p-6 hover:bg-muted/50 transition-colors"
+                >
+                  <Text as="h3" variant="heading-sm" className="mb-1">
+                    {project.display_name}
+                  </Text>
+                  <Text as="p" variant="body" className="text-muted-foreground text-sm font-mono mb-4">
+                    {project.repo_identifier}
+                  </Text>
+                  <div className="mt-auto flex items-center justify-between text-sm text-muted-foreground">
+                    <span>{project.shiplogCount} {project.shiplogCount === 1 ? "shiplog" : "shiplogs"}</span>
                     {project.latestShiplogDate && (
                       <time dateTime={project.latestShiplogDate} className="text-xs">
-                        last: {project.latestShiplogDate}
+                        {project.latestShiplogDate}
                       </time>
                     )}
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
           </div>
         )}
       </div>
