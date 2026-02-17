@@ -52,3 +52,30 @@ export const shiplogReactionsTable = pgTable(
     ),
   ]
 );
+
+export const projectsTable = pgTable("projects", {
+  ...timestamps,
+
+  id: uuid().defaultRandom().primaryKey(),
+  slug: text().notNull().unique(),
+  display_name: text().notNull(),
+  repo_identifier: text().notNull().unique(),
+});
+
+export const shiplogProjectsTable = pgTable(
+  "shiplog_projects",
+  {
+    ...timestamps,
+
+    id: uuid().defaultRandom().primaryKey(),
+    shiplog_id: uuid()
+      .notNull()
+      .references(() => shiplogsTable.id),
+    project_id: uuid()
+      .notNull()
+      .references(() => projectsTable.id),
+  },
+  (table) => [
+    unique("unique_shiplog_project").on(table.shiplog_id, table.project_id),
+  ]
+);

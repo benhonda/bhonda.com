@@ -22,9 +22,9 @@ export interface ShiplogRecord {
 /**
  * Insert or update shiplog record (upsert by slug)
  */
-export async function insertShiplogRecord(data: Omit<ShiplogRecord, 'status'>): Promise<void> {
+export async function insertShiplogRecord(data: Omit<ShiplogRecord, 'status'>): Promise<{ id: string }> {
   const existing = await db
-    .select()
+    .select({ id: shiplogsTable.id })
     .from(shiplogsTable)
     .where(eq(shiplogsTable.slug, data.slug))
     .limit(1);
@@ -48,24 +48,29 @@ export async function insertShiplogRecord(data: Omit<ShiplogRecord, 'status'>): 
       .where(eq(shiplogsTable.slug, data.slug));
 
     console.log(`[Shiplog DB] Updated existing record: ${data.slug}`);
+    return { id: existing[0].id };
   } else {
     // Insert new record (default to 'draft')
-    await db.insert(shiplogsTable).values({
-      slug: data.slug,
-      title_text: data.titleText,
-      preview_text: data.previewText,
-      intro_text: data.introText,
-      published_at: data.publishedAt,
-      week: data.week,
-      year: data.year,
-      s3_public_key_relative: data.s3PublicKeyRelative,
-      s3_internal_key_relative: data.s3InternalKeyRelative,
-      stats_repos: data.statsRepos,
-      stats_commits: data.statsCommits,
-      status: "draft",
-    });
+    const [inserted] = await db
+      .insert(shiplogsTable)
+      .values({
+        slug: data.slug,
+        title_text: data.titleText,
+        preview_text: data.previewText,
+        intro_text: data.introText,
+        published_at: data.publishedAt,
+        week: data.week,
+        year: data.year,
+        s3_public_key_relative: data.s3PublicKeyRelative,
+        s3_internal_key_relative: data.s3InternalKeyRelative,
+        stats_repos: data.statsRepos,
+        stats_commits: data.statsCommits,
+        status: "draft",
+      })
+      .returning({ id: shiplogsTable.id });
 
     console.log(`[Shiplog DB] Inserted new record: ${data.slug}`);
+    return { id: inserted.id };
   }
 }
 

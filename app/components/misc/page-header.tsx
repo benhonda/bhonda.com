@@ -38,6 +38,7 @@ export function PageHeader({ description }: PageHeaderProps) {
         tabs={[
           { label: "latest", to: { to: "/" } },
           { label: "ships", to: { to: "/ships" } },
+          { label: "projects", to: { to: "/projects" } },
           { label: "contact", to: { to: "/contact" } },
         ]}
       />

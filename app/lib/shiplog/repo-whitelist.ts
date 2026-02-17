@@ -11,6 +11,10 @@ export interface RepoConfig {
 
 export type RepoWhitelistConfig = Record<string, RepoConfig>;
 
+export function repoIdentifierToSlug(repoIdentifier: string): string {
+  return repoIdentifier.replace(/[/.]/g, "-").toLowerCase();
+}
+
 export const REPO_CONFIG = {
   // benhonda
   "benhonda/bhonda.com": { displayName: "bhonda.com" },

@@ -7,6 +7,8 @@
 import toggleShiplogReaction from "~/lib/actions/toggle-shiplog-reaction/action-handler.server";
 import fetchShiplogReactions from "~/lib/actions/fetch-shiplog-reactions/action-handler.server";
 import restoreShiplogVersion from "~/lib/actions/restore-shiplog-version/action-handler.server";
+import fetchProjectShiplogs from "~/lib/actions/fetch-project-shiplogs/action-handler.server";
+import fetchProjects from "~/lib/actions/fetch-projects/action-handler.server";
 import authLoginWithForm from "~/lib/actions/auth-login-with-form/action-handler.server";
 import authLogout from "~/lib/actions/auth-logout/action-handler.server";
 import fetchShiplogVersions from "~/lib/actions/fetch-shiplog-versions/action-handler.server";
@@ -17,12 +19,14 @@ import exampleAction from "~/lib/actions/example-action/action-handler.server";
 import updateShiplogStatus from "~/lib/actions/update-shiplog-status/action-handler.server";
 import authLoginWithGoogle from "~/lib/actions/auth-login-with-google/action-handler.server";
 
-export type ActionName = "toggle-shiplog-reaction" | "fetch-shiplog-reactions" | "restore-shiplog-version" | "auth-login-with-form" | "auth-logout" | "fetch-shiplog-versions" | "edit-shiplog" | "fetch-shiplogs" | "auth-register-with-form" | "example-action" | "update-shiplog-status" | "auth-login-with-google";
+export type ActionName = "toggle-shiplog-reaction" | "fetch-shiplog-reactions" | "restore-shiplog-version" | "fetch-project-shiplogs" | "fetch-projects" | "auth-login-with-form" | "auth-logout" | "fetch-shiplog-versions" | "edit-shiplog" | "fetch-shiplogs" | "auth-register-with-form" | "example-action" | "update-shiplog-status" | "auth-login-with-google";
 
 const handlerMap: Record<ActionName, any> = {
   "toggle-shiplog-reaction": toggleShiplogReaction,
   "fetch-shiplog-reactions": fetchShiplogReactions,
   "restore-shiplog-version": restoreShiplogVersion,
+  "fetch-project-shiplogs": fetchProjectShiplogs,
+  "fetch-projects": fetchProjects,
   "auth-login-with-form": authLoginWithForm,
   "auth-logout": authLogout,
   "fetch-shiplog-versions": fetchShiplogVersions,

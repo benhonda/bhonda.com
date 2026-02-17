@@ -31,6 +31,7 @@ ${editPrompt}
 - Return ONLY the markdown content, no explanations, no additional text, no markdown code blocks, no nothing.
 - Do NOT include any client-specific information including names, brands, or other proprietary information. Only information about the projects in the commit list can be mentioned.
 - Do NOT include any website names that we "scrape" or "crawl" from.
+- Do NOT write down the week number.
 </instructions>
 
 Return the complete updated markdown file:`;

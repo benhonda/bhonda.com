@@ -5,6 +5,7 @@ import { synthesizeShiplog } from "~/lib/shiplog/claude-service.server";
 import { uploadShiplogToS3 } from "~/lib/shiplog/s3-service.server";
 import { getDateRangeFromISOWeek, getISOWeekNumber, getISOWeekYear } from "~/lib/shiplog/date-utils.server";
 import { insertShiplogRecord } from "~/lib/shiplog/db-service.server";
+import { upsertProjects, linkShiplogToProjects } from "~/lib/shiplog/project-db-service.server";
 
 /**
  * Vercel Cron handler for weekly shiplog generation
@@ -131,7 +132,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     // 6. Insert database record
     const totalCommits = repoCommits.reduce((sum, r) => sum + r.commits.length, 0);
-    await insertShiplogRecord({
+    const { id: shiplogId } = await insertShiplogRecord({
       slug: `${isoYear}-W${isoWeek.toString().padStart(2, "0")}`,
       titleText: shiplogContent.titleText,
       previewText: shiplogContent.previewText,
@@ -145,7 +146,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
       statsCommits: totalCommits,
     });
 
-    // 7. Calculate summary stats
+    // 7. Upsert projects and link to shiplog
+    const upsertedProjects = await upsertProjects(repoCommits.map((r) => r.repo));
+    await linkShiplogToProjects(shiplogId, upsertedProjects.map((p) => p.id));
+
+    // 8. Calculate summary stats
     const duration = Date.now() - startTime;
 
     console.log(`[Shiplog Cron] Successfully completed in ${duration}ms`);

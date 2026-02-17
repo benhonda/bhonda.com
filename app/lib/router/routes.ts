@@ -13,6 +13,8 @@ export const routePaths = [
   "/contact",
   "/login",
   "/oauth2/google/callback",
+  "/projects",
+  "/projects/:slug",
   "/robots[/]txt",
   "/robots[/]txt/ts",
   "/ships",
@@ -25,6 +27,7 @@ export type Path = (typeof routePaths)[number];
 // all params for any given path get defined here...
 export type Params = {
   "/ships/:slug": { slug: string };
+  "/projects/:slug": { slug: string };
 };
 
 // Utility type to extract the leaf nodes of Params

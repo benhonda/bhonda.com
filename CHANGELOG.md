@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-02-17
+
+- feat: Projects section added — repos from the shiplog whitelist are now tracked as first-class entities with their own `/projects` index and `/projects/:slug` detail pages showing associated shiplogs
+- feat: Weekly shiplog cron now automatically upserts project records and links each shiplog to its source repos, enabling project-scoped shiplog browsing
+- feat: DB schema extended with `projects` and `shiplog_projects` tables to model the many-to-many relationship between shiplogs and repos
+- feat: `insertShiplogRecord` now returns the inserted/updated record ID so downstream steps (project linking) can reference it without a second query
+- refactor: Claude synthesis and edit prompts updated to suppress week number disclosure in generated content
+
 ## 2026-02-08
 
 - refactor: Devcontainer setup simplified to use official Claude CLI installer and removed Playwright MCP configuration
