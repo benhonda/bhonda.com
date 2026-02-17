@@ -15,11 +15,14 @@ export default function Contact() {
 
       <div className="w-full">
         <div className="flex items-center gap-6 mb-6">
-          <img
-            src="/images/greyscale-1x2.webp"
-            alt="Ben Honda"
-            className="size-40 rounded-full object-cover shrink-0"
-          />
+          <div className="relative size-40 shrink-0">
+            <img
+              src="/images/ben-1-expanded-tight.png"
+              alt="Ben Honda"
+              className="size-40 rounded-full object-cover"
+            />
+            <div className="absolute inset-0 rounded-full bg-yellow-200/30 mix-blend-multiply" />
+          </div>
           <Text as="h2" variant="heading-md">
             Contact
           </Text>
