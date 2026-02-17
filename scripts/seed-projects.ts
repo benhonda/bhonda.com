@@ -24,7 +24,8 @@ import {
   shiplogProjectsTable,
   shiplogsTable,
 } from "~/lib/db/schemas/shiplog-schema";
-import { REPO_CONFIG, repoIdentifierToSlug, type RepoWhitelistConfig } from "~/lib/shiplog/repo-whitelist";
+import { REPO_CONFIG } from "~/lib/shiplog/repo-whitelist";
+import { upsertProjects } from "~/lib/shiplog/project-db-service.server";
 import { sql } from "drizzle-orm";
 
 const db = drizzle({ client: neon(process.env.DATABASE_URL!) });
@@ -48,25 +49,7 @@ if (!BUCKET || !ENV_PREFIX) {
 async function seedProjects(): Promise<Map<string, string>> {
   console.log("\n[1/3] Seeding projects from REPO_CONFIG...");
 
-  const config = REPO_CONFIG as RepoWhitelistConfig;
-  const repoIdentifiers = Object.keys(config);
-
-  const values = repoIdentifiers.map((repoIdentifier) => ({
-    slug: repoIdentifierToSlug(repoIdentifier),
-    display_name: config[repoIdentifier].displayName,
-    repo_identifier: repoIdentifier,
-  }));
-
-  const result = await db
-    .insert(projectsTable)
-    .values(values)
-    .onConflictDoUpdate({
-      target: projectsTable.repo_identifier,
-      set: { display_name: sql`excluded.display_name` },
-    })
-    .returning({ id: projectsTable.id, repoIdentifier: projectsTable.repo_identifier });
-
-  // repoIdentifier → projectId lookup map
+  const result = await upsertProjects(Object.keys(REPO_CONFIG));
   const projectMap = new Map(result.map((r) => [r.repoIdentifier, r.id]));
 
   console.log(`    ✓ Upserted ${result.length} projects`);
