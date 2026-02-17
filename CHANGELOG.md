@@ -12,6 +12,8 @@
 - feat: Breadcrumbs component added as a reusable navigation primitive
 - feat: `projects` table now stores a `description` field; each repo in the whitelist has a human-readable description that is displayed in place of the raw repo identifier on both the index and detail pages
 - chore: Vercel cron schedule for the weekly shiplog removed from `vercel.json`
+- feat: `projects` table now stores optional `url` and `repo_url` fields; project cards and detail pages display live-site and GitHub links where available
+- chore: Devcontainer now installs `xdg-utils` alongside `postgresql-client`
 
 ## 2026-02-08
 

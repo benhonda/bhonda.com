@@ -8,6 +8,8 @@
 export interface RepoConfig {
   displayName: string;
   description: string;
+  url?: string;
+  repoUrl?: string;
 }
 
 export type RepoWhitelistConfig = Record<string, RepoConfig>;
@@ -21,6 +23,8 @@ export const REPO_CONFIG = {
   "benhonda/bhonda.com": {
     displayName: "bhonda.com",
     description: "This site — a dev blog with weekly shiplogs of what I've been building",
+    url: "https://www.bhonda.com",
+    repoUrl: "https://github.com/benhonda/bhonda.com",
   },
   // adpharm
   "adpharm/form-gen": {
@@ -30,6 +34,7 @@ export const REPO_CONFIG = {
   "adpharm/adpharm-shad": {
     displayName: "Adpharm Shad Registry",
     description: "Shared UI component library used across adpharm products",
+    url: "https://ui.adpharm.digital",
   },
   "adpharm/agentic-editor": {
     displayName: "Agentic Editor",
@@ -58,6 +63,7 @@ export const REPO_CONFIG = {
   "adpharm/earlydays.dev": {
     displayName: "earlydays.dev",
     description: "A publishing platform for early-stage founders to document their journey",
+    repoUrl: "https://github.com/adpharm/earlydays.dev",
   },
   "adpharm/inspiration-index-pipeline": {
     displayName: "Inspiration Index Pipeline",
@@ -66,6 +72,7 @@ export const REPO_CONFIG = {
   "adpharm/inspiration-index-app": {
     displayName: "Inspiration Index App",
     description: "Browse a curated, searchable library of web design inspiration",
+    url: "https://www.inspirationindex.app",
   },
   "adpharm/inspiration-index-terraform": {
     displayName: "Inspiration Index Terraform",
@@ -78,6 +85,7 @@ export const REPO_CONFIG = {
   "adpharm/autoscroll-recorder-web": {
     displayName: "Autoscroll Recorder Web",
     description: "Schedule and manage automated scrollthrough recordings of any website",
+    url: "https://app.autoscrollrecorder.com",
   },
   "adpharm/autoscroll-recorder-api": {
     displayName: "Autoscroll Recorder API",
@@ -108,5 +116,6 @@ export const REPO_CONFIG = {
   "adpharm/postgresdk": {
     displayName: "PostgreSDK",
     description: "Generate a fully-typed API client from your Postgres schema — no boilerplate",
+    repoUrl: "https://github.com/adpharm/postgresdk",
   },
 } satisfies RepoWhitelistConfig;

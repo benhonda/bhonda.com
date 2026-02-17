@@ -7,6 +7,7 @@ import { fetchProjectShiplogsActionDefinition } from "~/lib/actions/fetch-projec
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PageHeader } from "~/components/misc/page-header";
 import { Breadcrumbs } from "~/components/misc/breadcrumbs";
+import { ExternalLink, Github } from "lucide-react";
 import { ShiplogListItem } from "~/components/shiplog/shiplog-list-item";
 import { Button } from "~/components/ui/button";
 import { getProjectBySlug } from "~/lib/shiplog/project-db-service.server";
@@ -82,9 +83,35 @@ export default function ProjectDetail() {
           {project.display_name}
         </Text>
         {project.description && (
-          <Text as="p" variant="body" className="text-muted-foreground mb-6">
+          <Text as="p" variant="body" className="text-muted-foreground mb-3">
             {project.description}
           </Text>
+        )}
+        {(project.url || project.repo_url) && (
+          <div className="flex items-center gap-4 mb-6">
+            {project.url && (
+              <a
+                href={project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ExternalLink className="size-3.5" />
+                {new URL(project.url).hostname.replace("www.", "")}
+              </a>
+            )}
+            {project.repo_url && (
+              <a
+                href={project.repo_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Github className="size-3.5" />
+                GitHub
+              </a>
+            )}
+          </div>
         )}
 
         {isLoading && currentPageRef.current === 1 ? (

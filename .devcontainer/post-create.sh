@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-# install psql (postgresql-client)
-sudo apt-get update && sudo apt-get install -y postgresql-client
+# install psql (postgresql-client) and xdg-utils (to open files in the browser)
+sudo apt-get update && sudo apt-get install -y postgresql-client xdg-utils
 
 echo "Installing Bun"
 curl -fsSL https://bun.sh/install | bash

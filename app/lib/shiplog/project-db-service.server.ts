@@ -28,6 +28,8 @@ export async function upsertProjects(
     slug: repoIdentifierToSlug(repoIdentifier),
     display_name: config[repoIdentifier].displayName,
     description: config[repoIdentifier].description,
+    url: config[repoIdentifier].url ?? null,
+    repo_url: config[repoIdentifier].repoUrl ?? null,
     repo_identifier: repoIdentifier,
   }));
 
@@ -39,6 +41,8 @@ export async function upsertProjects(
       set: {
         display_name: sql`excluded.display_name`,
         description: sql`excluded.description`,
+        url: sql`excluded.url`,
+        repo_url: sql`excluded.repo_url`,
       },
     })
     .returning({ id: projectsTable.id, repoIdentifier: projectsTable.repo_identifier });
@@ -70,6 +74,8 @@ export async function getAllProjects(): Promise<ProjectWithStats[]> {
       slug: projectsTable.slug,
       display_name: projectsTable.display_name,
       description: projectsTable.description,
+      url: projectsTable.url,
+      repo_url: projectsTable.repo_url,
       repo_identifier: projectsTable.repo_identifier,
       created_at: projectsTable.created_at,
       updated_at: projectsTable.updated_at,

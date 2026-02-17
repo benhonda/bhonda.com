@@ -6,6 +6,7 @@ import { fetchProjectsActionDefinition } from "~/lib/actions/fetch-projects/acti
 import { useEffect } from "react";
 import { PageHeader } from "~/components/misc/page-header";
 import { Link } from "~/lib/router/routes";
+import { ExternalLink, Github } from "lucide-react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -62,13 +63,43 @@ export default function ProjectsIndex() {
                       {project.description}
                     </Text>
                   )}
-                  <div className="mt-auto flex items-center justify-between text-sm text-muted-foreground">
-                    <span>{project.shiplogCount} {project.shiplogCount === 1 ? "shiplog" : "shiplogs"}</span>
-                    {project.latestShiplogDate && (
-                      <time dateTime={project.latestShiplogDate} className="text-xs">
-                        {project.latestShiplogDate}
-                      </time>
+                  <div className="mt-auto">
+                    {(project.url || project.repo_url) && (
+                      <div className="flex items-center gap-3 mb-3">
+                        {project.url && (
+                          <a
+                            href={project.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <ExternalLink className="size-3" />
+                            {new URL(project.url).hostname.replace("www.", "")}
+                          </a>
+                        )}
+                        {project.repo_url && (
+                          <a
+                            href={project.repo_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <Github className="size-3" />
+                            GitHub
+                          </a>
+                        )}
+                      </div>
                     )}
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span>{project.shiplogCount} {project.shiplogCount === 1 ? "shiplog" : "shiplogs"}</span>
+                      {project.latestShiplogDate && (
+                        <time dateTime={project.latestShiplogDate}>
+                          {project.latestShiplogDate}
+                        </time>
+                      )}
+                    </div>
                   </div>
                 </Link>
               ))}

@@ -60,6 +60,8 @@ export const projectsTable = pgTable("projects", {
   slug: text().notNull().unique(),
   display_name: text().notNull(),
   description: text(),
+  url: text(),
+  repo_url: text(),
   repo_identifier: text().notNull().unique(),
 });
 
