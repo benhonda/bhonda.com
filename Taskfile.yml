@@ -171,6 +171,28 @@ tasks:
     cmds:
       - bunx drizzle-kit push
 
+  seed-projects:
+    aliases:
+      - seed:projects
+    desc: |
+      Seed the projects table from REPO_CONFIG and backfill historical shiplog→project links.
+
+      Run this when:
+        1. Setting up a fresh environment (after db-push)
+        2. Adding a new project to the whitelist
+
+      To add a new project:
+        1. Add it to app/lib/shiplog/repo-whitelist.ts (REPO_CONFIG)
+           This controls which repos appear in shiplogs (security filter).
+        2. Run this task to insert the new project row into the DB.
+           Future cron runs will auto-link shiplogs to it once commits come in.
+
+      Safe to re-run — fully idempotent.
+    deps:
+      - check-aws-identity
+    cmds:
+      - bun run scripts/seed-projects.ts
+
   # --------------------------------------------------------------------------------------------------------------------
   # Testing commands
   # --------------------------------------------------------------------------------------------------------------------
