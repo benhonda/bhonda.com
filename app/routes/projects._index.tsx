@@ -57,9 +57,11 @@ export default function ProjectsIndex() {
                   <Text as="h3" variant="heading-sm" className="mb-1">
                     {project.display_name}
                   </Text>
-                  <Text as="p" variant="body" className="text-muted-foreground text-sm font-mono mb-4">
-                    {project.repo_identifier}
-                  </Text>
+                  {project.description && (
+                    <Text as="p" variant="body-sm" className="text-muted-foreground mb-4">
+                      {project.description}
+                    </Text>
+                  )}
                   <div className="mt-auto flex items-center justify-between text-sm text-muted-foreground">
                     <span>{project.shiplogCount} {project.shiplogCount === 1 ? "shiplog" : "shiplogs"}</span>
                     {project.latestShiplogDate && (

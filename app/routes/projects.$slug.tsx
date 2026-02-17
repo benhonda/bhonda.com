@@ -81,9 +81,11 @@ export default function ProjectDetail() {
         <Text as="h2" variant="heading-md" className="mb-1">
           {project.display_name}
         </Text>
-        <Text as="p" variant="body" className="text-muted-foreground text-sm font-mono mb-6">
-          {project.repo_identifier}
-        </Text>
+        {project.description && (
+          <Text as="p" variant="body" className="text-muted-foreground mb-6">
+            {project.description}
+          </Text>
+        )}
 
         {isLoading && currentPageRef.current === 1 ? (
           <Text as="p" variant="body" className="text-muted-foreground">

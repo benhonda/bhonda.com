@@ -10,6 +10,8 @@
 - feat: Projects index now renders as a responsive grid and filters out repos with no shiplogs, reducing noise in the listing
 - feat: Project detail page now includes breadcrumb navigation back to the projects index
 - feat: Breadcrumbs component added as a reusable navigation primitive
+- feat: `projects` table now stores a `description` field; each repo in the whitelist has a human-readable description that is displayed in place of the raw repo identifier on both the index and detail pages
+- chore: Vercel cron schedule for the weekly shiplog removed from `vercel.json`
 
 ## 2026-02-08
 

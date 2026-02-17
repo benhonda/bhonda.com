@@ -59,6 +59,7 @@ export const projectsTable = pgTable("projects", {
   id: uuid().defaultRandom().primaryKey(),
   slug: text().notNull().unique(),
   display_name: text().notNull(),
+  description: text(),
   repo_identifier: text().notNull().unique(),
 });
 

@@ -27,6 +27,7 @@ export async function upsertProjects(
   const values = validIdentifiers.map((repoIdentifier) => ({
     slug: repoIdentifierToSlug(repoIdentifier),
     display_name: config[repoIdentifier].displayName,
+    description: config[repoIdentifier].description,
     repo_identifier: repoIdentifier,
   }));
 
@@ -35,7 +36,10 @@ export async function upsertProjects(
     .values(values)
     .onConflictDoUpdate({
       target: projectsTable.repo_identifier,
-      set: { display_name: sql`excluded.display_name` },
+      set: {
+        display_name: sql`excluded.display_name`,
+        description: sql`excluded.description`,
+      },
     })
     .returning({ id: projectsTable.id, repoIdentifier: projectsTable.repo_identifier });
 
@@ -65,6 +69,7 @@ export async function getAllProjects(): Promise<ProjectWithStats[]> {
       id: projectsTable.id,
       slug: projectsTable.slug,
       display_name: projectsTable.display_name,
+      description: projectsTable.description,
       repo_identifier: projectsTable.repo_identifier,
       created_at: projectsTable.created_at,
       updated_at: projectsTable.updated_at,

@@ -1,8 +1,1 @@
-{
-  "crons": [
-    {
-      "path": "/api/cron/weekly-shiplog",
-      "schedule": "0 18 * * 0"
-    }
-  ]
-}
+{}
