@@ -3,7 +3,7 @@ import { Text } from "~/components/misc/text";
 import { ChevronRight } from "lucide-react";
 
 type Crumb =
-  | { label: string; to: "/projects" | "/ships" | "/" }
+  | { label: string; to: "/" | "/ships" | "/projects" | "/blog" | "/contact" }
   | { label: string };
 
 interface BreadcrumbsProps {

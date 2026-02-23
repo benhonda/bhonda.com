@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-02-23
+
+- feat: Blog section added with `/blog` index and `/blog/:slug` detail routes; posts are file-based TSX modules in `app/lib/blog/posts/` exporting a `blogMeta` object and default component, rendered via a shared `BlogPostLayout`
+- chore: Dev server port changed from 3000 to 3014 across vite config and Taskfile
+
 ## 2026-02-17
 
 - feat: Projects section added — repos from the shiplog whitelist are now tracked as first-class entities with their own `/projects` index and `/projects/:slug` detail pages showing associated shiplogs

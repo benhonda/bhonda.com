@@ -39,6 +39,7 @@ export function PageHeader({ description }: PageHeaderProps) {
           { label: "latest", to: { to: "/" } },
           { label: "ships", to: { to: "/ships" } },
           { label: "projects", to: { to: "/projects" } },
+          { label: "blog", to: { to: "/blog" } },
           { label: "contact", to: { to: "/contact" } },
         ]}
       />

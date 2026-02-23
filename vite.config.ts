@@ -20,7 +20,7 @@ async function runGenerator(gen: { name: string; script: string }) {
 export default defineConfig({
   server: {
     host: "0.0.0.0", // required to work in a devcontainer
-    port: 3000,
+    port: 3014,
 
     // NOTE: FOR SSL, ADD:
     proxy: {},
