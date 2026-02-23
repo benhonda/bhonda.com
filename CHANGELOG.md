@@ -3,6 +3,12 @@
 ## 2026-02-23
 
 - feat: Blog section added with `/blog` index and `/blog/:slug` detail routes; posts are file-based TSX modules in `app/lib/blog/posts/` exporting a `blogMeta` object and default component, rendered via a shared `BlogPostLayout`
+- feat: Blog posts now require a `status` field (`draft` | `published`); draft posts return 404 on both index and detail routes, preventing premature exposure
+- feat: Blog posts support an optional `lastUpdated` field displayed in the post header and used as `lastmod` in the sitemap
+- feat: Blog posts added to sitemap with per-post `lastmod` and priority
+- feat: Homepage redesigned from a client-side action-driven shiplog list to a SSR 3-column grid showing the 4 most recent Shiplogs, Blog posts, and Projects
+- feat: Sitewide SEO improved — OG tags now include description, url, and article type per page; Twitter Card meta added; Person and BlogPosting JSON-LD structured data added to root and content detail pages
+- fix: Canonical URLs corrected from `bhonda.com` to `www.bhonda.com` across all routes
 - chore: Dev server port changed from 3000 to 3014 across vite config and Taskfile
 
 ## 2026-02-17

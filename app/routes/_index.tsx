@@ -1,84 +1,174 @@
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
-import { action_handler } from "~/lib/actions/_core/action-runner.server";
-import { Text } from "~/components/misc/text";
-import { useAction } from "~/hooks/use-action";
-import { fetchShiplogsActionDefinition } from "~/lib/actions/fetch-shiplogs/action-definition";
-import { useEffect } from "react";
-import { PageHeader } from "~/components/misc/page-header";
-import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
 import { useLoaderData } from "react-router";
-import { ShiplogListItem } from "~/components/shiplog/shiplog-list-item";
-import { Button } from "~/components/ui/button";
+import { PageHeader } from "~/components/misc/page-header";
+import { Text } from "~/components/misc/text";
 import { Link } from "~/lib/router/routes";
+import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
+import { fetchShiplogs } from "~/lib/shiplog/fetcher.server";
+import { getAllProjects } from "~/lib/shiplog/project-db-service.server";
+import type { BlogPostMeta, BlogPostModule } from "~/lib/blog/blog-types";
+import type { ReactNode } from "react";
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "Ben Honda's Dev Blog" },
-    { name: "description", content: "Weekly development shiplogs and projects" },
-    { tagName: "link", rel: "canonical", href: "https://bhonda.com/" },
-  ];
-};
+const postModules = import.meta.glob<BlogPostModule>("../lib/blog/posts/*.tsx", { eager: true });
+
+export const meta: MetaFunction = () => [
+  { title: "Ben Honda's Dev Blog" },
+  { name: "description", content: "Weekly development shiplogs and projects" },
+  { tagName: "link", rel: "canonical", href: "https://www.bhonda.com/" },
+];
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getUser(request);
   const userIsAdmin = isAdmin(user);
-  return { userIsAdmin };
+
+  const [shiplogs, allProjects] = await Promise.all([
+    fetchShiplogs(userIsAdmin, 4, 0),
+    getAllProjects(),
+  ]);
+
+  const blogPosts: BlogPostMeta[] = Object.values(postModules)
+    .filter((m): m is BlogPostModule => "blogMeta" in m)
+    .map((m) => m.blogMeta)
+    .filter((m) => m.status === "published")
+    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
+    .slice(0, 4);
+
+  const projects = allProjects.filter((p) => p.shiplogCount > 0).slice(0, 4);
+
+  return { shiplogs, blogPosts, projects };
 }
 
-export const action = action_handler;
+function LatestBox({ title, viewAll, children }: { title: string; viewAll: ReactNode; children: ReactNode }) {
+  return (
+    <div className="border border-border rounded-lg p-6 flex flex-col">
+      <Text as="h3" variant="heading-sm">
+        {title}
+      </Text>
+      <div className="mt-4 divide-y divide-border flex-1">{children}</div>
+      <div className="mt-4 pt-3 border-t border-border">{viewAll}</div>
+    </div>
+  );
+}
 
 export default function Index() {
-  const { userIsAdmin } = useLoaderData<typeof loader>();
-  const { data, isLoading, submit } = useAction(fetchShiplogsActionDefinition);
-  const shiplogs = data?.shiplogs ?? [];
-
-  // Load shiplogs on mount
-  useEffect(() => {
-    submit({ page: 1, limit: 6 });
-  }, []);
+  const { shiplogs, blogPosts, projects } = useLoaderData<typeof loader>();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <PageHeader />
 
-      <div className="w-full">
-        {/* Latest Section */}
-        <Text as="h2" variant="heading-md" className="mb-6">
-          Latest
-        </Text>
-
-        {/* Shiplogs Subsection */}
-        <Text as="h3" variant="heading-sm" className="mb-4">
-          Shiplogs
-        </Text>
-        {isLoading ? (
-          <Text as="p" variant="body" className="text-muted-foreground">
-            Loading...
-          </Text>
-        ) : shiplogs.length === 0 ? (
-          <Text as="p" variant="body" className="text-muted-foreground">
-            No content found.
-          </Text>
-        ) : (
-          <>
-            <div className="space-y-4">
-              {shiplogs.map((shiplog) => (
-                <ShiplogListItem
-                  key={shiplog.slug}
-                  shiplog={shiplog}
-                  userIsAdmin={userIsAdmin}
-                />
-              ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <LatestBox
+          title="Shiplogs"
+          viewAll={
+            <Link to="/ships" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              View all →
+            </Link>
+          }
+        >
+          {shiplogs.length === 0 ? (
+            <div className="py-3">
+              <Text as="p" variant="body-sm" className="text-muted-foreground">
+                No shiplogs yet.
+              </Text>
             </div>
-            <div className="mt-8">
-              <Link to="/ships">
-                <Button variant="secondary-filled">
-                  View all shiplogs
-                </Button>
+          ) : (
+            shiplogs.map((s) => (
+              <Link
+                key={s.slug}
+                to="/ships/:slug"
+                params={{ slug: s.slug }}
+                title={s.titleText}
+                className="flex items-center justify-between py-3 gap-4 group"
+              >
+                <Text
+                  as="span"
+                  variant="body-sm"
+                  className="group-hover:text-primary transition-colors line-clamp-1"
+                >
+                  {s.titleText}
+                </Text>
+                <Text as="span" variant="microcopy" className="text-muted-foreground shrink-0 whitespace-nowrap">
+                  W{s.week}
+                </Text>
               </Link>
+            ))
+          )}
+        </LatestBox>
+
+        <LatestBox
+          title="Blog"
+          viewAll={
+            <Link to="/blog" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              View all →
+            </Link>
+          }
+        >
+          {blogPosts.length === 0 ? (
+            <div className="py-3">
+              <Text as="p" variant="body-sm" className="text-muted-foreground">
+                No posts yet.
+              </Text>
             </div>
-          </>
-        )}
+          ) : (
+            blogPosts.map((p) => (
+              <Link
+                key={p.slug}
+                to="/blog/:slug"
+                params={{ slug: p.slug }}
+                title={p.title}
+                className="flex items-center justify-between py-3 gap-4 group"
+              >
+                <Text
+                  as="span"
+                  variant="body-sm"
+                  className="group-hover:text-primary transition-colors line-clamp-1"
+                >
+                  {p.title}
+                </Text>
+                <time dateTime={p.publishedAt} className="shrink-0">
+                  <Text as="span" variant="microcopy" className="text-muted-foreground whitespace-nowrap">
+                    {p.publishedAt}
+                  </Text>
+                </time>
+              </Link>
+            ))
+          )}
+        </LatestBox>
+
+        <LatestBox
+          title="Projects"
+          viewAll={
+            <Link to="/projects" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              View all →
+            </Link>
+          }
+        >
+          {projects.length === 0 ? (
+            <div className="py-3">
+              <Text as="p" variant="body-sm" className="text-muted-foreground">
+                No projects yet.
+              </Text>
+            </div>
+          ) : (
+            projects.map((p) => (
+              <Link
+                key={p.slug}
+                to="/projects/:slug"
+                params={{ slug: p.slug }}
+                title={p.description ? `${p.display_name} | ${p.description}` : p.display_name}
+                className="flex py-3 group min-w-0"
+              >
+                <span className="truncate font-body text-sm sm:text-sm-md font-normal tracking-normal">
+                  <span className="group-hover:text-primary transition-colors">{p.display_name}</span>
+                  {p.description && (
+                    <span className="text-muted-foreground"><span className="opacity-30"> |</span> {p.description}</span>
+                  )}
+                </span>
+              </Link>
+            ))
+          )}
+        </LatestBox>
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ export const meta: MetaFunction = () => {
   return [
     { title: "Shiplogs | Ben Honda's Dev Blog" },
     { name: "description", content: "Weekly development shiplogs tracking commits and projects" },
-    { tagName: "link", rel: "canonical", href: "https://bhonda.com/ships" },
+    { tagName: "link", rel: "canonical", href: "https://www.bhonda.com/ships" },
   ];
 };
 

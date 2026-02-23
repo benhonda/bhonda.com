@@ -25,11 +25,20 @@ export function BlogPostLayout({ meta, children }: BlogPostLayoutProps) {
             {meta.title}
           </Text>
           <Spacer size="xs" />
-          <time dateTime={meta.publishedAt}>
-            <Text as="span" variant="body-sm" className="text-muted-foreground">
-              {meta.publishedAt}
-            </Text>
-          </time>
+          <div className="flex gap-4">
+            <time dateTime={meta.publishedAt}>
+              <Text as="span" variant="body-sm" className="text-muted-foreground">
+                {meta.publishedAt}
+              </Text>
+            </time>
+            {meta.lastUpdated && (
+              <time dateTime={meta.lastUpdated}>
+                <Text as="span" variant="body-sm" className="text-muted-foreground">
+                  updated {meta.lastUpdated}
+                </Text>
+              </time>
+            )}
+          </div>
         </header>
 
         <article className="space-y-4">{children}</article>

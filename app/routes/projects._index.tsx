@@ -12,7 +12,7 @@ export const meta: MetaFunction = () => {
   return [
     { title: "Projects | Ben Honda's Dev Blog" },
     { name: "description", content: "A look at the projects I've been working on." },
-    { tagName: "link", rel: "canonical", href: "https://bhonda.com/projects" },
+    { tagName: "link", rel: "canonical", href: "https://www.bhonda.com/projects" },
   ];
 };
 

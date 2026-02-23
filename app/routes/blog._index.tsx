@@ -7,7 +7,7 @@ import type { BlogPostMeta, BlogPostModule } from "~/lib/blog/blog-types";
 export const meta: MetaFunction = () => [
   { title: "Blog | Ben Honda's Dev Blog" },
   { name: "description", content: "Thoughts on software development, tools, and building." },
-  { tagName: "link", rel: "canonical", href: "https://bhonda.com/blog" },
+  { tagName: "link", rel: "canonical", href: "https://www.bhonda.com/blog" },
 ];
 
 const postModules = import.meta.glob<BlogPostModule>("../lib/blog/posts/*.tsx", { eager: true });
@@ -15,6 +15,7 @@ const postModules = import.meta.glob<BlogPostModule>("../lib/blog/posts/*.tsx", 
 const posts: BlogPostMeta[] = Object.values(postModules)
   .filter((m): m is BlogPostModule => "blogMeta" in m)
   .map((m) => m.blogMeta)
+  .filter((meta) => meta.status === "published")
   .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 
 export default function BlogIndex() {

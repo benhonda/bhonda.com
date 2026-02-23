@@ -38,9 +38,13 @@ export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
   const slug = params.slug || "";
 
   return [
-    { title: `${shiplog.titleText} | Ben Honda's Dev Blog` },
+    { title: `${shiplog.titleText} | Ben Honda` },
     { name: "description", content: shiplog.previewText },
-    { tagName: "link", rel: "canonical", href: `https://bhonda.com/ships/${slug}` },
+    { tagName: "link", rel: "canonical", href: `https://www.bhonda.com/ships/${slug}` },
+    { property: "og:type", content: "article" },
+    { property: "og:title", content: `${shiplog.titleText} | Ben Honda` },
+    { property: "og:description", content: shiplog.previewText },
+    { property: "og:url", content: `https://www.bhonda.com/ships/${slug}` },
   ];
 };
 
@@ -179,6 +183,24 @@ export default function ShiplogPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            headline: shiplog.titleText,
+            description: shiplog.previewText,
+            datePublished: shiplog.publishedAt,
+            url: `https://www.bhonda.com/ships/${shiplog.slug}`,
+            author: {
+              "@type": "Person",
+              name: "Ben Honda",
+              url: "https://www.bhonda.com",
+            },
+          }),
+        }}
+      />
       {/* Back link */}
       <Link to="/ships">
         <Button variant="secondary-link" size="sm">

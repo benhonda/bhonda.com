@@ -22,7 +22,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
     { title: `${data.project.display_name} | Ben Honda's Dev Blog` },
     { name: "description", content: `Shiplogs for ${data.project.display_name}` },
-    { tagName: "link", rel: "canonical", href: `https://bhonda.com/projects/${data.project.slug}` },
+    { tagName: "link", rel: "canonical", href: `https://www.bhonda.com/projects/${data.project.slug}` },
   ];
 };
 

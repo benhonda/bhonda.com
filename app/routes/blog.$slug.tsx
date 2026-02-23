@@ -14,12 +14,17 @@ const postsBySlug: Record<string, BlogPostModule> = Object.values(postModules)
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data?.postMeta) {
-    return [{ title: "Post Not Found | Ben Honda's Dev Blog" }];
+    return [{ title: "Post Not Found | Ben Honda" }];
   }
+  const { postMeta } = data;
   return [
-    { title: `${data.postMeta.title} | Ben Honda's Dev Blog` },
-    { name: "description", content: data.postMeta.preview },
-    { tagName: "link", rel: "canonical", href: `https://bhonda.com/blog/${data.postMeta.slug}` },
+    { title: `${postMeta.title} | Ben Honda` },
+    { name: "description", content: postMeta.preview },
+    { tagName: "link", rel: "canonical", href: `https://www.bhonda.com/blog/${postMeta.slug}` },
+    { property: "og:type", content: "article" },
+    { property: "og:title", content: `${postMeta.title} | Ben Honda` },
+    { property: "og:description", content: postMeta.preview },
+    { property: "og:url", content: `https://www.bhonda.com/blog/${postMeta.slug}` },
   ];
 };
 
@@ -28,7 +33,7 @@ export function loader({ params }: LoaderFunctionArgs) {
   if (!slug) throw new Response("Not Found", { status: 404 });
 
   const module = postsBySlug[slug];
-  if (!module) throw routerData(null, { status: 404 });
+  if (!module || module.blogMeta.status !== "published") throw routerData(null, { status: 404 });
 
   return { postMeta: module.blogMeta };
 }
@@ -39,5 +44,28 @@ export default function BlogPost() {
 
   if (!Post) return null;
 
-  return <Post />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            headline: postMeta.title,
+            description: postMeta.preview,
+            datePublished: postMeta.publishedAt,
+            ...(postMeta.lastUpdated ? { dateModified: postMeta.lastUpdated } : {}),
+            url: `https://www.bhonda.com/blog/${postMeta.slug}`,
+            author: {
+              "@type": "Person",
+              name: "Ben Honda",
+              url: "https://www.bhonda.com",
+            },
+          }),
+        }}
+      />
+      <Post />
+    </>
+  );
 }

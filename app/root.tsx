@@ -27,7 +27,7 @@ import { Footer } from "~/components/misc/footer";
 import { getUser } from "~/lib/auth-utils/user.server";
 
 const SITE_NAME = "bhonda.com";
-const SITE_DESC = "bhonda.com";
+const SITE_DESC = "Ben Honda. Building, shipping, and writing.";
 
 export const links: LinksFunction = () => [
   // Preload critical custom fonts
@@ -96,10 +96,31 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <link rel="manifest" href="/site.webmanifest" />
 
         {/* OG */}
-        <meta property="og:title" content={SITE_NAME} />
+        <meta property="og:title" content="Ben Honda" />
+        <meta property="og:description" content={SITE_DESC} />
+        <meta property="og:url" content="https://www.bhonda.com" />
         <meta property="og:image" content="/og.png" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content={SITE_NAME} />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="/og.png" />
+
+        {/* Person schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: "Ben Honda",
+              url: "https://www.bhonda.com",
+              jobTitle: "Software Engineer",
+              sameAs: ["https://github.com/benhonda", "https://www.linkedin.com/in/benhonda/"],
+            }),
+          }}
+        />
 
         <Meta />
         <Links />
