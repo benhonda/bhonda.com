@@ -7,6 +7,7 @@ export const personMeta = {
   name: "Donald Rumsfeld",
   slug: "donald-rumsfeld",
   preview: "Rumsfeld's rules on hiring, clarity, and organizations.",
+  metaDescription: "Quotes from Donald Rumsfeld on hiring, simplicity, and the efficiency of organizations.",
   status: "published",
   lastUpdated: "2026-02-27",
 } satisfies PersonMeta;

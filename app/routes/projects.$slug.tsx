@@ -1,4 +1,5 @@
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { mergeMeta } from "~/lib/meta-utils";
 import { useLoaderData } from "react-router";
 import { action_handler } from "~/lib/actions/_core/action-runner.server";
 import { Text } from "~/components/misc/text";
@@ -15,15 +16,18 @@ import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
 import { data as routerData } from "react-router";
 import type { ShiplogMeta } from "~/lib/shiplog/fetcher.server";
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data, matches }) => {
   if (!data?.project) {
     return [{ title: "Project Not Found | Ben Honda's Dev Blog" }];
   }
-  return [
+  return mergeMeta(matches, [
     { title: `${data.project.display_name} | Ben Honda's Dev Blog` },
     { name: "description", content: `Shiplogs for ${data.project.display_name}` },
     { tagName: "link", rel: "canonical", href: `https://www.bhonda.com/projects/${data.project.slug}` },
-  ];
+    { property: "og:title", content: `${data.project.display_name} | Ben Honda's Dev Blog` },
+    { property: "og:description", content: `Shiplogs for ${data.project.display_name}` },
+    { property: "og:url", content: `https://www.bhonda.com/projects/${data.project.slug}` },
+  ]);
 };
 
 export async function loader({ params, request }: LoaderFunctionArgs) {

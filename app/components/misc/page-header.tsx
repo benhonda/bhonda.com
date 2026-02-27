@@ -12,9 +12,14 @@ export function PageHeader({ description }: PageHeaderProps) {
     <>
       {/* Header */}
       <div className="flex items-start justify-between mb-2">
-        <Text as="h1" variant="display-sm">
-          bhonda.com
-        </Text>
+        <a href="/">
+          <Text as="h1" variant="display-sm">
+            bhonda.com
+          </Text>
+          <Text as="p" variant="body-sm" className="text-muted-foreground">
+            Ben Honda
+          </Text>
+        </a>
         <a
           href="https://github.com/benhonda/bhonda.com"
           target="_blank"

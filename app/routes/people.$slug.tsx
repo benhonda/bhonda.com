@@ -2,21 +2,22 @@ import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { useLoaderData } from "react-router";
 import { data as routerData } from "react-router";
 import { profilesBySlug } from "~/lib/people/people-registry";
+import { mergeMeta } from "~/lib/meta-utils";
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data, matches }) => {
   if (!data?.personMeta) {
     return [{ title: "Not Found | Ben Honda" }];
   }
   const { personMeta } = data;
-  return [
+  return mergeMeta(matches, [
     { title: `${personMeta.name} | Ben Honda` },
-    { name: "description", content: personMeta.preview },
+    { name: "description", content: personMeta.metaDescription },
     { tagName: "link", rel: "canonical", href: `https://www.bhonda.com/people/${personMeta.slug}` },
     { property: "og:type", content: "article" },
     { property: "og:title", content: `${personMeta.name} | Ben Honda` },
-    { property: "og:description", content: personMeta.preview },
+    { property: "og:description", content: personMeta.metaDescription },
     { property: "og:url", content: `https://www.bhonda.com/people/${personMeta.slug}` },
-  ];
+  ]);
 };
 
 export function loader({ params }: LoaderFunctionArgs) {
@@ -44,7 +45,7 @@ export default function PersonPage() {
             "@context": "https://schema.org",
             "@type": "Article",
             headline: personMeta.name,
-            description: personMeta.preview,
+            description: personMeta.metaDescription,
             ...(personMeta.lastUpdated ? { dateModified: personMeta.lastUpdated } : {}),
             url: `https://www.bhonda.com/people/${personMeta.slug}`,
             author: {

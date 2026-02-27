@@ -1,4 +1,5 @@
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { mergeMeta } from "~/lib/meta-utils";
 import { useLoaderData } from "react-router";
 import { Link } from "~/lib/router/routes";
 import { fetchShiplogBySlug } from "~/lib/shiplog/fetcher.server";
@@ -26,7 +27,7 @@ import { getAnonymousIdFromRequest } from "~/lib/analytics/get-anonymous-id.serv
 import { browserTrackEvent } from "~/lib/analytics/events.defaults.client";
 import { getOrCreateStartTime, getElapsedSeconds } from "~/lib/analytics/session-utils";
 
-export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
+export const meta: MetaFunction<typeof loader> = ({ data, params, matches }) => {
   if (!data?.shiplog) {
     return [
       { title: "Shiplog Not Found | Ben Honda's Dev Blog" },
@@ -37,7 +38,7 @@ export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
   const { shiplog } = data;
   const slug = params.slug || "";
 
-  return [
+  return mergeMeta(matches, [
     { title: `${shiplog.titleText} | Ben Honda` },
     { name: "description", content: shiplog.previewText },
     { tagName: "link", rel: "canonical", href: `https://www.bhonda.com/ships/${slug}` },
@@ -45,7 +46,7 @@ export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
     { property: "og:title", content: `${shiplog.titleText} | Ben Honda` },
     { property: "og:description", content: shiplog.previewText },
     { property: "og:url", content: `https://www.bhonda.com/ships/${slug}` },
-  ];
+  ]);
 };
 
 export async function loader({ params, request }: LoaderFunctionArgs) {

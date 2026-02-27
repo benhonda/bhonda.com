@@ -4,6 +4,10 @@
 
 - feat: Blog section replaced with a "People" section — `/people` index and `/people/:slug` detail routes for curated profiles of quotable individuals, built with the same file-based TSX module pattern
 - refactor: Sitemap, homepage, breadcrumbs, and nav updated to reference `/people` instead of `/blog`; all blog routes, types, and components removed
+- feat: OG meta tags now correctly inherit from the root layout on all routes — `mergeMeta` utility added to deduplicate parent/child meta and ensure per-page og:title, og:description, and og:url override the root defaults without duplication
+- refactor: Root layout OG/Twitter Card tags moved from hardcoded `<head>` HTML to a proper `meta` export so React Router's meta merging applies correctly
+- feat: `PersonMeta` schema extended with a required `metaDescription` field to decouple SEO descriptions from the shorter UI preview text used in cards and listings
+- feat: Page header title ("bhonda.com") is now a link back to the homepage and shows "Ben Honda" as a subtitle
 
 ## 2026-02-23
 

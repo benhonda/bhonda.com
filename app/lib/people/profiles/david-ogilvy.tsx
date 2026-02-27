@@ -8,6 +8,7 @@ export const personMeta = {
   name: "David Ogilvy",
   slug: "david-ogilvy",
   preview: "Lines from Ogilvy I keep coming back to.",
+  metaDescription: "Quotes from David Ogilvy on advertising, copywriting, and the consumer — from Ogilvy on Advertising and Confessions of an Advertising Man.",
   status: "published",
   lastUpdated: "2026-02-23",
 } satisfies PersonMeta;

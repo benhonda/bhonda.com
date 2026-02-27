@@ -1,4 +1,5 @@
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { mergeMeta } from "~/lib/meta-utils";
 import { action_handler } from "~/lib/actions/_core/action-runner.server";
 import { Text } from "~/components/misc/text";
 import { useAction } from "~/hooks/use-action";
@@ -11,13 +12,15 @@ import { ShiplogListItem } from "~/components/shiplog/shiplog-list-item";
 import { Button } from "~/components/ui/button";
 import type { Shiplog } from "~/lib/shiplog/fetcher.server";
 
-export const meta: MetaFunction = () => {
-  return [
+export const meta: MetaFunction = ({ matches }) =>
+  mergeMeta(matches, [
     { title: "Shiplogs | Ben Honda's Dev Blog" },
     { name: "description", content: "Weekly development shiplogs tracking commits and projects" },
     { tagName: "link", rel: "canonical", href: "https://www.bhonda.com/ships" },
-  ];
-};
+    { property: "og:title", content: "Shiplogs | Ben Honda's Dev Blog" },
+    { property: "og:description", content: "Weekly development shiplogs tracking commits and projects" },
+    { property: "og:url", content: "https://www.bhonda.com/ships" },
+  ]);
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getUser(request);

@@ -1,14 +1,19 @@
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { mergeMeta } from "~/lib/meta-utils";
 import { Text } from "~/components/misc/text";
 import { PageHeader } from "~/components/misc/page-header";
 import { LinkedInSvg } from "~/components/svgs/LinkedInSvg";
 import GithubSvg from "~/components/svgs/GithubSvg";
 
-export const meta: MetaFunction = () => [
-  { title: "Contact | Ben Honda" },
-  { name: "description", content: "Get in touch with Ben Honda – Software Engineer." },
-  { tagName: "link", rel: "canonical", href: "https://www.bhonda.com/contact" },
-];
+export const meta: MetaFunction = ({ matches }) =>
+  mergeMeta(matches, [
+    { title: "Contact | Ben Honda" },
+    { name: "description", content: "Get in touch with Ben Honda – Software Engineer." },
+    { tagName: "link", rel: "canonical", href: "https://www.bhonda.com/contact" },
+    { property: "og:title", content: "Contact | Ben Honda" },
+    { property: "og:description", content: "Get in touch with Ben Honda – Software Engineer." },
+    { property: "og:url", content: "https://www.bhonda.com/contact" },
+  ]);
 
 export async function loader({}: LoaderFunctionArgs) {
   return {};

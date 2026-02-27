@@ -1,4 +1,5 @@
 import type { MetaFunction } from "react-router";
+import { mergeMeta } from "~/lib/meta-utils";
 import { action_handler } from "~/lib/actions/_core/action-runner.server";
 import { Text } from "~/components/misc/text";
 import { useAction } from "~/hooks/use-action";
@@ -8,13 +9,15 @@ import { PageHeader } from "~/components/misc/page-header";
 import { Link } from "~/lib/router/routes";
 import { ExternalLink, Github } from "lucide-react";
 
-export const meta: MetaFunction = () => {
-  return [
+export const meta: MetaFunction = ({ matches }) =>
+  mergeMeta(matches, [
     { title: "Projects | Ben Honda's Dev Blog" },
     { name: "description", content: "A look at the projects I've been working on." },
     { tagName: "link", rel: "canonical", href: "https://www.bhonda.com/projects" },
-  ];
-};
+    { property: "og:title", content: "Projects | Ben Honda's Dev Blog" },
+    { property: "og:description", content: "A look at the projects I've been working on." },
+    { property: "og:url", content: "https://www.bhonda.com/projects" },
+  ]);
 
 export const action = action_handler;
 

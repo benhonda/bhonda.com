@@ -8,6 +8,7 @@ import {
   useLoaderData,
   type LinksFunction,
   type LoaderFunctionArgs,
+  type MetaFunction,
   useLocation,
   useRouteLoaderData,
 } from "react-router";
@@ -28,6 +29,17 @@ import { getUser } from "~/lib/auth-utils/user.server";
 
 const SITE_NAME = "bhonda.com";
 const SITE_DESC = "Ben Honda. Building, shipping, and writing.";
+
+export const meta: MetaFunction = () => [
+  { property: "og:title", content: "Ben Honda" },
+  { property: "og:description", content: SITE_DESC },
+  { property: "og:url", content: "https://www.bhonda.com" },
+  { property: "og:image", content: "/og.png" },
+  { property: "og:type", content: "website" },
+  { property: "og:site_name", content: SITE_NAME },
+  { name: "twitter:card", content: "summary_large_image" },
+  { name: "twitter:image", content: "/og.png" },
+];
 
 export const links: LinksFunction = () => [
   // Preload critical custom fonts
@@ -94,18 +106,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-title" content={SITE_NAME} />
         <link rel="manifest" href="/site.webmanifest" />
-
-        {/* OG */}
-        <meta property="og:title" content="Ben Honda" />
-        <meta property="og:description" content={SITE_DESC} />
-        <meta property="og:url" content="https://www.bhonda.com" />
-        <meta property="og:image" content="/og.png" />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content={SITE_NAME} />
-
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="/og.png" />
 
         {/* Person schema */}
         <script

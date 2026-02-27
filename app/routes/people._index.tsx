@@ -1,14 +1,19 @@
 import type { MetaFunction } from "react-router";
+import { mergeMeta } from "~/lib/meta-utils";
 import { PageHeader } from "~/components/misc/page-header";
 import { Text } from "~/components/misc/text";
 import { Link } from "~/lib/router/routes";
 import { publishedPeople } from "~/lib/people/people-registry";
 
-export const meta: MetaFunction = () => [
-  { title: "People | Ben Honda" },
-  { name: "description", content: "Profiles, quotes, and notes on individuals who shaped how I think." },
-  { tagName: "link", rel: "canonical", href: "https://www.bhonda.com/people" },
-];
+export const meta: MetaFunction = ({ matches }) =>
+  mergeMeta(matches, [
+    { title: "People | Ben Honda" },
+    { name: "description", content: "Quotable individuals." },
+    { tagName: "link", rel: "canonical", href: "https://www.bhonda.com/people" },
+    { property: "og:title", content: "People | Ben Honda" },
+    { property: "og:description", content: "Quotable individuals." },
+    { property: "og:url", content: "https://www.bhonda.com/people" },
+  ]);
 
 const people = publishedPeople;
 

@@ -1,4 +1,5 @@
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { mergeMeta } from "~/lib/meta-utils";
 import { useLoaderData } from "react-router";
 import { PageHeader } from "~/components/misc/page-header";
 import { Text } from "~/components/misc/text";
@@ -10,11 +11,15 @@ import { publishedPeople } from "~/lib/people/people-registry";
 import type { ReactNode } from "react";
 
 
-export const meta: MetaFunction = () => [
-  { title: "Ben Honda's Dev Blog" },
-  { name: "description", content: "Weekly development shiplogs and projects" },
-  { tagName: "link", rel: "canonical", href: "https://www.bhonda.com/" },
-];
+export const meta: MetaFunction = ({ matches }) =>
+  mergeMeta(matches, [
+    { title: "Ben Honda's Dev Blog" },
+    { name: "description", content: "Weekly development shiplogs and projects" },
+    { tagName: "link", rel: "canonical", href: "https://www.bhonda.com/" },
+    { property: "og:title", content: "Ben Honda's Dev Blog" },
+    { property: "og:description", content: "Weekly development shiplogs and projects" },
+    { property: "og:url", content: "https://www.bhonda.com/" },
+  ]);
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getUser(request);
