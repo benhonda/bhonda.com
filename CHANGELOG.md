@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-02-27
+
+- feat: Blog section replaced with a "People" section — `/people` index and `/people/:slug` detail routes for curated profiles of quotable individuals, built with the same file-based TSX module pattern
+- refactor: Sitemap, homepage, breadcrumbs, and nav updated to reference `/people` instead of `/blog`; all blog routes, types, and components removed
+
 ## 2026-02-23
 
 - feat: Blog section added with `/blog` index and `/blog/:slug` detail routes; posts are file-based TSX modules in `app/lib/blog/posts/` exporting a `blogMeta` object and default component, rendered via a shared `BlogPostLayout`

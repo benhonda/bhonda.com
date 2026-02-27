@@ -10,11 +10,11 @@ export const routePaths = [
   "/",
   "/api/cron/weekly-shiplog",
   "/api/cron/weekly-shiplog/ts",
-  "/blog",
-  "/blog/:slug",
   "/contact",
   "/login",
   "/oauth2/google/callback",
+  "/people",
+  "/people/:slug",
   "/projects",
   "/projects/:slug",
   "/robots[/]txt",
@@ -28,7 +28,7 @@ export type Path = (typeof routePaths)[number];
 
 // all params for any given path get defined here...
 export type Params = {
-  "/blog/:slug": { slug: string };
+  "/people/:slug": { slug: string };
   "/projects/:slug": { slug: string };
   "/ships/:slug": { slug: string };
 };

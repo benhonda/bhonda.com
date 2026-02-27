@@ -1,9 +1,9 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { serverEnv } from "~/lib/env/env.defaults.server";
 import { fetchShiplogs } from "~/lib/shiplog/fetcher.server";
-import type { BlogPostModule } from "~/lib/blog/blog-types";
+import type { PersonModule } from "~/lib/people/people-types";
 
-const blogPostModules = import.meta.glob<BlogPostModule>("../lib/blog/posts/*.tsx", { eager: true });
+const profileModules = import.meta.glob<PersonModule>("../lib/people/profiles/*.tsx", { eager: true });
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const baseUrl = `https://www.${serverEnv.APP_FQDN}`;
@@ -11,12 +11,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
   // Fetch all published shiplogs (non-admin = published only)
   const shiplogs = await fetchShiplogs(false);
 
-  // Blog posts
-  const blogRoutes = Object.values(blogPostModules)
-    .filter((m): m is BlogPostModule => "blogMeta" in m && m.blogMeta.status === "published")
+  // People profiles
+  const peopleRoutes = Object.values(profileModules)
+    .filter((m): m is PersonModule => "personMeta" in m && m.personMeta.status === "published")
     .map((m) => ({
-      path: `/blog/${m.blogMeta.slug}`,
-      lastmod: m.blogMeta.lastUpdated ?? m.blogMeta.publishedAt,
+      path: `/people/${m.personMeta.slug}`,
+      lastmod: m.personMeta.lastUpdated,
       priority: 0.8,
       changefreq: "monthly",
     }));
@@ -26,7 +26,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     { path: "/", priority: 1.0, changefreq: "weekly" },
     { path: "/contact", priority: 0.8, changefreq: "monthly" },
     { path: "/ships", priority: 0.9, changefreq: "weekly" },
-    { path: "/blog", priority: 0.9, changefreq: "weekly" },
+    { path: "/people", priority: 0.9, changefreq: "monthly" },
   ];
 
   // Dynamic shiplog routes
@@ -61,7 +61,7 @@ ${shiplogRoutes
   </url>`
   )
   .join("\n")}
-${blogRoutes
+${peopleRoutes
   .map(
     (route) =>
       `  <url>

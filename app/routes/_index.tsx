@@ -6,10 +6,9 @@ import { Link } from "~/lib/router/routes";
 import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
 import { fetchShiplogs } from "~/lib/shiplog/fetcher.server";
 import { getAllProjects } from "~/lib/shiplog/project-db-service.server";
-import type { BlogPostMeta, BlogPostModule } from "~/lib/blog/blog-types";
+import { publishedPeople } from "~/lib/people/people-registry";
 import type { ReactNode } from "react";
 
-const postModules = import.meta.glob<BlogPostModule>("../lib/blog/posts/*.tsx", { eager: true });
 
 export const meta: MetaFunction = () => [
   { title: "Ben Honda's Dev Blog" },
@@ -26,16 +25,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
     getAllProjects(),
   ]);
 
-  const blogPosts: BlogPostMeta[] = Object.values(postModules)
-    .filter((m): m is BlogPostModule => "blogMeta" in m)
-    .map((m) => m.blogMeta)
-    .filter((m) => m.status === "published")
-    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
-    .slice(0, 4);
+  const people = publishedPeople.slice(0, 4);
 
   const projects = allProjects.filter((p) => p.shiplogCount > 0).slice(0, 4);
 
-  return { shiplogs, blogPosts, projects };
+  return { shiplogs, people, projects };
 }
 
 function LatestBox({ title, viewAll, children }: { title: string; viewAll: ReactNode; children: ReactNode }) {
@@ -51,7 +45,7 @@ function LatestBox({ title, viewAll, children }: { title: string; viewAll: React
 }
 
 export default function Index() {
-  const { shiplogs, blogPosts, projects } = useLoaderData<typeof loader>();
+  const { shiplogs, people, projects } = useLoaderData<typeof loader>();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -97,26 +91,26 @@ export default function Index() {
         </LatestBox>
 
         <LatestBox
-          title="Blog"
+          title="People"
           viewAll={
-            <Link to="/blog" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/people" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
               View all →
             </Link>
           }
         >
-          {blogPosts.length === 0 ? (
+          {people.length === 0 ? (
             <div className="py-3">
               <Text as="p" variant="body-sm" className="text-muted-foreground">
-                No posts yet.
+                No profiles yet.
               </Text>
             </div>
           ) : (
-            blogPosts.map((p) => (
+            people.map((p) => (
               <Link
                 key={p.slug}
-                to="/blog/:slug"
+                to="/people/:slug"
                 params={{ slug: p.slug }}
-                title={p.title}
+                title={p.name}
                 className="flex items-center justify-between py-3 gap-4 group"
               >
                 <Text
@@ -124,13 +118,15 @@ export default function Index() {
                   variant="body-sm"
                   className="group-hover:text-primary transition-colors line-clamp-1"
                 >
-                  {p.title}
+                  {p.name}
                 </Text>
-                <time dateTime={p.publishedAt} className="shrink-0">
-                  <Text as="span" variant="microcopy" className="text-muted-foreground whitespace-nowrap">
-                    {p.publishedAt}
-                  </Text>
-                </time>
+                {p.lastUpdated && (
+                  <time dateTime={p.lastUpdated}>
+                    <Text as="span" variant="microcopy" className="text-muted-foreground shrink-0 whitespace-nowrap">
+                      {p.lastUpdated}
+                    </Text>
+                  </time>
+                )}
               </Link>
             ))
           )}

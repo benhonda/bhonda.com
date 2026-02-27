@@ -1,34 +1,22 @@
-import { BlogPostLayout } from "~/components/blog/blog-post-layout";
+import { PersonLayout } from "~/components/people/person-layout";
+import { Quote } from "~/components/people/quote";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
-import type { BlogPostMeta } from "~/lib/blog/blog-types";
+import type { PersonMeta } from "~/lib/people/people-types";
 
-export const blogMeta = {
-  title: "David Ogilvy on Advertising",
-  publishedAt: "2026-02-23",
-  lastUpdated: "2026-02-23",
-  preview:
-    "A collection of lines from David Ogilvy that I keep coming back to — from Ogilvy on Advertising, Confessions of an Advertising Man, and everywhere else.",
-  slug: "david-ogilvy-on-advertising",
+export const personMeta = {
+  name: "David Ogilvy",
+  slug: "david-ogilvy",
+  preview: "Lines from Ogilvy I keep coming back to.",
   status: "published",
-} satisfies BlogPostMeta;
+  lastUpdated: "2026-02-23",
+} satisfies PersonMeta;
 
-function Quote({ children }: { children: React.ReactNode }) {
+export default function DavidOgilvy() {
   return (
-    <div className="border-l-4 border-primary pl-6 my-8">
-      <Text as="p" variant="body-lg" className="italic">
-        {children}
-      </Text>
-    </div>
-  );
-}
-
-export default function DavidOgilvyOnAdvertising() {
-  return (
-    <BlogPostLayout meta={blogMeta}>
+    <PersonLayout meta={personMeta}>
       <Text as="p" variant="body" className="text-muted-foreground">
-        A running collection of David Ogilvy quotes and thoughts on marketing — pulled from his books, interviews, and
-        writing. Updated semi-regularly as I come across more.
+        From <em>Ogilvy on Advertising</em> and <em>Confessions of an Advertising Man</em>.
       </Text>
 
       <Spacer size="sm" />
@@ -60,7 +48,6 @@ export default function DavidOgilvyOnAdvertising() {
       <Quote>
         "Committees can criticize advertisements, but they should never be allowed to create them."
       </Quote>
-
-    </BlogPostLayout>
+    </PersonLayout>
   );
 }
