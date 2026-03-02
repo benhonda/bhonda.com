@@ -27,7 +27,7 @@ const serverEnvSchema = z.object({
 
 const vercelEnv = process.env.VERCEL_ENV;
 
-const appFqdn = process.env.NODE_ENV === "development" ? "localhost:3000" : process.env.APP_FQDN;
+const appFqdn = process.env.NODE_ENV === "development" ? "localhost:3014" : process.env.APP_FQDN;
 
 const serverEnv = serverEnvSchema.parse({
   ...process.env,

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-03-02
+
+- fix: Post-login redirect now lands on the correct dev server port (3014 instead of 3000)
+- fix: Session cookie now expires after 14 days instead of at browser close
+
 ## 2026-02-27
 
 - feat: Blog section replaced with a "People" section — `/people` index and `/people/:slug` detail routes for curated profiles of quotable individuals, built with the same file-based TSX module pattern
