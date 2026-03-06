@@ -23,7 +23,7 @@ function urlEntry({ path, lastmod, priority, changefreq }: SitemapRoute, baseUrl
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const baseUrl = `https://www.${serverEnv.APP_FQDN}`;
+  const baseUrl = `https://${serverEnv.APP_FQDN}`;
 
   const [shiplogs, allProjects] = await Promise.all([
     fetchShiplogs(false),

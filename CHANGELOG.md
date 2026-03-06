@@ -3,6 +3,7 @@
 ## 2026-03-06
 
 - fix: robots.txt simplified to gate on environment only (`PUBLIC_APP_ENV !== "production"`), removing unreliable host-based checks; cache-control changed to `no-store` so crawlers always get the current policy
+- fix: Canonical base URL in robots.txt and sitemap.xml now derives directly from `APP_FQDN` without a hardcoded `www.` prefix, so the configured domain is the single source of truth
 - feat: Sitemap now includes `/projects` and `/projects/:slug` routes, with `lastmod` derived from the latest associated shiplog date
 - fix: People page JSON-LD corrected from `Article` to `ProfilePage` schema type with proper `mainEntity` Person structure, improving structured data accuracy for search engines
 - fix: Root and Shiplog JSON-LD structured data now include an `image` field and use trailing-slash canonical URLs for consistency
