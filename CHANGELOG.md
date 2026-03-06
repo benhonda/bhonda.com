@@ -3,7 +3,10 @@
 ## 2026-03-06
 
 - fix: robots.txt now blocks all crawlers on non-canonical hosts (e.g. Vercel preview URLs) in addition to non-production environments, preventing accidental indexing of preview deployments
+- fix: robots.txt host detection now reads the `Host` header directly instead of parsing the URL hostname, fixing incorrect canonical host comparison behind Vercel's proxy
 - feat: Sitemap now includes `/projects` and `/projects/:slug` routes, with `lastmod` derived from the latest associated shiplog date
+- fix: People page JSON-LD corrected from `Article` to `ProfilePage` schema type with proper `mainEntity` Person structure, improving structured data accuracy for search engines
+- fix: Root and Shiplog JSON-LD structured data now include an `image` field and use trailing-slash canonical URLs for consistency
 
 ## 2026-03-02
 

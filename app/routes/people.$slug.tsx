@@ -43,15 +43,15 @@ export default function PersonPage() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Article",
-            headline: personMeta.name,
+            "@type": "ProfilePage",
+            name: personMeta.name,
             description: personMeta.metaDescription,
-            ...(personMeta.lastUpdated ? { dateModified: personMeta.lastUpdated } : {}),
             url: `https://www.bhonda.com/people/${personMeta.slug}`,
-            author: {
+            mainEntity: {
               "@type": "Person",
-              name: "Ben Honda",
-              url: "https://www.bhonda.com",
+              name: personMeta.name,
+              description: personMeta.metaDescription,
+              url: `https://www.bhonda.com/people/${personMeta.slug}`,
             },
           }),
         }}

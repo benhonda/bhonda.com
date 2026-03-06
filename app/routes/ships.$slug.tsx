@@ -193,11 +193,12 @@ export default function ShiplogPage() {
             headline: shiplog.titleText,
             description: shiplog.previewText,
             datePublished: shiplog.publishedAt,
+            image: "https://www.bhonda.com/og.png",
             url: `https://www.bhonda.com/ships/${shiplog.slug}`,
             author: {
               "@type": "Person",
               name: "Ben Honda",
-              url: "https://www.bhonda.com",
+              url: "https://www.bhonda.com/",
             },
           }),
         }}

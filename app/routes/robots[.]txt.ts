@@ -4,7 +4,7 @@ import { serverEnv } from "~/lib/env/env.defaults.server";
 const BLOCK_ALL = `User-agent: *\nDisallow: /`;
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const requestHost = new URL(request.url).hostname;
+  const requestHost = request.headers.get("host") ?? "";
   const canonicalHost = `www.${serverEnv.APP_FQDN}`;
 
   // Block all bots in staging/preview/development or on non-canonical hosts (e.g. vercel.app)
