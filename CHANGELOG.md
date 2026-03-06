@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-03-06
+
+- fix: robots.txt now blocks all crawlers on non-canonical hosts (e.g. Vercel preview URLs) in addition to non-production environments, preventing accidental indexing of preview deployments
+- feat: Sitemap now includes `/projects` and `/projects/:slug` routes, with `lastmod` derived from the latest associated shiplog date
+
 ## 2026-03-02
 
 - fix: Post-login redirect now lands on the correct dev server port (3014 instead of 3000)

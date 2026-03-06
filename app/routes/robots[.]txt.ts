@@ -1,26 +1,21 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { serverEnv } from "~/lib/env/env.defaults.server";
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  const appEnv = serverEnv.PUBLIC_APP_ENV;
-  const baseUrl = `https://www.${serverEnv.APP_FQDN}`;
+const BLOCK_ALL = `User-agent: *\nDisallow: /`;
 
-  // Block all bots in staging/preview/development
-  if (appEnv !== "production") {
-    return new Response(
-      `User-agent: *
-Disallow: /`,
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "text/plain",
-          "Cache-Control": "public, max-age=3600",
-        },
-      }
-    );
+export async function loader({ request }: LoaderFunctionArgs) {
+  const requestHost = new URL(request.url).hostname;
+  const canonicalHost = `www.${serverEnv.APP_FQDN}`;
+
+  // Block all bots in staging/preview/development or on non-canonical hosts (e.g. vercel.app)
+  if (serverEnv.PUBLIC_APP_ENV !== "production" || requestHost !== canonicalHost) {
+    return new Response(BLOCK_ALL, {
+      status: 200,
+      headers: { "Content-Type": "text/plain", "Cache-Control": "public, max-age=3600" },
+    });
   }
 
-  // Production: Allow all bots
+  const baseUrl = `https://${canonicalHost}`;
   const robotsTxt = `User-agent: *
 Allow: /
 
