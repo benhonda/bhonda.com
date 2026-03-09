@@ -74,6 +74,10 @@ export const REPO_CONFIG = {
     description: "Browse a curated, searchable library of web design inspiration",
     url: "https://www.inspirationindex.app",
   },
+  "adpharm/ii-pipeline-db-service": {
+    displayName: "Inspiration Index Pipeline DB Service",
+    description: "Database service for the Inspiration Index pipeline, powered by PostgreSDK",
+  },
   "adpharm/inspiration-index-terraform": {
     displayName: "Inspiration Index Terraform",
     description: "Infrastructure for the Inspiration Index platform",
@@ -86,6 +90,10 @@ export const REPO_CONFIG = {
     displayName: "Autoscroll Recorder Web",
     description: "Schedule and manage automated scrollthrough recordings of any website",
     url: "https://app.autoscrollrecorder.com",
+  },
+  "adpharm/autoscroll-recorder-db-service": {
+    displayName: "Autoscroll Recorder DB Service",
+    description: "Database service for the Autoscroll Recorder platform, powered by PostgreSDK",
   },
   "adpharm/autoscroll-recorder-api": {
     displayName: "Autoscroll Recorder API",
@@ -111,6 +119,23 @@ export const REPO_CONFIG = {
   "adpharm/synapse-crm-contacts-db": {
     displayName: "Synapse CRM Contacts DB",
     description: "Contacts database service powering the Synapse CRM",
+  },
+  // other
+  "adpharm/vercel-s3-log-drain": {
+    displayName: "Vercel S3 Log Drain",
+    description: "Drains Vercel logs into S3 for storage and analysis",
+  },
+  "adpharm/cd2-web": {
+    displayName: "CD2 Web",
+    description: "Web app for CD2 — Adpharm's single-tenant Resend clone for transactional email",
+  },
+  "adpharm/cd2-workers": {
+    displayName: "CD2 Workers",
+    description: "Client SDK, receiving API, and sending API workers powering CD2",
+  },
+  "adpharm/cd2-db": {
+    displayName: "CD2 DB",
+    description: "Database service for CD2, powered by PostgreSDK",
   },
   // other
   "adpharm/postgresdk": {
