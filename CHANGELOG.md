@@ -2,6 +2,8 @@
 
 ## 2026-03-18
 
+> **Note:** This is the last commit before migrating shiplogs and projects to a fully-local (non-S3/CDN) solution.
+
 - feat: Blog section re-introduced at `/blog` and `/blog/:slug` alongside the existing People section — posts are file-based TSX modules exporting `postMeta`, with draft/published gating and admin visibility of drafts
 - feat: Blog routes, types, registry, and post layout component added; `/blog` included in sitemap with per-post `lastmod` and `priority`
 - feat: Jim Carrey added to People profiles
