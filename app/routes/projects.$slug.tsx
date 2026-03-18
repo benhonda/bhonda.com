@@ -1,97 +1,68 @@
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { mergeMeta } from "~/lib/meta-utils";
-import { useLoaderData } from "react-router";
-import { action_handler } from "~/lib/actions/_core/action-runner.server";
+import { useLoaderData, data as routerData } from "react-router";
 import { Text } from "~/components/misc/text";
-import { useAction } from "~/hooks/use-action";
-import { fetchProjectShiplogsActionDefinition } from "~/lib/actions/fetch-project-shiplogs/action-definition";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PageHeader } from "~/components/misc/page-header";
 import { Breadcrumbs } from "~/components/misc/breadcrumbs";
 import { ExternalLink, Github } from "lucide-react";
 import { ShiplogListItem } from "~/components/shiplog/shiplog-list-item";
-import { Button } from "~/components/ui/button";
-import { getProjectBySlug } from "~/lib/shiplog/project-db-service.server";
+import { projectsBySlug, type ProjectConfig, type ProjectSlug } from "~/lib/projects/projects-config";
 import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
-import { data as routerData } from "react-router";
-import type { ShiplogMeta } from "~/lib/shiplog/fetcher.server";
+import { allShiplogs, publishedShiplogs } from "~/lib/shiplogs/shiplog-registry";
 
 export const meta: MetaFunction<typeof loader> = ({ data, matches }) => {
   if (!data?.project) {
     return [{ title: "Project Not Found | Ben Honda's Dev Blog" }];
   }
   return mergeMeta(matches, [
-    { title: `${data.project.display_name} | Ben Honda's Dev Blog` },
-    { name: "description", content: `Shiplogs for ${data.project.display_name}` },
+    { title: `${data.project.name} | Ben Honda's Dev Blog` },
+    { name: "description", content: `Shiplogs for ${data.project.name}` },
     { tagName: "link", rel: "canonical", href: `https://www.bhonda.com/projects/${data.project.slug}` },
-    { property: "og:title", content: `${data.project.display_name} | Ben Honda's Dev Blog` },
-    { property: "og:description", content: `Shiplogs for ${data.project.display_name}` },
+    { property: "og:title", content: `${data.project.name} | Ben Honda's Dev Blog` },
+    { property: "og:description", content: `Shiplogs for ${data.project.name}` },
     { property: "og:url", content: `https://www.bhonda.com/projects/${data.project.slug}` },
   ]);
 };
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   const { slug } = params;
-  if (!slug) throw new Error("Missing slug");
+  if (!slug) throw new Response("Not Found", { status: 404 });
 
-  const project = await getProjectBySlug(slug);
+  const project = (projectsBySlug as Record<string, ProjectConfig | undefined>)[slug];
   if (!project) throw routerData(null, { status: 404 });
 
   const user = await getUser(request);
   const userIsAdmin = isAdmin(user);
 
-  return { project, userIsAdmin };
+  // project.slug is a valid ProjectSlug — confirmed by 404 guard above
+  const projectSlug = project.slug as ProjectSlug;
+  const shiplogs = (userIsAdmin ? allShiplogs : publishedShiplogs).filter((s) =>
+    s.projectTags?.includes(projectSlug)
+  );
+
+  return { project, shiplogs, userIsAdmin };
 }
 
-export const action = action_handler;
-
 export default function ProjectDetail() {
-  const { project, userIsAdmin } = useLoaderData<typeof loader>();
-  const { data, isLoading, submit } = useAction(fetchProjectShiplogsActionDefinition);
-  const currentPageRef = useRef(1);
-  const [allShiplogs, setAllShiplogs] = useState<ShiplogMeta[]>([]);
-  const isInitialLoad = useRef(true);
-
-  useEffect(() => {
-    submit({ projectSlug: project.slug, page: 1, limit: 12 });
-  }, [project.slug]);
-
-  useLayoutEffect(() => {
-    if (data?.shiplogs) {
-      setAllShiplogs((prev) => {
-        if (isInitialLoad.current) {
-          isInitialLoad.current = false;
-          return data.shiplogs;
-        }
-        return [...prev, ...data.shiplogs];
-      });
-    }
-  }, [data?.shiplogs]);
-
-  const handleLoadMore = () => {
-    currentPageRef.current += 1;
-    submit({ projectSlug: project.slug, page: currentPageRef.current, limit: 12 });
-  };
-
-  const hasMore = data?.hasMore ?? false;
-  const showLoadMore = !isLoading && hasMore;
+  const { project, shiplogs, userIsAdmin } = useLoaderData<typeof loader>();
+  const repoUrl = project.repos.find((r) => r.repoUrl)?.repoUrl;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <PageHeader />
 
       <div className="w-full">
-        <Breadcrumbs crumbs={[{ label: "Projects", to: "/projects" }, { label: project.display_name }]} />
+        <Breadcrumbs crumbs={[{ label: "Projects", to: "/projects" }, { label: project.name }]} />
 
         <Text as="h2" variant="heading-md" className="mb-1">
-          {project.display_name}
+          {project.name}
         </Text>
         {project.description && (
           <Text as="p" variant="body" className="text-muted-foreground mb-3">
             {project.description}
           </Text>
         )}
-        {(project.url || project.repo_url) && (
+        {(project.url || repoUrl) && (
           <div className="flex items-center gap-4 mb-6">
             {project.url && (
               <a
@@ -104,9 +75,9 @@ export default function ProjectDetail() {
                 {new URL(project.url).hostname.replace("www.", "")}
               </a>
             )}
-            {project.repo_url && (
+            {repoUrl && (
               <a
-                href={project.repo_url}
+                href={repoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -118,38 +89,16 @@ export default function ProjectDetail() {
           </div>
         )}
 
-        {isLoading && currentPageRef.current === 1 ? (
-          <Text as="p" variant="body" className="text-muted-foreground">
-            Loading shiplogs...
-          </Text>
-        ) : allShiplogs.length === 0 ? (
+        {shiplogs.length === 0 ? (
           <Text as="p" variant="body" className="text-muted-foreground">
             No shiplogs yet for this project.
           </Text>
         ) : (
-          <>
-            <div className="space-y-4">
-              {allShiplogs.map((shiplog) => (
-                <ShiplogListItem
-                  key={shiplog.slug}
-                  shiplog={shiplog}
-                  userIsAdmin={userIsAdmin}
-                />
-              ))}
-            </div>
-
-            {showLoadMore && (
-              <div className="mt-8 flex justify-center">
-                <Button
-                  variant="secondary-filled"
-                  onClick={handleLoadMore}
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Loading..." : "Load More"}
-                </Button>
-              </div>
-            )}
-          </>
+          <div className="space-y-4">
+            {shiplogs.map((shiplog) => (
+              <ShiplogListItem key={shiplog.slug} shiplog={shiplog} userIsAdmin={userIsAdmin} />
+            ))}
+          </div>
         )}
       </div>
     </div>

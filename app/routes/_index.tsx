@@ -5,8 +5,8 @@ import { PageHeader } from "~/components/misc/page-header";
 import { Text } from "~/components/misc/text";
 import { Link } from "~/lib/router/routes";
 import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
-import { fetchShiplogs } from "~/lib/shiplog/fetcher.server";
-import { getAllProjects } from "~/lib/shiplog/project-db-service.server";
+import { allShiplogs, publishedShiplogs } from "~/lib/shiplogs/shiplog-registry";
+import { PROJECTS_CONFIG, type ProjectConfig } from "~/lib/projects/projects-config";
 import { publishedPeople } from "~/lib/people/people-registry";
 import type { ReactNode } from "react";
 
@@ -25,14 +25,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getUser(request);
   const userIsAdmin = isAdmin(user);
 
-  const [shiplogs, allProjects] = await Promise.all([
-    fetchShiplogs(userIsAdmin, 4, 0),
-    getAllProjects(),
-  ]);
-
+  const shiplogs = (userIsAdmin ? allShiplogs : publishedShiplogs).slice(0, 4);
   const people = publishedPeople.slice(0, 4);
-
-  const projects = allProjects.filter((p) => p.shiplogCount > 0).slice(0, 4);
+  const projects: ProjectConfig[] = PROJECTS_CONFIG.slice(0, 4).map((p) => p as ProjectConfig);
 
   return { shiplogs, people, projects };
 }
@@ -157,11 +152,11 @@ export default function Index() {
                 key={p.slug}
                 to="/projects/:slug"
                 params={{ slug: p.slug }}
-                title={p.description ? `${p.display_name} | ${p.description}` : p.display_name}
+                title={p.description ? `${p.name} | ${p.description}` : p.name}
                 className="flex py-3 group min-w-0"
               >
                 <span className="truncate font-body text-sm sm:text-sm-md font-normal tracking-normal">
-                  <span className="group-hover:text-primary transition-colors">{p.display_name}</span>
+                  <span className="group-hover:text-primary transition-colors">{p.name}</span>
                   {p.description && (
                     <span className="text-muted-foreground"><span className="opacity-30"> |</span> {p.description}</span>
                   )}

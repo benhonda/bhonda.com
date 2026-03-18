@@ -2,7 +2,16 @@
 
 ## 2026-03-18
 
-> **Note:** This is the last commit before migrating shiplogs and projects to a fully-local (non-S3/CDN) solution.
+- refactor: Shiplogs migrated from S3/CDN/DB to fully-local file-based TSX modules in `app/lib/shiplogs/entries/`, eliminating all async data fetching, DB writes, and CDN dependencies for content delivery
+- refactor: Projects migrated from DB to a static `PROJECTS_CONFIG` array in `app/lib/projects/projects-config.ts`, making project data version-controlled and zero-latency
+- feat: `scripts/generate-shiplog.ts` added as a local CLI replacement for the Vercel cron — generates shiplog entries directly as TSX files using Claude
+- feat: `scripts/backfill-shiplog-entries.ts` added to migrate historical S3 shiplog data into the new local format
+- refactor: `/ships` and `/ships/:slug` routes converted from client-side action fetching to SSR loaders, eliminating loading states and improving SEO
+- refactor: `/projects` and `/projects/:slug` routes converted from client-side action fetching to SSR loaders backed by static config
+- refactor: Sitemap loader made synchronous — no longer awaits DB/CDN calls; uses static shiplog registry and project config
+- chore: Removed Vercel cron endpoint `api/cron/weekly-shiplog`, reactions system, version history/diff modal, S3 client/services, DB services, and all associated action handlers (~3000 lines deleted)
+
+> **Note:** This is the last commit before fully-local migration. Previous entry preserved for reference.
 
 - feat: Blog section re-introduced at `/blog` and `/blog/:slug` alongside the existing People section — posts are file-based TSX modules exporting `postMeta`, with draft/published gating and admin visibility of drafts
 - feat: Blog routes, types, registry, and post layout component added; `/blog` included in sitemap with per-post `lastmod` and `priority`

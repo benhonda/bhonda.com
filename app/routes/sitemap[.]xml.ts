@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { serverEnv } from "~/lib/env/env.defaults.server";
-import { fetchShiplogs } from "~/lib/shiplog/fetcher.server";
-import { getAllProjects } from "~/lib/shiplog/project-db-service.server";
+import { publishedShiplogs } from "~/lib/shiplogs/shiplog-registry";
+import { PROJECTS_CONFIG } from "~/lib/projects/projects-config";
 import type { PersonModule } from "~/lib/people/people-types";
 import type { PostModule } from "~/lib/blog/blog-types";
 
@@ -24,13 +24,8 @@ function urlEntry({ path, lastmod, priority, changefreq }: SitemapRoute, baseUrl
   </url>`;
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export function loader({ request }: LoaderFunctionArgs) {
   const baseUrl = `https://${serverEnv.APP_FQDN}`;
-
-  const [shiplogs, allProjects] = await Promise.all([
-    fetchShiplogs(false),
-    getAllProjects(),
-  ]);
 
   const staticRoutes: SitemapRoute[] = [
     { path: "/", priority: 1.0, changefreq: "weekly" },
@@ -41,21 +36,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
     { path: "/contact", priority: 0.8, changefreq: "monthly" },
   ];
 
-  const shiplogRoutes: SitemapRoute[] = shiplogs.map((s) => ({
+  const shiplogRoutes: SitemapRoute[] = publishedShiplogs.map((s) => ({
     path: `/ships/${s.slug}`,
     lastmod: s.publishedAt,
     priority: 0.9,
     changefreq: "monthly",
   }));
 
-  const projectRoutes: SitemapRoute[] = allProjects
-    .filter((p) => p.shiplogCount > 0)
-    .map((p) => ({
-      path: `/projects/${p.slug}`,
-      lastmod: p.latestShiplogDate,
-      priority: 0.8,
-      changefreq: "monthly",
-    }));
+  const projectRoutes: SitemapRoute[] = PROJECTS_CONFIG.map((p) => ({
+    path: `/projects/${p.slug}`,
+    priority: 0.8,
+    changefreq: "monthly",
+  }));
 
   const peopleRoutes: SitemapRoute[] = Object.values(profileModules)
     .filter((m): m is PersonModule => "personMeta" in m && m.personMeta.status === "published")

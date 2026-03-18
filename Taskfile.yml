@@ -79,36 +79,27 @@ tasks:
     cmds:
       - bun install {{.CLI_ARGS}}
 
-  upload-shiplog:
-    desc: Upload weekly shiplog for a specific week number (use WEEK=49 YEAR=2025 ENV=staging|production)
-    requires:
-      vars:
-        - WEEK
+  backfill-shiplogs:
+    desc: Backfill shiplog TSX entry files from DB + CDN (use DRY_RUN=true to preview)
     vars:
-      ENV: '{{default "production" .ENV}}'
-      YEAR: '{{default "" .YEAR}}'
-    prompt: '{{if eq .ENV "production"}}⚠️  You are uploading to PRODUCTION. Verify DATABASE_URL is set to the production database. NOTE: This needs to be done BEFORE you run the dev server. Continue?{{end}}'
-    interactive: true
+      DRY_RUN: '{{default "" .DRY_RUN}}'
     cmds:
       - |
-        # Check if dev server is running on port 3000
-        if ! curl -k -s -f -o /dev/null https://localhost:3014 2>/dev/null; then
-          echo "❌ Dev server is not running on port 3014"
-          echo "   Start it with: task start"
-          exit 1
-        fi
+        ARGS=""
+        {{if .DRY_RUN}}ARGS="$ARGS --dry-run"{{end}}
+        bun run scripts/backfill-shiplog-entries.ts $ARGS
 
-        echo "✅ Dev server is running on port 3014"
-        {{if .YEAR}}
-        echo "🚀 Triggering shiplog for {{.YEAR}} week {{.WEEK}} (environment: {{.ENV}})..."
-        echo ""
-        curl -k "https://localhost:3014/api/cron/weekly-shiplog?week={{.WEEK}}&year={{.YEAR}}&env={{.ENV}}"
-        {{else}}
-        echo "🚀 Triggering shiplog for week {{.WEEK}} (environment: {{.ENV}})..."
-        echo ""
-        curl -k "https://localhost:3014/api/cron/weekly-shiplog?week={{.WEEK}}&env={{.ENV}}"
-        {{end}}
-        echo ""
+  generate-shiplog:
+    desc: Generate a weekly shiplog TSX file (use WEEK=11 YEAR=2026, defaults to current ISO week)
+    vars:
+      WEEK: '{{default "" .WEEK}}'
+      YEAR: '{{default "" .YEAR}}'
+    cmds:
+      - |
+        ARGS=""
+        {{if .WEEK}}ARGS="$ARGS --week {{.WEEK}}"{{end}}
+        {{if .YEAR}}ARGS="$ARGS --year {{.YEAR}}"{{end}}
+        bun run scripts/generate-shiplog.ts $ARGS
 
   show-weeks:
     desc: Show week numbers with their date ranges
@@ -171,27 +162,6 @@ tasks:
     cmds:
       - bunx drizzle-kit push
 
-  seed-projects:
-    aliases:
-      - seed:projects
-    desc: |
-      Seed the projects table from REPO_CONFIG and backfill historical shiplog→project links.
-
-      Run this when:
-        1. Setting up a fresh environment (after db-push)
-        2. Adding a new project to the whitelist
-
-      To add a new project:
-        1. Add it to app/lib/shiplog/repo-whitelist.ts (REPO_CONFIG)
-           This controls which repos appear in shiplogs (security filter).
-        2. Run this task to insert the new project row into the DB.
-           Future cron runs will auto-link shiplogs to it once commits come in.
-
-      Safe to re-run — fully idempotent.
-    deps:
-      - check-aws-identity
-    cmds:
-      - bun run scripts/seed-projects.ts
 
   # --------------------------------------------------------------------------------------------------------------------
   # Testing commands

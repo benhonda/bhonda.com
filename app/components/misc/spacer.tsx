@@ -1,8 +1,15 @@
 import { cn } from "~/lib/utils";
 import { match } from "ts-pattern";
 
-type SpacerProps = {
-  size: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "header-height";
+export const SPACER_SIZES = ["xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "header-height"] as const;
+
+/** Subset safe for content authoring — excludes layout-only sizes like "header-height". */
+export const PUBLIC_SPACER_SIZES = SPACER_SIZES.filter(
+  (s): s is Exclude<(typeof SPACER_SIZES)[number], "header-height"> => s !== "header-height"
+);
+
+export type SpacerProps = {
+  size: (typeof SPACER_SIZES)[number];
   divider?: "top" | "bottom" | "middle";
   className?: string;
 };
@@ -15,7 +22,7 @@ export function Spacer({ size, divider, className }: SpacerProps) {
   );
 }
 
-function getSpacerSize(size: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "header-height") {
+function getSpacerSize(size: (typeof SPACER_SIZES)[number]) {
   return match(size)
     .with("xs", () => "h-1.5 xl:h-2")
     .with("sm", () => "h-3 xl:h-3.5")

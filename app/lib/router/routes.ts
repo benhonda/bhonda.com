@@ -8,8 +8,6 @@ import { components, hooks, utils } from "~/lib/router/generouted-components";
 // all paths get defined here...
 export const routePaths = [
   "/",
-  "/api/cron/weekly-shiplog",
-  "/api/cron/weekly-shiplog/ts",
   "/blog",
   "/blog/:slug",
   "/contact",
