@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -33,8 +34,15 @@ export default function Shiplog2025W27() {
       </Text>
 
       <Text as="p" variant="body">
-        Built out the component registry infrastructure for our React Router-based design system. The registry now supports SSL in development, includes comprehensive testing, and features improved routing with path array support through Generouted. Split authentication logic into standalone modules for better reusability across projects.
+        Built out the component registry infrastructure for our React Router-based design system.
       </Text>
+
+      <List>
+        <ListItem>Registry now supports SSL in development.</ListItem>
+        <ListItem>Includes comprehensive testing.</ListItem>
+        <ListItem>Improved routing with path array support through Generouted.</ListItem>
+        <ListItem>Split authentication logic into standalone modules for better reusability across projects.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 

@@ -19,6 +19,8 @@ declare global {
       PUBLIC_APP_ENV?: string;
       // The fully qualified domain name of the application (e.g., example.com or localhost:3000)
       PUBLIC_APP_FQDN?: string;
+      // BunnyNet CDN base URL (environment-specific, no trailing slash)
+      PUBLIC_CDN_URL?: string;
     };
   }
 }

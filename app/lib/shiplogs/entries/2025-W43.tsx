@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -32,17 +33,14 @@ export default function Shiplog2025W43() {
         Added browser viewport controls with increment/decrement zoom buttons, making it easier to review designs at different scales. The controls are integrated directly into the interface, so you can quickly adjust your view without losing context.
       </Text>
 
-      <Text as="p" variant="body">
-        Completely redesigned the review interface with a resizable sidebar, collapsible comment threads, and cleaner visual hierarchy. The new layout puts focus on the content being reviewed while keeping feedback accessible. Added intelligent refinement tracking that highlights multiple elements simultaneously when relevant.
-      </Text>
-
-      <Text as="p" variant="body">
-        Streamlined the job creation flow with repository setup instructions and improved error handling for GitHub workflows. The architecture now centers around GitHub issues and API polling, making the system more reliable and easier to debug. Deployment detection helps track when changes actually go live.
-      </Text>
-
-      <Text as="p" variant="body">
-        Improved UI navigation throughout the app, with better feedback during long-running operations and smarter state management. Added session cancellation and retry functionality, plus approval-by-default UX that reduces friction in common workflows.
-      </Text>
+      <List>
+        <ListItem>Completely redesigned the review interface with a resizable sidebar, collapsible comment threads, and cleaner visual hierarchy.</ListItem>
+        <ListItem>Added intelligent refinement tracking that highlights multiple elements simultaneously when relevant.</ListItem>
+        <ListItem>Streamlined the job creation flow with repository setup instructions and improved error handling for GitHub workflows.</ListItem>
+        <ListItem>Architecture now centers around GitHub issues and API polling for better reliability and debuggability.</ListItem>
+        <ListItem>Deployment detection helps track when changes actually go live.</ListItem>
+        <ListItem>Session cancellation and retry functionality added alongside approval-by-default UX that reduces friction in common workflows.</ListItem>
+      </List>
     </ShiplogLayout>
   );
 }

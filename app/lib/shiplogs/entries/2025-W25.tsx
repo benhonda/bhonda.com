@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -23,7 +24,21 @@ export default function Shiplog2025W25() {
       </Text>
 
       <Text as="p" variant="body">
-        Shipped an authentication system to secure the app and built initial search functionality with a raw Pinecone results viewer for debugging, plus autocomplete on forms for faster content entry. On the screenshot processing side, a new UI handles folders waiting to be processed, with a display dialog for screenshots and their descriptions, the ability to mark screenshots for deletion during processing, and separated reprocessing logic from initial processing backed by a comprehensive event log. Gemini was integrated for generating screenshot descriptions, with multiple rounds of prompt engineering and improved fallback JSON parsing when model output isn't perfectly formatted. MP4 upload support also landed with video frame extraction configured at 3 frames every 2 seconds.
+        Shipped an authentication system to secure the app and built initial search functionality with a raw Pinecone results viewer for debugging, plus autocomplete on forms for faster content entry.
+      </Text>
+
+      <Text as="p" variant="body">
+        On the screenshot processing side:
+      </Text>
+
+      <List>
+        <ListItem>New UI handles folders waiting to be processed, with a display dialog for screenshots and their descriptions.</ListItem>
+        <ListItem>Ability to mark screenshots for deletion during processing.</ListItem>
+        <ListItem>Separated reprocessing logic from initial processing, backed by a comprehensive event log.</ListItem>
+      </List>
+
+      <Text as="p" variant="body">
+        Gemini was integrated for generating screenshot descriptions, with multiple rounds of prompt engineering and improved fallback JSON parsing when model output isn't perfectly formatted. MP4 upload support also landed with video frame extraction configured at 3 frames every 2 seconds.
       </Text>
 
       <Spacer size="sm" />
@@ -32,9 +47,12 @@ export default function Shiplog2025W25() {
         <Tag project="adpharm-shad" />
       </Text>
 
-      <Text as="p" variant="body">
-        Added an alert component and a dialog sheet component to the registry. Layout actions were improved using the fetcher pattern instead of forms, a whitespace rendering bug was fixed, and search params handling and routing utilities were refined.
-      </Text>
+      <List>
+        <ListItem>Added an alert component and a dialog sheet component to the registry.</ListItem>
+        <ListItem>Improved layout actions using the fetcher pattern instead of forms.</ListItem>
+        <ListItem>Fixed a whitespace rendering bug.</ListItem>
+        <ListItem>Refined search params handling and routing utilities.</ListItem>
+      </List>
     </ShiplogLayout>
   );
 }

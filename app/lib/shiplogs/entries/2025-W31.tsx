@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -23,12 +24,29 @@ export default function Shiplog2025W31() {
       </Text>
 
       <Text as="p" variant="body">
-        Shipped a complete end-to-end video recording platform in one week. On the infrastructure side, deployed production infrastructure with ECS, EventBridge Pipes, and SQS integration, built a recording pipeline with momentum scroll support and fine-tuned scroll settings, implemented S3 video storage with configurable destinations, and added dead letter queue error handling for failed jobs.
+        Shipped a complete end-to-end video recording platform in one week. Infrastructure:
       </Text>
 
+      <List>
+        <ListItem>Deployed production infrastructure with ECS, EventBridge Pipes, and SQS integration.</ListItem>
+        <ListItem>Built a recording pipeline with momentum scroll support and fine-tuned scroll settings.</ListItem>
+        <ListItem>Implemented S3 video storage with configurable destinations.</ListItem>
+        <ListItem>Added dead letter queue error handling for failed jobs.</ListItem>
+      </List>
+
       <Text as="p" variant="body">
-        On the web application side, launched a full UI with configuration management and job pipeline visualization, added job duplication for easier workflow management, built S3 destination setup with clear instructions, integrated real-time status updates from the pipeline checker, and implemented video retrieval and playback from S3. Also created a shared <code>@autoscroll/types</code> package for consistency across services, added <code>.env.example</code> reference for required environment variables, and improved environment configuration mapping.
+        Web application:
       </Text>
+
+      <List>
+        <ListItem>Launched a full UI with configuration management and job pipeline visualization.</ListItem>
+        <ListItem>Added job duplication for easier workflow management.</ListItem>
+        <ListItem>Built S3 destination setup with clear instructions.</ListItem>
+        <ListItem>Integrated real-time status updates from the pipeline checker.</ListItem>
+        <ListItem>Implemented video retrieval and playback from S3.</ListItem>
+        <ListItem>Created a shared <code>@autoscroll/types</code> package for consistency across services.</ListItem>
+        <ListItem>Added <code>.env.example</code> reference for required environment variables and improved environment configuration mapping.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 

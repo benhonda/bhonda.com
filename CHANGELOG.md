@@ -2,6 +2,10 @@
 
 ## 2026-03-18
 
+- refactor: Shiplog repo whitelist consolidated into `PROJECTS_CONFIG` via a `shiplogWhitelisted` flag on each repo, eliminating the separate duplicate `REPO_CONFIG` in `repo-whitelist.ts` and making projects the single source of truth for both display and inclusion logic
+- feat: `List` and `ListItem` misc components added; all shiplog entries migrated from prose paragraphs to structured lists for better readability
+- feat: Two new blog posts published — "Breaking the 39fps Cloud Capture Limit" and "Migrating Video Recording to Chrome for Testing" — featuring embedded audio players and transcript components
+- feat: `PUBLIC_CDN_URL` exposed as a client-side env var so the CDN base URL is accessible in browser context
 - refactor: Shiplogs migrated from S3/CDN/DB to fully-local file-based TSX modules in `app/lib/shiplogs/entries/`, eliminating all async data fetching, DB writes, and CDN dependencies for content delivery
 - refactor: Projects migrated from DB to a static `PROJECTS_CONFIG` array in `app/lib/projects/projects-config.ts`, making project data version-controlled and zero-latency
 - feat: `scripts/generate-shiplog.ts` added as a local CLI replacement for the Vercel cron — generates shiplog entries directly as TSX files using Claude

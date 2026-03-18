@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -23,8 +24,17 @@ export default function Shiplog2025W33() {
       </Text>
 
       <Text as="p" variant="body">
-        Major improvements to the PostgreSQL SDK generator. Added automatic Zod schema emitters for runtime validation and restructured the package to support framework-specific outputs with proper module extensions. Built an end-to-end test suite with Drizzle ORM integration and generic test generation. Introduced a contract endpoint for better API versioning and type safety, simplified date type configuration, and improved nullish value handling. Released versions 0.5.1 through 0.7.3 with these improvements.
+        Major improvements to the PostgreSQL SDK generator.
       </Text>
+
+      <List>
+        <ListItem>Added automatic Zod schema emitters for runtime validation.</ListItem>
+        <ListItem>Restructured the package to support framework-specific outputs with proper module extensions.</ListItem>
+        <ListItem>Built an end-to-end test suite with Drizzle ORM integration and generic test generation.</ListItem>
+        <ListItem>Introduced a contract endpoint for better API versioning and type safety.</ListItem>
+        <ListItem>Simplified date type configuration and improved nullish value handling.</ListItem>
+        <ListItem>Released versions 0.5.1 through 0.7.3 with these improvements.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 

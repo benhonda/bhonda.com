@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -33,8 +34,15 @@ export default function Shiplog2025W30() {
       </Text>
 
       <Text as="p" variant="body">
-        Major overhaul of the component registry system. Compressed multiple file systems into a unified structure with multi-stack definitions in the registry JSON. Added login page and improved developer experience with better documentation. Transitioned to CSS variables for theming, and components now generate at build time for better performance.
+        Major overhaul of the component registry system.
       </Text>
+
+      <List>
+        <ListItem>Compressed multiple file systems into a unified structure with multi-stack definitions in the registry JSON.</ListItem>
+        <ListItem>Added login page and improved developer experience with better documentation.</ListItem>
+        <ListItem>Transitioned to CSS variables for theming.</ListItem>
+        <ListItem>Components now generate at build time for better performance.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -52,9 +60,12 @@ export default function Shiplog2025W30() {
         <Tag project="inspiration-index" />
       </Text>
 
-      <Text as="p" variant="body">
-        Polished the app with several improvements. Fixed theming issues and refined visual styling. Enhanced build pipeline with better event tracking and attempt counting. Updated dev container and job pipeline configurations, and improved model selection and validation.
-      </Text>
+      <List>
+        <ListItem>Fixed theming issues and refined visual styling.</ListItem>
+        <ListItem>Enhanced build pipeline with better event tracking and attempt counting.</ListItem>
+        <ListItem>Updated dev container and job pipeline configurations.</ListItem>
+        <ListItem>Improved model selection and validation.</ListItem>
+      </List>
     </ShiplogLayout>
   );
 }

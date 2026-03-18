@@ -3,6 +3,7 @@ import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Quote } from "~/components/people/quote";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -31,26 +32,13 @@ export default function Shiplog2026W12() {
         <Tag project="autoscroll-recorder" />
       </Text>
 
-      <Text as="p" variant="body">
-        Runs now support notes for tracking context and decisions alongside each
-        recording attempt. Configuration dialogs gained helper popovers and
-        duplication shortcuts for faster setup.
-      </Text>
-
-      <Text as="p" variant="body">
-        Device presets arrived with mobile-standard and desktop-standard
-        configurations optimized for common recording scenarios. The S3
-        destination system now routes outputs independently, letting you send
-        different formats to different buckets with template variables for
-        dynamic paths.
-      </Text>
-
-      <Text as="p" variant="body">
-        Video quality improvements shipped under the hood: GPU-accelerated
-        encoding switched to HEVC for better compression, and the rendering
-        pipeline moved to hardware acceleration for smoother capture at higher
-        resolutions.
-      </Text>
+      <List>
+        <ListItem>Runs now support notes for tracking context and decisions alongside each recording attempt</ListItem>
+        <ListItem>Configuration dialogs gained helper popovers and duplication shortcuts for faster setup</ListItem>
+        <ListItem>Device presets with mobile-standard and desktop-standard configurations optimized for common recording scenarios</ListItem>
+        <ListItem>S3 destination system routes outputs independently—send different formats to different buckets with template variables for dynamic paths</ListItem>
+        <ListItem>GPU-accelerated encoding switched to HEVC for better compression; rendering pipeline moved to hardware acceleration for smoother capture at higher resolutions</ListItem>
+      </List>
 
       <Quote note="terminology cleanup">
         Renamed jobs to runs throughout the interface to better reflect the
@@ -63,18 +51,11 @@ export default function Shiplog2026W12() {
         <Tag project="postgresdk" />
       </Text>
 
-      <Text as="p" variant="body">
-        Pull operations now prompt before deleting stale files, with a force
-        flag for automation contexts. Soft-delete filtering improved
-        significantly with proper precedence handling and per-table column
-        overrides.
-      </Text>
-
-      <Text as="p" variant="body">
-        The include-loader now respects soft-delete flags through nested
-        queries, and a new includeSoftDeleted option gives explicit control over
-        whether to surface deleted records.
-      </Text>
+      <List>
+        <ListItem>Pull operations now prompt before deleting stale files, with a force flag for automation contexts</ListItem>
+        <ListItem>Soft-delete filtering improved with proper precedence handling and per-table column overrides</ListItem>
+        <ListItem>Include-loader respects soft-delete flags through nested queries; new <code>includeSoftDeleted</code> option gives explicit control over surfacing deleted records</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -82,17 +63,12 @@ export default function Shiplog2026W12() {
         <Tag project="inspiration-index" />
       </Text>
 
-      <Text as="p" variant="body">
-        Navigation gained a flyout interface with cascade visibility controls.
-        Search performance improved with a client-side embedding cache that
-        enables zero-latency relevance sorting for sections.
-      </Text>
-
-      <Text as="p" variant="body">
-        Taxonomy prompts were sharpened to better disambiguate components from
-        sections, and filtering moved to a registry-driven system for consistent
-        behavior across all discovery routes.
-      </Text>
+      <List>
+        <ListItem>Navigation gained a flyout interface with cascade visibility controls</ListItem>
+        <ListItem>Client-side embedding cache enables zero-latency relevance sorting for sections</ListItem>
+        <ListItem>Taxonomy prompts sharpened to better disambiguate components from sections</ListItem>
+        <ListItem>Filtering moved to a registry-driven system for consistent behavior across all discovery routes</ListItem>
+      </List>
     </ShiplogLayout>
   );
 }

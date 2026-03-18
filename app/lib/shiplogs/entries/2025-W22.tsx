@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -32,9 +33,11 @@ export default function Shiplog2025W22() {
         <Tag project="adapts" />
       </Text>
 
-      <Text as="p" variant="body">
-        Improved analytics filtering to properly handle both www and non-www domains, ensuring accurate tracking across all domain variants. Fixed a critical URL bug that was affecting link navigation, plus cleaned up export functionality and routing behavior on the drive layout page.
-      </Text>
+      <List>
+        <ListItem>Improved analytics filtering to properly handle both www and non-www domains, ensuring accurate tracking across all domain variants.</ListItem>
+        <ListItem>Fixed a critical URL bug that was affecting link navigation.</ListItem>
+        <ListItem>Cleaned up export functionality and routing behavior on the drive layout page.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -42,9 +45,11 @@ export default function Shiplog2025W22() {
         <Tag project="silo-cdp" />
       </Text>
 
-      <Text as="p" variant="body">
-        Refined error handling by switching from hard errors to logging for better observability. Updated GTM (Google Tag Manager) naming conventions and fixed destructuring issues that were causing data handling problems.
-      </Text>
+      <List>
+        <ListItem>Refined error handling by switching from hard errors to logging for better observability.</ListItem>
+        <ListItem>Updated GTM (Google Tag Manager) naming conventions.</ListItem>
+        <ListItem>Fixed destructuring issues that were causing data handling problems.</ListItem>
+      </List>
     </ShiplogLayout>
   );
 }

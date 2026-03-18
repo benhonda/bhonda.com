@@ -3,6 +3,7 @@ import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Quote } from "~/components/people/quote";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -29,23 +30,28 @@ export default function Shiplog2026W11() {
         <Tag project="inspiration-index" />
       </Text>
 
-      <Text as="p" variant="body">
-        Search got smarter with relevance-based section sorting using vector embeddings and adaptive thinking levels that adjust complexity based on query difficulty. Live website search now includes trigram matching for more flexible results.
-      </Text>
+      <List>
+        <ListItem>Relevance-based section sorting using vector embeddings with adaptive thinking levels that adjust complexity based on query difficulty</ListItem>
+        <ListItem>Live website search now includes trigram matching for more flexible results</ListItem>
+      </List>
 
-      <Text as="p" variant="body">
-        Mobile experience received a complete overhaul: responsive dialogs and navigation, refined filter UX, and touch-optimized interactions throughout. The root feed moved to the homepage, with unified collection detail views replacing the old browse-only approach.
-      </Text>
+      <List>
+        <ListItem>Responsive dialogs and navigation, refined filter UX, and touch-optimized interactions throughout</ListItem>
+        <ListItem>Root feed moved to the homepage, with unified collection detail views replacing the old browse-only approach</ListItem>
+      </List>
 
-      <Text as="p" variant="body">
-        Download options expanded with HD MP4 for paid users and standard MP4 free for everyone. Credits are now only consumed when searches return actual results, preventing waste on empty queries.
-      </Text>
+      <List>
+        <ListItem>HD MP4 downloads for paid users; standard MP4 free for everyone</ListItem>
+        <ListItem>Credits only consumed when searches return actual results</ListItem>
+      </List>
 
       <Quote>14-day trial with redesigned onboarding flow featuring interest selection and search suggestion chips</Quote>
 
-      <Text as="p" variant="body">
-        Authentication shifted from passwords to OTP email auth for simpler, more secure access. Account management added delete account functionality and dedicated settings pages. SEO fundamentals landed: canonical URLs, sitemaps, and OG image generation.
-      </Text>
+      <List>
+        <ListItem>Authentication shifted from passwords to OTP email auth for simpler, more secure access</ListItem>
+        <ListItem>Account management added delete account functionality and dedicated settings pages</ListItem>
+        <ListItem>SEO fundamentals: canonical URLs, sitemaps, and OG image generation</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -53,13 +59,13 @@ export default function Shiplog2026W11() {
         <Tag project="autoscroll-recorder" />
       </Text>
 
-      <Text as="p" variant="body">
-        Full-page screenshot capture now available alongside video recordings. HiDPI-native capture with dynamic scaling produces sharper output, while multi-output recording supports generating multiple resolutions from a single job.
-      </Text>
-
-      <Text as="p" variant="body">
-        Screenshots appear on job detail pages with dedicated settings for configuration. Cookie consent selectors added to handle common banner scenarios automatically.
-      </Text>
+      <List>
+        <ListItem>Full-page screenshot capture now available alongside video recordings</ListItem>
+        <ListItem>HiDPI-native capture with dynamic scaling produces sharper output</ListItem>
+        <ListItem>Multi-output recording supports generating multiple resolutions from a single job</ListItem>
+        <ListItem>Screenshots appear on job detail pages with dedicated settings for configuration</ListItem>
+        <ListItem>Cookie consent selectors added to handle common banner scenarios automatically</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -77,13 +83,12 @@ export default function Shiplog2026W11() {
         <Tag project="cd2" />
       </Text>
 
-      <Text as="p" variant="body">
-        Email forwarding gained CC support, attachment handling, and attribution blocks for transparency. API key revocation provides security controls, while forwarding rules now sort by priority with warnings for silent-drop configurations.
-      </Text>
-
-      <Text as="p" variant="body">
-        DLQ monitoring with Slack notifications keeps tabs on delivery issues, with hourly redrive attempts for failed messages.
-      </Text>
+      <List>
+        <ListItem>Email forwarding gained CC support, attachment handling, and attribution blocks for transparency</ListItem>
+        <ListItem>API key revocation provides security controls</ListItem>
+        <ListItem>Forwarding rules now sort by priority with warnings for silent-drop configurations</ListItem>
+        <ListItem>DLQ monitoring with Slack notifications; hourly redrive attempts for failed messages</ListItem>
+      </List>
     </ShiplogLayout>
   );
 }

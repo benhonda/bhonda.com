@@ -3,6 +3,7 @@ import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Quote } from "~/components/people/quote";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -23,13 +24,13 @@ export default function Shiplog2026W01() {
         <Tag project="inspiration-index" />
       </Text>
 
-      <Text as="p" variant="body">
-        Shipped automatic collision detection that triggers S3 auto-processing and simplifies the retry workflow. The pipeline now consolidates page type taxonomy into a single source of truth, making it easier to classify and process content consistently across the system. The app got a fresh sidebar navigation and enhanced pipeline review UI, plus a complete theme system migration for a cleaner codebase.
-      </Text>
-
-      <Text as="p" variant="body">
-        The link scraper added intelligent page discovery and classification—automatically detecting and categorizing different page types as it crawls. Page type hints are now passed directly to the Recorder API, and metadata is properly batched per-URL for better tracking.
-      </Text>
+      <List>
+        <ListItem>Automatic collision detection that triggers S3 auto-processing and simplifies the retry workflow</ListItem>
+        <ListItem>Pipeline now consolidates page type taxonomy into a single source of truth for consistent classification across the system</ListItem>
+        <ListItem>Fresh sidebar navigation and enhanced pipeline review UI, plus a complete theme system migration</ListItem>
+        <ListItem>Link scraper adds intelligent page discovery and classification—automatically detecting and categorizing page types as it crawls</ListItem>
+        <ListItem>Page type hints passed directly to the Recorder API; metadata batched per-URL for better tracking</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -43,9 +44,14 @@ export default function Shiplog2026W01() {
 
       <Quote note="retry count">Distribution retries increased from 3 to 50 attempts with full idempotency tracking.</Quote>
 
-      <Text as="p" variant="body">
-        Improved the S3 destination setup flow with auto-generated external IDs and a corrected workflow that's much easier to follow. Under the hood, migrated to JWT authentication and Terragrunt infrastructure, added support for optional per-job metadata via the API, iubenda cookie consent banner support, and comprehensive S3 metadata with every recording. The Lambda now properly persists user metadata to the database.
-      </Text>
+      <List>
+        <ListItem>Improved S3 destination setup flow with auto-generated external IDs and a corrected workflow</ListItem>
+        <ListItem>Migrated to JWT authentication and Terragrunt infrastructure</ListItem>
+        <ListItem>Support for optional per-job metadata via the API</ListItem>
+        <ListItem>iubenda cookie consent banner support</ListItem>
+        <ListItem>Comprehensive S3 metadata with every recording</ListItem>
+        <ListItem>Lambda now properly persists user metadata to the database</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -54,8 +60,17 @@ export default function Shiplog2026W01() {
       </Text>
 
       <Text as="p" variant="body">
-        Breaking change: multi-service authentication. Replaced the single-secret JWT system with proper multi-service auth, making it production-ready for distributed systems. Added an init pull subcommand for simpler configuration and increased max pagination to 1,000 records. Fixed several developer experience issues: direct nested includes now work without wrapper syntax, JWT secrets are no longer hardcoded in generated code, and the CLI shows helpful errors when config files are missing. Documentation received a major overhaul with new guides for service authorization and SDK distribution.
+        Breaking change: multi-service authentication. Replaced the single-secret JWT system with proper multi-service auth, making it production-ready for distributed systems.
       </Text>
+
+      <List>
+        <ListItem>Added an <code>init pull</code> subcommand for simpler configuration</ListItem>
+        <ListItem>Increased max pagination to 1,000 records</ListItem>
+        <ListItem>Direct nested includes now work without wrapper syntax</ListItem>
+        <ListItem>JWT secrets no longer hardcoded in generated code</ListItem>
+        <ListItem>CLI shows helpful errors when config files are missing</ListItem>
+        <ListItem>Documentation overhauled with new guides for service authorization and SDK distribution</ListItem>
+      </List>
 
       <Spacer size="sm" />
 

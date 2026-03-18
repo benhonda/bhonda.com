@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -25,8 +26,15 @@ export default function Shiplog2025W38() {
       </Text>
 
       <Text as="p" variant="body">
-        The pipeline infrastructure received significant reliability improvements. S3-only upload support means the pipeline now handles video uploads directly from S3 without requiring recorder metadata. Staging environment fixes resolved Step Functions failures and MediaConvert S3 path issues that were blocking staging deployments. Infrastructure automation standardized naming conventions and improved error handling across Terraform configurations, while streamlined testing improved the /test-pipeline command with clearer documentation and better enforcement.
+        The pipeline infrastructure received significant reliability improvements.
       </Text>
+
+      <List>
+        <ListItem>S3-only upload support means the pipeline now handles video uploads directly from S3 without requiring recorder metadata.</ListItem>
+        <ListItem>Staging environment fixes resolved Step Functions failures and MediaConvert S3 path issues that were blocking staging deployments.</ListItem>
+        <ListItem>Infrastructure automation standardized naming conventions and improved error handling across Terraform configurations.</ListItem>
+        <ListItem>Streamlined testing improved the /test-pipeline command with clearer documentation and better enforcement.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -39,8 +47,18 @@ export default function Shiplog2025W38() {
       </Text>
 
       <Text as="p" variant="body">
-        Built comprehensive retry functionality for failed recordings: automatic detection and recovery of failed recordings, fixed retry job status tracking to prevent false completion states, clear error messages when S3 videos are detected during recovery, and proper permission handling for S3 object deletion and ECS task management. Also added Docker image metadata logging for better debugging, resolved timeout issues at 120s for GPU tasks, and fixed EventBridge Pipe and Vercel IAM permissions for full ECS and SQS access.
+        Built comprehensive retry functionality for failed recordings:
       </Text>
+
+      <List>
+        <ListItem>Automatic detection and recovery of failed recordings.</ListItem>
+        <ListItem>Fixed retry job status tracking to prevent false completion states.</ListItem>
+        <ListItem>Clear error messages when S3 videos are detected during recovery.</ListItem>
+        <ListItem>Proper permission handling for S3 object deletion and ECS task management.</ListItem>
+        <ListItem>Docker image metadata logging for better debugging.</ListItem>
+        <ListItem>Resolved timeout issues at 120s for GPU tasks.</ListItem>
+        <ListItem>Fixed EventBridge Pipe and Vercel IAM permissions for full ECS and SQS access.</ListItem>
+      </List>
     </ShiplogLayout>
   );
 }

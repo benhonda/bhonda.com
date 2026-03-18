@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -28,13 +29,13 @@ export default function Shiplog2025W40() {
         Added automated GitHub Actions workflow and secrets configuration with a single click. The new setup includes verification checks, confirmation dialogs, and a comprehensive job setup checklist to ensure everything's configured correctly before you start working.
       </Text>
 
-      <Text as="p" variant="body">
-        Shipped a new preview mode with browser chrome simulation, configurable iframe zoom, and Vercel deployment preview bypass support. The preview now feels like viewing a real deployed site. Breadcrumb navigation via React Router v7 handles was added alongside a floating sidebar with persistent state that survives page refreshes using cookie-based storage.
-      </Text>
-
-      <Text as="p" variant="body">
-        Added annotation client with BunnyNet CDN integration for global asset delivery, simplified S3 configuration, and integrated Vercel OIDC authentication for secure cloud resource access.
-      </Text>
+      <List>
+        <ListItem>New preview mode with browser chrome simulation, configurable iframe zoom, and Vercel deployment preview bypass support.</ListItem>
+        <ListItem>Breadcrumb navigation via React Router v7 handles.</ListItem>
+        <ListItem>Floating sidebar with persistent state that survives page refreshes using cookie-based storage.</ListItem>
+        <ListItem>Annotation client with BunnyNet CDN integration for global asset delivery and simplified S3 configuration.</ListItem>
+        <ListItem>Vercel OIDC authentication for secure cloud resource access.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -46,13 +47,13 @@ export default function Shiplog2025W40() {
         Split data concerns with separate APP_DB and PIPELINE_DB databases, allowing the application and video processing pipeline to scale independently.
       </Text>
 
-      <Text as="p" variant="body">
-        Built comprehensive pipeline review visualization with frame-by-frame analysis UI. You can now see exactly what's happening at each step of video processing, complete with human feedback controls and progress indicators. Added BunnyNet CDN for global asset delivery, ensuring video frames and processed content load quickly regardless of location.
-      </Text>
-
-      <Text as="p" variant="body">
-        Implemented end-to-end observability with review artifacts. The new analyze-video-frames Lambda directly analyzes frames and fixes alignment issues that were causing processing failures. Moved all Terraform infrastructure into the main application and pipeline repositories, streamlining deployment and configuration management.
-      </Text>
+      <List>
+        <ListItem>Built comprehensive pipeline review visualization with frame-by-frame analysis UI, human feedback controls, and progress indicators.</ListItem>
+        <ListItem>Added BunnyNet CDN for global asset delivery of video frames and processed content.</ListItem>
+        <ListItem>Implemented end-to-end observability with review artifacts.</ListItem>
+        <ListItem>New analyze-video-frames Lambda directly analyzes frames and fixes alignment issues that were causing processing failures.</ListItem>
+        <ListItem>Moved all Terraform infrastructure into the main application and pipeline repositories, streamlining deployment and configuration management.</ListItem>
+      </List>
     </ShiplogLayout>
   );
 }

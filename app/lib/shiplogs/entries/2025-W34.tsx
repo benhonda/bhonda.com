@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -27,8 +28,15 @@ export default function Shiplog2025W34() {
       </Text>
 
       <Text as="p" variant="body">
-        On the UI side, fixed refresh functionality that was breaking before completing, improved job metadata extraction, resolved UI performance issues, and added configuration interfaces for S3 and Google Drive destinations in settings.
+        UI fixes and additions:
       </Text>
+
+      <List>
+        <ListItem>Fixed refresh functionality that was breaking before completing.</ListItem>
+        <ListItem>Improved job metadata extraction.</ListItem>
+        <ListItem>Resolved UI performance issues.</ListItem>
+        <ListItem>Added configuration interfaces for S3 and Google Drive destinations in settings.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -41,8 +49,15 @@ export default function Shiplog2025W34() {
       </Text>
 
       <Text as="p" variant="body">
-        On the developer experience side, an interactive configuration merge process now preserves existing settings when updating. Standardized config field naming to eliminate confusion, added select schema generation for better type safety, and introduced a new <code>gen</code> shorthand command for faster code generation.
+        Developer experience improvements:
       </Text>
+
+      <List>
+        <ListItem>Interactive configuration merge process now preserves existing settings when updating.</ListItem>
+        <ListItem>Standardized config field naming to eliminate confusion.</ListItem>
+        <ListItem>Added select schema generation for better type safety.</ListItem>
+        <ListItem>Introduced a new <code>gen</code> shorthand command for faster code generation.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -50,9 +65,13 @@ export default function Shiplog2025W34() {
         <Tag project="synapse-crm" />
       </Text>
 
-      <Text as="p" variant="body">
-        Fixed contact list navigation issues and improved action system typing for more reliable interaction flows. Added simplified Terraform/Terragrunt setup for Route 53 DNS management with support for existing hosted zones, making it easier to manage DNS across environments. Also shipped comprehensive setup guides with enforcement of latest provider version checks, Vercel environment variable management now fully automated via Terraform, and added GitHub CLI and improved Terraform tooling to the devcontainer.
-      </Text>
+      <List>
+        <ListItem>Fixed contact list navigation issues and improved action system typing.</ListItem>
+        <ListItem>Added simplified Terraform/Terragrunt setup for Route 53 DNS management with support for existing hosted zones.</ListItem>
+        <ListItem>Shipped comprehensive setup guides with enforcement of latest provider version checks.</ListItem>
+        <ListItem>Vercel environment variable management now fully automated via Terraform.</ListItem>
+        <ListItem>Added GitHub CLI and improved Terraform tooling to the devcontainer.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 

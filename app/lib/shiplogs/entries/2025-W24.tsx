@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -23,8 +24,15 @@ export default function Shiplog2025W24() {
       </Text>
 
       <Text as="p" variant="body">
-        The Inspiration Index app went from zero to production this week with a complete AI-powered content capture system. Claude was integrated to analyze and describe webpages, extracting meaningful insights from captured content. EventBridge integration handles automated frame capture and processing, working around the 5-second timeout constraints. Pinecone was set up for embedding storage and semantic search capabilities, and a complete form system shipped with typed components, hooks, and server-side Zod validation for bulletproof data handling.
+        The Inspiration Index app went from zero to production this week with a complete AI-powered content capture system.
       </Text>
+
+      <List>
+        <ListItem>Integrated Claude to analyze and describe webpages, extracting meaningful insights from captured content.</ListItem>
+        <ListItem>EventBridge integration handles automated frame capture and processing, working around the 5-second timeout constraints.</ListItem>
+        <ListItem>Pinecone set up for embedding storage and semantic search capabilities.</ListItem>
+        <ListItem>Complete form system shipped with typed components, hooks, and server-side Zod validation for bulletproof data handling.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -33,8 +41,14 @@ export default function Shiplog2025W24() {
       </Text>
 
       <Text as="p" variant="body">
-        Expanded the shared component registry with production-ready form infrastructure. A comprehensive form builder landed with type-safe field definitions and validation, alongside authentication schemas and utilities for consistent auth handling. The build process and dependency management were also improved for smoother integration across projects.
+        Expanded the shared component registry with production-ready form infrastructure.
       </Text>
+
+      <List>
+        <ListItem>Comprehensive form builder with type-safe field definitions and validation.</ListItem>
+        <ListItem>Authentication schemas and utilities for consistent auth handling.</ListItem>
+        <ListItem>Improved build process and dependency management for smoother integration across projects.</ListItem>
+      </List>
     </ShiplogLayout>
   );
 }

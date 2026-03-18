@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -33,8 +34,16 @@ export default function Shiplog2025W29() {
       </Text>
 
       <Text as="p" variant="body">
-        Shipped several improvements to the design system. Migrated to CSS variables for theming, enabling better customization and maintainability. Updated internationalization (i18n) for React Router v7, refined authentication utilities organization, added analytics integration, and enhanced search parameter handling.
+        Shipped several improvements to the design system.
       </Text>
+
+      <List>
+        <ListItem>Migrated to CSS variables for theming, enabling better customization and maintainability.</ListItem>
+        <ListItem>Updated internationalization (i18n) for React Router v7.</ListItem>
+        <ListItem>Refined authentication utilities organization.</ListItem>
+        <ListItem>Added analytics integration.</ListItem>
+        <ListItem>Enhanced search parameter handling.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 

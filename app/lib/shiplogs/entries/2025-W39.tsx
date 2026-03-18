@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -28,9 +29,11 @@ export default function Shiplog2025W39() {
         Shipped a complete AI-powered video analysis pipeline using Gemini for multi-modal frame analysis. The system now includes intelligent retry/re-run support with selective step execution, so you can resume failed pipelines without starting from scratch.
       </Text>
 
-      <Text as="p" variant="body">
-        Major infrastructure improvements: migrated from AWS Secrets Manager to SSM Parameter Store, fixed database connection handling, and added proper idempotency to prevent duplicate processing.
-      </Text>
+      <List>
+        <ListItem>Migrated from AWS Secrets Manager to SSM Parameter Store.</ListItem>
+        <ListItem>Fixed database connection handling.</ListItem>
+        <ListItem>Added proper idempotency to prevent duplicate processing.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -39,16 +42,27 @@ export default function Shiplog2025W39() {
       </Text>
 
       <Text as="p" variant="body">
-        The UI got a major usability upgrade: added global navigation and breadcrumbs for easier browsing, implemented auto-refresh with pause/resume on job status pages, added job cancellation for in-progress recordings, and device selection now happens at job creation time. Fixed video downloads to actually download instead of opening in a new tab, and streamlined the job retry interface.
+        The UI got a major usability upgrade:
       </Text>
+
+      <List>
+        <ListItem>Added global navigation and breadcrumbs for easier browsing.</ListItem>
+        <ListItem>Implemented auto-refresh with pause/resume on job status pages.</ListItem>
+        <ListItem>Added job cancellation for in-progress recordings.</ListItem>
+        <ListItem>Device selection now happens at job creation time.</ListItem>
+        <ListItem>Fixed video downloads to actually download instead of opening in a new tab.</ListItem>
+        <ListItem>Streamlined the job retry interface.</ListItem>
+      </List>
 
       <Text as="p" variant="body">
         Cracked the GPU acceleration puzzle: replaced Xvfb with Xorg dummy driver to enable proper GPU passthrough in Docker containers. WebGL now works with hardware acceleration. Mobile recording is now fully supported—removed fixed Chrome window sizes and increased display resolution to 4K.
       </Text>
 
-      <Text as="p" variant="body">
-        Smooth scrolling got a complete overhaul: reimplemented constant scroll mode for buttery 60fps performance with dynamic content handling. Fixed CSS smooth-scroll interference and added segmented scrolling for long pages. Localization improvements added dynamic locale detection and comprehensive Chrome translation disabling to prevent popups during recording.
-      </Text>
+      <List>
+        <ListItem>Reimplemented constant scroll mode for buttery 60fps performance with dynamic content handling.</ListItem>
+        <ListItem>Fixed CSS smooth-scroll interference and added segmented scrolling for long pages.</ListItem>
+        <ListItem>Added dynamic locale detection and comprehensive Chrome translation disabling to prevent popups during recording.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 

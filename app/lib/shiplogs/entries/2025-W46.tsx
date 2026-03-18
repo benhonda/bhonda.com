@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -31,8 +32,16 @@ export default function Shiplog2025W46() {
       </Text>
 
       <Text as="p" variant="body">
-        PostgreSDK saw three releases this week (v0.11.0 → v0.13.1), bringing major capabilities. List operations now return total counts and cursor info alongside results via pagination metadata. PostgreSQL enums are now fully supported in both schema introspection and SDK generation. Sorting by multiple columns with mixed directions landed, along with a new onRequest middleware hook for request-level logic in generated Hono routers. Generated SDKs also received comprehensive JSDoc comments and improved examples.
+        PostgreSDK saw three releases this week (v0.11.0 → v0.13.1), bringing major capabilities:
       </Text>
+
+      <List>
+        <ListItem>List operations now return total counts and cursor info alongside results via pagination metadata.</ListItem>
+        <ListItem>PostgreSQL enums are now fully supported in both schema introspection and SDK generation.</ListItem>
+        <ListItem>Sorting by multiple columns with mixed directions.</ListItem>
+        <ListItem>New onRequest middleware hook for request-level logic in generated Hono routers.</ListItem>
+        <ListItem>Generated SDKs received comprehensive JSDoc comments and improved examples.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -41,8 +50,17 @@ export default function Shiplog2025W46() {
       </Text>
 
       <Text as="p" variant="body">
-        The CRM shipped production-ready features and major UX improvements. Automated PostgreSQL triggers now track all contact changes with a dedicated audit log viewer. A CLI tool imports contacts directly from Google Sheets with automation support. Contacts can now be sorted by multiple fields simultaneously and filtered by medical specialty with a new enum-backed schema. SWR-pattern action caching reduces server load, a new persistent navigation sidebar landed, and refined button sizing produces denser, more efficient layouts. Full production infrastructure was also deployed alongside staging.
+        The CRM shipped production-ready features and major UX improvements:
       </Text>
+
+      <List>
+        <ListItem>Automated PostgreSQL triggers now track all contact changes with a dedicated audit log viewer.</ListItem>
+        <ListItem>A CLI tool imports contacts directly from Google Sheets with automation support.</ListItem>
+        <ListItem>Contacts can now be sorted by multiple fields simultaneously and filtered by medical specialty with a new enum-backed schema.</ListItem>
+        <ListItem>SWR-pattern action caching reduces server load.</ListItem>
+        <ListItem>New persistent navigation sidebar and refined button sizing for denser, more efficient layouts.</ListItem>
+        <ListItem>Full production infrastructure deployed alongside staging.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -51,8 +69,16 @@ export default function Shiplog2025W46() {
       </Text>
 
       <Text as="p" variant="body">
-        The component registry leveled up its type safety and developer experience. Phantom types now provide end-to-end type safety for React Router v7 actions. The use-action hook was streamlined to a fetcher-only implementation. A new tf-init command automates environment setup with Route53 integration, all components were consolidated into a single cohesive package, and comprehensive RR7 stack docs with a clearer tier structure shipped.
+        The component registry leveled up its type safety and developer experience:
       </Text>
+
+      <List>
+        <ListItem>Phantom types now provide end-to-end type safety for React Router v7 actions.</ListItem>
+        <ListItem>The use-action hook was streamlined to a fetcher-only implementation.</ListItem>
+        <ListItem>A new tf-init command automates environment setup with Route53 integration.</ListItem>
+        <ListItem>All components consolidated into a single cohesive package.</ListItem>
+        <ListItem>Comprehensive RR7 stack docs with a clearer tier structure shipped.</ListItem>
+      </List>
     </ShiplogLayout>
   );
 }

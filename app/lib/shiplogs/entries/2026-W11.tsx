@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -35,17 +36,26 @@ export default function Shiplog2026W11() {
         OTP email authentication replaces password-based flows entirely, with a 14-day free trial giving new users full access before committing. Onboarding was redesigned with streamlined interest selection and profile setup. Users can now fully delete their accounts and cancel subscriptions.
       </Text>
 
-      <Text as="p" variant="body">
-        Mobile got a complete overhaul: adaptive breakpoints, sheet redesign, iOS bounce fixes, scroll restoration, improved dialogs, gesture handling, a sticky filter bar with pill-based active state, and uniform card sizing across collection mosaics and detail views.
-      </Text>
+      <List>
+        <ListItem>Adaptive breakpoints, sheet redesign, iOS bounce fixes, scroll restoration, and improved dialogs</ListItem>
+        <ListItem>Gesture handling and sticky filter bar with pill-based active state</ListItem>
+        <ListItem>Uniform card sizing across collection mosaics and detail views</ListItem>
+      </List>
 
-      <Text as="p" variant="body">
-        Search got smarter with vector embedding-based relevance ranking for section browsing, a pre-filter step and adaptive thinking levels for performance, and credits only consumed on successful results. HD downloads landed for paid users with standard MP4 remaining free for all. Search suggestions expanded with contextual chips and synonym matching.
-      </Text>
+      <List>
+        <ListItem>Vector embedding-based relevance ranking for section browsing</ListItem>
+        <ListItem>Pre-filter step and adaptive thinking levels for search performance</ListItem>
+        <ListItem>Credits only consumed on successful results</ListItem>
+        <ListItem>HD downloads for paid users; standard MP4 remains free for all</ListItem>
+        <ListItem>Search suggestions expanded with contextual chips and synonym matching</ListItem>
+      </List>
 
-      <Text as="p" variant="body">
-        SEO foundations landed: canonical URLs, structured sitemaps, OG image generation, and proper indexability controls. Comprehensive event tracking shipped across user journeys, dedicated settings pages for account management, and a personalized content feed at the root route.
-      </Text>
+      <List>
+        <ListItem>Canonical URLs, structured sitemaps, and OG image generation for SEO</ListItem>
+        <ListItem>Comprehensive event tracking across user journeys</ListItem>
+        <ListItem>Dedicated settings pages for account management</ListItem>
+        <ListItem>Personalized content feed at the root route</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -53,13 +63,18 @@ export default function Shiplog2026W11() {
         <Tag project="autoscroll-recorder" />
       </Text>
 
-      <Text as="p" variant="body">
-        Multi-output support generates multiple resolutions from a single capture, replacing the single-output model. HiDPI-native capture with dynamic scaling and auto-adjusted bitrate produces crisp high-DPI recordings. Full-page screenshots now capture entire page state alongside video. GPU pipeline improved with CUDA acceleration and proper hardware detection.
-      </Text>
+      <List>
+        <ListItem>Multi-output support generates multiple resolutions from a single capture, replacing the single-output model</ListItem>
+        <ListItem>HiDPI-native capture with dynamic scaling and auto-adjusted bitrate for crisp high-DPI recordings</ListItem>
+        <ListItem>Full-page screenshots capture entire page state alongside video</ListItem>
+        <ListItem>GPU pipeline improved with CUDA acceleration and proper hardware detection</ListItem>
+      </List>
 
-      <Text as="p" variant="body">
-        Screenshots appear in job detail pages with presigned download links for each resolution variant. Screenshot settings let you configure capture parameters per config-set. A consolidated dropdown for retry, duplicate, and management tasks simplifies job actions.
-      </Text>
+      <List>
+        <ListItem>Screenshots appear in job detail pages with presigned download links for each resolution variant</ListItem>
+        <ListItem>Screenshot settings let you configure capture parameters per config-set</ListItem>
+        <ListItem>Consolidated dropdown for retry, duplicate, and management tasks simplifies job actions</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -67,9 +82,14 @@ export default function Shiplog2026W11() {
         <Tag project="cd2" />
       </Text>
 
-      <Text as="p" variant="body">
-        Domain-scoped API keys restrict keys to specific domains for tighter security. Admin interface for immediate key revocation shipped. System keys bypass domain restrictions for internal operations. Email forwarding gained CC support, attachment preservation, and attribution blocks. Auto-create initial forwarding rule on domain setup, priority warnings for silent-drop risks, and DLQ monitoring with CloudWatch alarms and Slack notifications for failed deliveries.
-      </Text>
+      <List>
+        <ListItem>Domain-scoped API keys restrict keys to specific domains for tighter security</ListItem>
+        <ListItem>Admin interface for immediate key revocation; system keys bypass domain restrictions for internal operations</ListItem>
+        <ListItem>Email forwarding gained CC support, attachment preservation, and attribution blocks</ListItem>
+        <ListItem>Auto-create initial forwarding rule on domain setup</ListItem>
+        <ListItem>Priority warnings for silent-drop risks</ListItem>
+        <ListItem>DLQ monitoring with CloudWatch alarms and Slack notifications for failed deliveries</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -87,9 +107,11 @@ export default function Shiplog2026W11() {
         <Tag project="postgresdk" />
       </Text>
 
-      <Text as="p" variant="body">
-        Trigram search landed with multi-column fuzzy text search using pg_trgm. Proper integer type emission in Zod schemas fixed a type safety gap. distinctOn received subquery optimization for complex ordering scenarios.
-      </Text>
+      <List>
+        <ListItem>Trigram search with multi-column fuzzy text search using pg_trgm</ListItem>
+        <ListItem>Proper integer type emission in Zod schemas fixed a type safety gap</ListItem>
+        <ListItem><code>distinctOn</code> received subquery optimization for complex ordering scenarios</ListItem>
+      </List>
     </ShiplogLayout>
   );
 }

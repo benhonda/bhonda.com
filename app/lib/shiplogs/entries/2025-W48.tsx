@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -30,9 +31,11 @@ export default function Shiplog2025W48() {
         <Tag project="agentic-editor" />
       </Text>
 
-      <Text as="p" variant="body">
-        Added multi-tenant support with team management and permission systems—users can now collaborate within team workspaces with proper access controls. A full dark mode toggle shipped alongside a unified chat system that consolidates chat, change requests, and refinements into a single messages table, streamlining conversation flow and improving per-change-request workflow tracking.
-      </Text>
+      <List>
+        <ListItem>Added multi-tenant support with team management and permission systems — users can now collaborate within team workspaces with proper access controls.</ListItem>
+        <ListItem>Full dark mode toggle shipped.</ListItem>
+        <ListItem>Unified chat system consolidates chat, change requests, and refinements into a single messages table, streamlining conversation flow and improving per-change-request workflow tracking.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -40,9 +43,12 @@ export default function Shiplog2025W48() {
         <Tag project="formgen" />
       </Text>
 
-      <Text as="p" variant="body">
-        CSS variable-based theming landed with an /apply-form-theme command, allowing forms to match any brand identity. Light/dark/system theme switching followed. A new drag-and-drop ranking field using dnd-kit shipped for priority surveys and preference ordering, alongside rating-matrix field types for collecting structured feedback. A complete multi-page form system with admin dashboard, thank you pages, and response detail viewer rounds out the week.
-      </Text>
+      <List>
+        <ListItem>CSS variable-based theming landed with an /apply-form-theme command, allowing forms to match any brand identity. Light/dark/system theme switching followed.</ListItem>
+        <ListItem>New drag-and-drop ranking field using dnd-kit for priority surveys and preference ordering.</ListItem>
+        <ListItem>Rating-matrix field types for collecting structured feedback.</ListItem>
+        <ListItem>Complete multi-page form system with admin dashboard, thank you pages, and response detail viewer.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -50,9 +56,12 @@ export default function Shiplog2025W48() {
         <Tag project="adapts" />
       </Text>
 
-      <Text as="p" variant="body">
-        Added comprehensive testing frameworks with Vitest including test runner safeguards and debug modes. Event tracking is now enriched with IP geolocation data for geographic insights. Type-checking and test validation run before deployment, catching issues before they reach production. Template enhancements include placeholder metadata API, empty parameter filtering, and improved documentation.
-      </Text>
+      <List>
+        <ListItem>Added comprehensive testing frameworks with Vitest including test runner safeguards and debug modes.</ListItem>
+        <ListItem>Event tracking is now enriched with IP geolocation data for geographic insights.</ListItem>
+        <ListItem>Type-checking and test validation run before deployment, catching issues before they reach production.</ListItem>
+        <ListItem>Template enhancements include placeholder metadata API, empty parameter filtering, and improved documentation.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 

@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -29,12 +30,22 @@ export default function Shiplog2025W42() {
       </Text>
 
       <Text as="p" variant="body">
-        The comment system was overhauled: migrated from the old comment system to a smarter, selector-based approach that's more reliable and maintainable. You can now edit comments directly where they appear with no context switching. The iframe-bridge now intelligently positions itself to avoid conflicts with page content, and sidebar width preferences are saved and restored across sessions via cookies.
+        The comment system was overhauled — migrated from the old system to a smarter, selector-based approach that's more reliable and maintainable:
       </Text>
 
-      <Text as="p" variant="body">
-        The preview UI now has working back/forward/refresh buttons. PR status tracking provides better visibility with explicit target branch specification. Onboarding was improved with clearer messages, persistent loading states, and detailed post-merge instructions. Multiple iframe-bridge reliability issues were fixed including health check failures, origin mismatches, and cross-origin compatibility problems. Claude model is now explicitly specified in automated issue creation for consistent AI assistance.
-      </Text>
+      <List>
+        <ListItem>Edit comments directly where they appear with no context switching.</ListItem>
+        <ListItem>The iframe-bridge now intelligently positions itself to avoid conflicts with page content.</ListItem>
+        <ListItem>Sidebar width preferences are saved and restored across sessions via cookies.</ListItem>
+      </List>
+
+      <List>
+        <ListItem>Preview UI now has working back/forward/refresh buttons.</ListItem>
+        <ListItem>PR status tracking provides better visibility with explicit target branch specification.</ListItem>
+        <ListItem>Onboarding improved with clearer messages, persistent loading states, and detailed post-merge instructions.</ListItem>
+        <ListItem>Multiple iframe-bridge reliability issues fixed including health check failures, origin mismatches, and cross-origin compatibility problems.</ListItem>
+        <ListItem>Claude model is now explicitly specified in automated issue creation for consistent AI assistance.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 

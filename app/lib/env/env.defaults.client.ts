@@ -5,6 +5,7 @@ const I_AM_A_PLACEHOLDER_SO_THE_COMMENT_BELOW_IS_TRANSFERRED_FROM_ADPHARM_SHAD =
  *
  * @env PUBLIC_APP_ENV - The app environment (development, production, preview, staging)
  * @env PUBLIC_APP_FQDN - The fully qualified domain name of the application (e.g., example.com or localhost:3000)
+ * @env PUBLIC_CDN_URL - BunnyNet CDN base URL (environment-specific, no trailing slash)
  *
  * Note: window.env interface is defined in the auto-generated all-client-env.ts
  */

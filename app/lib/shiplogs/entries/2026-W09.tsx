@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -22,13 +23,21 @@ export default function Shiplog2026W09() {
         <Tag project="inspiration-index" />
       </Text>
 
-      <Text as="p" variant="body">
-        AI-powered search landed with a CMD+K dialog interface. The search pipeline streams results in real time, with auth-gated access and popular search pills to guide users. The filter system got a complete overhaul—now data-driven with snake_case URL params, motion flags for analyzing animations, and query expansion for better results. Pricing got a complete redesign with hardcoded LemonSqueezy variant IDs, added to both nav and footer. Billing infrastructure is live with search quotas to manage usage. For launch security, a pre-launch IP allowlist with a coming-soon page for non-whitelisted visitors was added.
-      </Text>
+      <List>
+        <ListItem>AI-powered search with a CMD+K dialog interface—streams results in real time, auth-gated with popular search pills to guide users</ListItem>
+        <ListItem>Filter system overhauled to be data-driven with snake_case URL params, motion flags for analyzing animations, and query expansion for better results</ListItem>
+        <ListItem>Pricing redesigned with hardcoded LemonSqueezy variant IDs, added to both nav and footer</ListItem>
+        <ListItem>Billing infrastructure live with search quotas to manage usage</ListItem>
+        <ListItem>Pre-launch IP allowlist with a coming-soon page for non-whitelisted visitors</ListItem>
+      </List>
 
-      <Text as="p" variant="body">
-        Behind the scenes, the pipeline moved from MediaConvert to FFmpeg Lambda for faster frame extraction, added motion flags taxonomy for categorizing animations, and built a capture liveness checker to hide dead links automatically. Font detection and typography analysis (heading vs body) help categorize design patterns. Link monitoring added a liveness-recheck cron for ongoing health checks.
-      </Text>
+      <List>
+        <ListItem>Pipeline moved from MediaConvert to FFmpeg Lambda for faster frame extraction</ListItem>
+        <ListItem>Motion flags taxonomy added for categorizing animations</ListItem>
+        <ListItem>Capture liveness checker hides dead links automatically</ListItem>
+        <ListItem>Font detection and typography analysis (heading vs body) for categorizing design patterns</ListItem>
+        <ListItem>Link monitoring liveness-recheck cron for ongoing health checks</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -46,9 +55,11 @@ export default function Shiplog2026W09() {
         <Tag project="autoscroll-recorder" />
       </Text>
 
-      <Text as="p" variant="body">
-        Recording platform shipped quality tracking to classify recordings, accurate encoded duration calculations, and scroll distance metrics. Added URL override support for edge cases and improved tech detection. Cookie banner handling got smarter with CSS Modules attribute selectors and a curated list of edge-case selectors.
-      </Text>
+      <List>
+        <ListItem>Quality tracking to classify recordings with accurate encoded duration calculations and scroll distance metrics</ListItem>
+        <ListItem>URL override support for edge cases and improved tech detection</ListItem>
+        <ListItem>Cookie banner handling improved with CSS Modules attribute selectors and a curated list of edge-case selectors</ListItem>
+      </List>
 
       <Spacer size="sm" />
 

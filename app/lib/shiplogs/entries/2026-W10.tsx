@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -23,8 +24,19 @@ export default function Shiplog2026W10() {
       </Text>
 
       <Text as="p" variant="body">
-        Shipped a complete email infrastructure platform from scratch. Send and receive emails via AWS SES with multi-domain support. Domain management with automated DNS configuration via Route53, email forwarding with rule-based routing across domains, and API authentication with encrypted API keys (AES-256-CBC) for secure programmatic access. A web dashboard handles teams, domains, forwarding rules, and viewing sent/received emails. Dark mode with system preference detection shipped alongside a TypeScript SDK for developers (@cdv2/email). The platform handles inbound emails via Lambda processors, stores everything in PostgreSQL, and exposes both REST APIs and SDK interfaces for integration.
+        Shipped a complete email infrastructure platform from scratch.
       </Text>
+
+      <List>
+        <ListItem>Send and receive emails via AWS SES with multi-domain support</ListItem>
+        <ListItem>Domain management with automated DNS configuration via Route53</ListItem>
+        <ListItem>Email forwarding with rule-based routing across domains</ListItem>
+        <ListItem>API authentication with encrypted API keys (AES-256-CBC) for secure programmatic access</ListItem>
+        <ListItem>Web dashboard for teams, domains, forwarding rules, and viewing sent/received emails</ListItem>
+        <ListItem>Dark mode with system preference detection</ListItem>
+        <ListItem>TypeScript SDK for developers (<code>@cdv2/email</code>)</ListItem>
+        <ListItem>Inbound emails processed via Lambda, stored in PostgreSQL, with REST APIs and SDK interfaces for integration</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -33,12 +45,22 @@ export default function Shiplog2026W10() {
       </Text>
 
       <Text as="p" variant="body">
-        Replaced the structured filter system with AI-generated SQL queries. Search now understands natural language and generates precise database queries on the fly. Abort support, skeleton loading states, and result-by-ID deep linking landed. Pricing comparison table launched with Pro and Team tiers—new users get a 30-day reverse trial with rolling search quotas. Added /signup route with auth layout split and navigation improvements.
+        Replaced the structured filter system with AI-generated SQL queries. Search now understands natural language and generates precise database queries on the fly.
       </Text>
 
-      <Text as="p" variant="body">
-        Tabbed site detail pages with capture galleries and metadata, hover cards for quick site previews, animated search placeholders, refined filter toggles, and taxonomy expansions with better categorization for components, sections, and page types all shipped. The pre-launch IP allowlist was removed—now publicly accessible.
-      </Text>
+      <List>
+        <ListItem>Abort support, skeleton loading states, and result-by-ID deep linking</ListItem>
+        <ListItem>Pricing comparison table with Pro and Team tiers—new users get a 30-day reverse trial with rolling search quotas</ListItem>
+        <ListItem>/signup route with auth layout split and navigation improvements</ListItem>
+        <ListItem>Pre-launch IP allowlist removed—now publicly accessible</ListItem>
+      </List>
+
+      <List>
+        <ListItem>Tabbed site detail pages with capture galleries and metadata</ListItem>
+        <ListItem>Hover cards for quick site previews</ListItem>
+        <ListItem>Animated search placeholders and refined filter toggles</ListItem>
+        <ListItem>Taxonomy expansions with better categorization for components, sections, and page types</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -47,8 +69,17 @@ export default function Shiplog2026W10() {
       </Text>
 
       <Text as="p" variant="body">
-        Wellness checks for recording URLs landed before submitting jobs. The system now tests URLs for availability, tracks health status per URL, shows health indicators in job tables, blocks known-bad URLs from retry attempts, and detects when infrastructure is at capacity vs. actual failures. Retry lineage tracking traces job relationships, parallel batch retries speed up recovery, and paginated job loading with status badges shipped. Recorder now submits pages to all device types instead of iPhone-only, improving coverage across desktop, tablet, and mobile viewports.
+        Wellness checks for recording URLs landed before submitting jobs.
       </Text>
+
+      <List>
+        <ListItem>Tests URLs for availability and tracks health status per URL</ListItem>
+        <ListItem>Health indicators shown in job tables; known-bad URLs blocked from retry attempts</ListItem>
+        <ListItem>Detects when infrastructure is at capacity vs. actual failures</ListItem>
+        <ListItem>Retry lineage tracking traces job relationships; parallel batch retries speed up recovery</ListItem>
+        <ListItem>Paginated job loading with status badges</ListItem>
+        <ListItem>Recorder now submits pages to all device types instead of iPhone-only, improving coverage across desktop, tablet, and mobile viewports</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
@@ -67,7 +98,7 @@ export default function Shiplog2026W10() {
       </Text>
 
       <Text as="p" variant="body">
-        Gained distinctOn support and fixed schema-scoped introspection.
+        Gained <code>distinctOn</code> support and fixed schema-scoped introspection.
       </Text>
 
       <Spacer size="sm" />

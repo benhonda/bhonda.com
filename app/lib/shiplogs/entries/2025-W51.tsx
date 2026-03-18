@@ -2,6 +2,7 @@ import { ShiplogLayout } from "~/components/shiplogs/shiplog-layout";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
+import { List, ListItem } from "~/components/misc/list";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -30,9 +31,13 @@ export default function Shiplog2025W51() {
         <Tag project="synapse-crm" />
       </Text>
 
-      <Text as="p" variant="body">
-        Shipped a full-featured email infrastructure with Gmail-style compose UI, HTML email templates, and optional unsubscribe group management. Added email retry functionality for failed sends, giving users control over deliverability issues. Contact notes are now prominently displayed for better visibility, consistent page layouts landed across the application, and a user-facing changelog with full feature history shipped.
-      </Text>
+      <List>
+        <ListItem>Shipped a full-featured email infrastructure with Gmail-style compose UI, HTML email templates, and optional unsubscribe group management.</ListItem>
+        <ListItem>Email retry functionality for failed sends, giving users control over deliverability issues.</ListItem>
+        <ListItem>Contact notes are now prominently displayed for better visibility.</ListItem>
+        <ListItem>Consistent page layouts landed across the application.</ListItem>
+        <ListItem>User-facing changelog with full feature history shipped.</ListItem>
+      </List>
 
       <Spacer size="sm" />
 
