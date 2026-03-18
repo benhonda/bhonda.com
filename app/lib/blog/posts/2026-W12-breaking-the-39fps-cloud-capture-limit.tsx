@@ -1,7 +1,11 @@
 import { AudioPlayer } from "~/components/blog/audio-player";
+import { InlineCode } from "~/components/blog/inline-code";
 import { TranscriptLine } from "~/components/blog/transcript-line";
 import { PostLayout } from "~/components/blog/post-layout";
+import { Text } from "~/components/misc/text";
+import { MarkdownContent } from "~/components/misc/markdown-content";
 import type { PostMeta } from "~/lib/blog/blog-types";
+import researchContent from "./2026-W12-breaking-the-39fps-cloud-capture-limit-research.md?raw";
 
 export const postMeta = {
   title: "Breaking the 39fps Cloud Capture Limit",
@@ -12,27 +16,28 @@ export const postMeta = {
     "How a dry engineering doc about AWS GPU capture pipelines, x11grab throughput ceilings, and smuggled .so files became a 15-minute deep-dive podcast via NotebookLM.",
   status: "published",
   publishedAt: "2026-03-18",
+  projects: ["autoscroll-recorder"],
   tags: ["engineering", "gpu", "aws", "cloud"],
 } satisfies PostMeta;
 
 export default function BreakingThe39FpsCloudCaptureLimit() {
   return (
     <PostLayout meta={postMeta}>
-      <p>
+      <Text as="p" variant="body">
         I spent a few days grinding through a GPU capture pipeline issue on AWS — a hard 39fps
         ceiling that turned out to have nothing to do with FFmpeg tuning and everything to do with
-        how <code>x11grab</code> physically moves frame data across the PCIe bus. I wrote it all up
+        how <InlineCode>x11grab</InlineCode> physically moves frame data across the PCIe bus. I wrote it all up
         in a research doc: root causes, dead ends, confirmed facts, the fix that shipped, and the
         next step that's ready to go whenever 60fps becomes a hard requirement.
-      </p>
-      <p>
+      </Text>
+      <Text as="p" variant="body">
         Then I dropped that doc into NotebookLM. What came back was a 15-minute podcast where two
         AI hosts unpacked my notes with analogies, dramatic pauses, and — honestly — genuine
-        insight. The "smuggling a <code>.so</code> file into a container" framing was their
+        insight. The "smuggling a <InlineCode>.so</InlineCode> file into a container" framing was their
         invention, not mine. Not exactly new technology, NotebookLM has had audio overviews for a
         while. But there's something satisfying about hearing a problem you built explained back to
         you like it's actually interesting.
-      </p>
+      </Text>
 
       <AudioPlayer
         cdnPath="blog/2026-03-18-gpu-research/Breaking_the_39fps_cloud_capture_limit.m4a"
@@ -41,9 +46,9 @@ export default function BreakingThe39FpsCloudCaptureLimit() {
 
       <hr className="border-border" />
 
-      <h2 className="text-lg font-semibold">Transcript</h2>
+      <Text as="h2" variant="heading-sm">Transcript</Text>
 
-      <div className="space-y-3 text-sm leading-relaxed">
+      <div className="space-y-3">
         <TranscriptLine speaker="Speaker 1">I want you to imagine just for a second that you're trying to record the perfect ultra-smooth high-definition video of a web browser.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">Just a standard browser, right?</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">Yeah, exactly. But this browser isn't on your local machine. It's running entirely in the cloud on a server, you know, hundreds of miles away.</TranscriptLine>
@@ -99,16 +104,16 @@ export default function BreakingThe39FpsCloudCaptureLimit() {
         <TranscriptLine speaker="Speaker 1">Oh, I see.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">Yeah. So for the MacBook Pro 14-inch target, that multiplier is forced all the way down to one.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">Okay. So they capture the frame at the smaller native size just to keep the system from crashing, but the user still expects a massive high-res video output at the end of this.</TranscriptLine>
-        <TranscriptLine speaker="Speaker 2">Exactly. And that's where the post-processing comes in. They hand that smaller natively captured frame off to FFmpeg and have FFmpeg artificially upscale the video using a hardware-accelerated tool called <code>scale_cuda</code>.</TranscriptLine>
+        <TranscriptLine speaker="Speaker 2">Exactly. And that's where the post-processing comes in. They hand that smaller natively captured frame off to FFmpeg and have FFmpeg artificially upscale the video using a hardware-accelerated tool called <InlineCode>scale_cuda</InlineCode>.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">So it's a bit of a compromise.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">It is a tiny quality trade-off. You aren't getting a true native 2x resolution capture, but it totally bypasses the hard hardware wall and most importantly it keeps the capture pipeline alive.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">So we've essentially tricked the hardware into giving us a smaller canvas and we are artificially stretching it in post using CUDA. But the moment you start digitally magnifying a screen like that, you are asking the system to push a massive amount of visual data very quickly.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">And that immediately exposes the next weak link in the chain — the sheer speed at which the computer can move those pixels. The system stops crashing on startup, but it immediately hits a brutal performance ceiling. The engineers noted the system was suddenly stuck at a hard speed limit of about 39 frames per second.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">Which is a complete non-starter. I mean, if you were trying to deliver a buttery smooth 60 frames per second experience to an end user, 39 just isn't going to cut it.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">Not at all.</TranscriptLine>
-        <TranscriptLine speaker="Speaker 1">The documentation shows the engineers looking at the pipeline and they see it's using a tool called <code>x11grab</code> to pull the video frames from the X server.</TranscriptLine>
+        <TranscriptLine speaker="Speaker 1">The documentation shows the engineers looking at the pipeline and they see it's using a tool called <InlineCode>x11grab</InlineCode> to pull the video frames from the X server.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">Standard tool.</TranscriptLine>
-        <TranscriptLine speaker="Speaker 1">But <code>x11grab</code> relies on a function called <code>XShmGetImage</code>. And here is the fatal flaw. That function requires the system CPU to physically read the frame from the X server's shared memory buffer.</TranscriptLine>
+        <TranscriptLine speaker="Speaker 1">But <InlineCode>x11grab</InlineCode> relies on a function called <InlineCode>XShmGetImage</InlineCode>. And here is the fatal flaw. That function requires the system CPU to physically read the frame from the X server's shared memory buffer.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">Which means one CPU readback per frame.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">Exactly.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">It is a massive architectural detour.</TranscriptLine>
@@ -127,7 +132,7 @@ export default function BreakingThe39FpsCloudCaptureLimit() {
         <TranscriptLine speaker="Speaker 1">In a traditional desktop environment, yes. In a multi-tenant cloud environment, not even close.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">Far from it. Because they are running this entire browser pipeline inside a Docker container. And the cloud environment handles hardware acceleration inside containers in a highly restricted way.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">Very restricted.</TranscriptLine>
-        <TranscriptLine speaker="Speaker 2">Because of a specific runtime setting — <code>NVIDIA_VISIBLE_DEVICES=void</code> — the standard easy way of injecting the graphics driver into the container is completely disabled.</TranscriptLine>
+        <TranscriptLine speaker="Speaker 2">Because of a specific runtime setting — <InlineCode>NVIDIA_VISIBLE_DEVICES=void</InlineCode> — the standard easy way of injecting the graphics driver into the container is completely disabled.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">It intentionally blinds the container to the host's GPU.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">And you know, this makes sense from an architecture standpoint. In a cloud environment, isolation is your primary security measure. By default, you do not want a containerized application having raw unfiltered access to physical hardware like a GPU because that completely breaks the sandbox.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">So the container is totally blind to the graphics driver. It desperately needs to encode this video. But here's where it gets really interesting. If you've ever tried to install a custom graphics driver on your own Linux machine and ended up staring at a black screen, you know how unforgiving this is.</TranscriptLine>
@@ -141,8 +146,8 @@ export default function BreakingThe39FpsCloudCaptureLimit() {
         <TranscriptLine speaker="Speaker 1">No exceptions. There's no negotiation. Total rejection. And in a cloud context, a kernel mismatch doesn't just crash your little application. It risks destabilizing the entire virtual machine.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">So standard installation is completely off the table. They're essentially forced to go full Ocean's Eleven.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">That's exactly what it is. A heist.</TranscriptLine>
-        <TranscriptLine speaker="Speaker 2">It is. To get this driver into the container without triggering the security alarms, they literally have to download the massive official NVIDIA Tesla <code>.run</code> file. They crack it open using an extract-only command to prevent it from trying to install itself and polluting the system. And then they surgically remove one specific tiny file — <code>nvidia_drv.so</code> — and manually smuggle it into a highly specific non-default folder inside the container.</TranscriptLine>
-        <TranscriptLine speaker="Speaker 1">And that folder isn't even in the Linux system's default search path. The dynamic linker has no idea that file exists. They have to write a custom configuration file just to point Xorg to this smuggled <code>.so</code> file. But honestly, the most absurd yet brilliant part of this whole container heist is how they handle the display server's timing.</TranscriptLine>
+        <TranscriptLine speaker="Speaker 2">It is. To get this driver into the container without triggering the security alarms, they literally have to download the massive official NVIDIA Tesla <InlineCode>.run</InlineCode> file. They crack it open using an extract-only command to prevent it from trying to install itself and polluting the system. And then they surgically remove one specific tiny file — <InlineCode>nvidia_drv.so</InlineCode> — and manually smuggle it into a highly specific non-default folder inside the container.</TranscriptLine>
+        <TranscriptLine speaker="Speaker 1">And that folder isn't even in the Linux system's default search path. The dynamic linker has no idea that file exists. They have to write a custom configuration file just to point Xorg to this smuggled <InlineCode>.so</InlineCode> file. But honestly, the most absurd yet brilliant part of this whole container heist is how they handle the display server's timing.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">Oh, the fake-out ready signal. Explain this — when I read this part of the document, it totally blew my mind.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">So in a standard Linux system, when Xorg starts up, it creates a Unix domain socket. Usually the moment that communication socket appears in the filesystem, it acts as a signal to all the other processes: "I'm initialized. My drivers are loaded. Send me graphics."</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">Okay, sounds normal.</TranscriptLine>
@@ -168,7 +173,7 @@ export default function BreakingThe39FpsCloudCaptureLimit() {
         <TranscriptLine speaker="Speaker 2">It is still capped. NvFBC is bound directly to the X screen resolution. And remember that VGX virtual display driver caps the resolution way down in the basement long before NvFBC ever gets a chance to see the frame buffer.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">Right. Because the hardware says no first.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">It's a completely different layer of the hardware abstraction. So that 4 million pixel limit remains absolute.</TranscriptLine>
-        <TranscriptLine speaker="Speaker 1">Okay. Slightly tragic that we are still relying on the <code>scale_cuda</code> upscale workaround. But what about the speed limit? Does this fix the 39fps ceiling?</TranscriptLine>
+        <TranscriptLine speaker="Speaker 1">Okay. Slightly tragic that we are still relying on the <InlineCode>scale_cuda</InlineCode> upscale workaround. But what about the speed limit? Does this fix the 39fps ceiling?</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">That is precisely where Option E shines. Because you remove the CPU readback bottleneck entirely, that frame rate limit completely shatters. You go from a struggling 39fps straight to a buttery smooth 60fps. And realistically, the hardware could push way beyond that if it needed to. The NVENC encoder finally gets the data fast enough to run at full speed.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">Okay, that is a huge win for the architecture. But reading the notes, there are always caveats with this stuff. What's the trade-off here?</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">There are a couple of notable ones. First, you run into codec limitations based on the hardware age. The Tesla T4 GPU is a little older — it does not have hardware encoding support for AV1, which is the newest bandwidth-efficient video format.</TranscriptLine>
@@ -177,15 +182,15 @@ export default function BreakingThe39FpsCloudCaptureLimit() {
         <TranscriptLine speaker="Speaker 1">Which honestly isn't a dealbreaker. Those are still massive industry standards and highly compatible.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">True. But the much weirder caveat is a cold-boot race condition that the engineers discovered.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">A race condition. How does that factor into capturing a screen?</TranscriptLine>
-        <TranscriptLine speaker="Speaker 2">It happens right when the container first boots up. There is an internal flag in the display pipeline called <code>bInModeset</code>. Mod-setting is the process where the operating system negotiates with the graphics card to figure out the display resolution, refresh rate, and color depth. Standard startup stuff. But because this is a virtual cloud environment without a physical monitor attached, the graphics card takes a seemingly random amount of time to figure out what its monitor situation actually is.</TranscriptLine>
+        <TranscriptLine speaker="Speaker 2">It happens right when the container first boots up. There is an internal flag in the display pipeline called <InlineCode>bInModeset</InlineCode>. Mod-setting is the process where the operating system negotiates with the graphics card to figure out the display resolution, refresh rate, and color depth. Standard startup stuff. But because this is a virtual cloud environment without a physical monitor attached, the graphics card takes a seemingly random amount of time to figure out what its monitor situation actually is.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">And if the capture software tries to grab a frame while the GPU is still trying to figure out its mode—</TranscriptLine>
-        <TranscriptLine speaker="Speaker 2">It completely fails. The capture process crashes. So the software has to be programmed to sit there actively retrying for up to 30 seconds on startup, just waiting for the <code>bInModeset</code> flag to clear and the hardware to finally settle down.</TranscriptLine>
+        <TranscriptLine speaker="Speaker 2">It completely fails. The capture process crashes. So the software has to be programmed to sit there actively retrying for up to 30 seconds on startup, just waiting for the <InlineCode>bInModeset</InlineCode> flag to clear and the hardware to finally settle down.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">It's like waiting for a really old vacuum tube TV to warm up before you can actually watch a channel.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">Precisely. You have to build patience into the code. But once it warms up and that mod-setting is complete, you have an unstoppable, CPU-free 60fps capture pipeline that runs beautifully.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">So what does this all mean for you listening to this? Why did we just spend the last 15 minutes dissecting VGX display drivers, PCIe bus bottlenecks, and Linux container configuration?</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">Good question.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">It's because of this. The next time you log onto your computer and use a piece of cloud-based software, or stream a high-end video game over the internet, or record a complex remote webinar — and it all runs buttery smooth on your screen — you are experiencing a modern miracle of hidden labor. It's never just plug-and-play.</TranscriptLine>
-        <TranscriptLine speaker="Speaker 2">Exactly. That smoothness you take for granted is the direct result of unseen engineers fighting these microscopic, maddening battles. Battles against arbitrary hardware caps, against CPU memory bottlenecks, against strict kernel version checks that threaten to bring the whole thing crashing down. We treat the cloud like it's magic, but under the surface it is held together by incredibly brilliant duct tape and smuggled <code>.so</code> files.</TranscriptLine>
+        <TranscriptLine speaker="Speaker 2">Exactly. That smoothness you take for granted is the direct result of unseen engineers fighting these microscopic, maddening battles. Battles against arbitrary hardware caps, against CPU memory bottlenecks, against strict kernel version checks that threaten to bring the whole thing crashing down. We treat the cloud like it's magic, but under the surface it is held together by incredibly brilliant duct tape and smuggled <InlineCode>.so</InlineCode> files.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">Absolutely. We always say the cloud is just someone else's computer, but we forget that someone else's computer has its own stubborn opinions and security protocols. But before we wrap up today's deep dive, I want to leave you with one final thought from the deepest, most buried part of this engineering document.</TranscriptLine>
         <TranscriptLine speaker="Speaker 2">Oh, I love a good footnote. Lay it on us.</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">We spent this whole time talking about how that 2560×1600 pixel cap on the Tesla T4 is an absolute, unbreakable hardware wall. How it's enforced by the VGX driver and absolutely no software override can break it.</TranscriptLine>
@@ -198,6 +203,12 @@ export default function BreakingThe39FpsCloudCaptureLimit() {
         <TranscriptLine speaker="Speaker 2">No way. Are you serious? It might just be a licensing lock? It raises a fascinating question about the very nature of the hardware we use and how it's segmented. What if the key to unlocking true native 4K resolution in the cloud isn't about buying a better, physically more powerful graphics card? What if it isn't about writing smarter capture code or bypassing CPU bottlenecks with zero-copy architecture? What if the unbreakable hardware wall we've been fighting this entire time is just an artificial software lock — waiting for the right hidden licensing flag buried deep in a corporate manual to be flipped?</TranscriptLine>
         <TranscriptLine speaker="Speaker 1">So to bring it all back to that perfect recording we talked about at the very beginning — you hit record, the screen looks flawless, the frame rate is a perfect 60 — and you have to wonder: did you finally beat the hardware through brilliant engineering? Or did you just finally pay the right toll to unlock the features that were there all along? That is definitely something to think about the next time you stream a video from the cloud.</TranscriptLine>
       </div>
+
+      <hr className="border-border" />
+
+      <Text as="h2" variant="heading-sm">Research Notes</Text>
+
+      <MarkdownContent content={researchContent} />
     </PostLayout>
   );
 }

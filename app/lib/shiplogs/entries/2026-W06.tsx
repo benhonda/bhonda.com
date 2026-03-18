@@ -3,6 +3,7 @@ import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
 import { List, ListItem } from "~/components/misc/list";
+import { InlineCode } from "~/components/blog/inline-code";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -66,7 +67,7 @@ export default function Shiplog2026W06() {
       </Text>
 
       <List>
-        <ListItem>Custom tech detection replaces the third-party Wappalyzer library, with a new <code>detectTechnologies</code> API param</ListItem>
+        <ListItem>Custom tech detection replaces the third-party Wappalyzer library, with a new <InlineCode>detectTechnologies</InlineCode> API param</ListItem>
         <ListItem>Switched to Ghostery adblocker for more reliable cookie and ad blocking</ListItem>
         <ListItem>Persistent Chrome profile replaces dynamic locale detection for more consistent browser behavior</ListItem>
         <ListItem>Deterministic S3 keys replace date-partitioned keys for simpler asset management</ListItem>

@@ -3,6 +3,7 @@ import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
 import { List, ListItem } from "~/components/misc/list";
+import { InlineCode } from "~/components/blog/inline-code";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -34,7 +35,7 @@ export default function Shiplog2026W10() {
         <ListItem>API authentication with encrypted API keys (AES-256-CBC) for secure programmatic access</ListItem>
         <ListItem>Web dashboard for teams, domains, forwarding rules, and viewing sent/received emails</ListItem>
         <ListItem>Dark mode with system preference detection</ListItem>
-        <ListItem>TypeScript SDK for developers (<code>@cdv2/email</code>)</ListItem>
+        <ListItem>TypeScript SDK for developers (<InlineCode>@cdv2/email</InlineCode>)</ListItem>
         <ListItem>Inbound emails processed via Lambda, stored in PostgreSQL, with REST APIs and SDK interfaces for integration</ListItem>
       </List>
 
@@ -98,7 +99,7 @@ export default function Shiplog2026W10() {
       </Text>
 
       <Text as="p" variant="body">
-        Gained <code>distinctOn</code> support and fixed schema-scoped introspection.
+        Gained <InlineCode>distinctOn</InlineCode> support and fixed schema-scoped introspection.
       </Text>
 
       <Spacer size="sm" />

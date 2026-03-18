@@ -4,6 +4,7 @@ import { Spacer } from "~/components/misc/spacer";
 import { Quote } from "~/components/people/quote";
 import { Tag } from "~/components/misc/tag";
 import { List, ListItem } from "~/components/misc/list";
+import { InlineCode } from "~/components/blog/inline-code";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -54,7 +55,7 @@ export default function Shiplog2026W12() {
       <List>
         <ListItem>Pull operations now prompt before deleting stale files, with a force flag for automation contexts</ListItem>
         <ListItem>Soft-delete filtering improved with proper precedence handling and per-table column overrides</ListItem>
-        <ListItem>Include-loader respects soft-delete flags through nested queries; new <code>includeSoftDeleted</code> option gives explicit control over surfacing deleted records</ListItem>
+        <ListItem>Include-loader respects soft-delete flags through nested queries; new <InlineCode>includeSoftDeleted</InlineCode> option gives explicit control over surfacing deleted records</ListItem>
       </List>
 
       <Spacer size="sm" />

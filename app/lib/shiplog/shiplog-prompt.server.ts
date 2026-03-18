@@ -17,7 +17,7 @@ export function buildShiplogPrompt(args: {
   const fnName = `Shiplog${slug.replace(/-/g, "")}`;
 
   const componentImports = taxonomyImports
-    .map(({ name, from }) => `import { ${name} } from "${from}";`)
+    .map(({ names, from }) => `import { ${names.join(", ")} } from "${from}";`)
     .join("\n");
 
   const formattedCommits = repoCommits

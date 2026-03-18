@@ -3,6 +3,7 @@ import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
 import { List, ListItem } from "~/components/misc/list";
+import { InlineCode } from "~/components/blog/inline-code";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -56,7 +57,7 @@ export default function Shiplog2025W34() {
         <ListItem>Interactive configuration merge process now preserves existing settings when updating.</ListItem>
         <ListItem>Standardized config field naming to eliminate confusion.</ListItem>
         <ListItem>Added select schema generation for better type safety.</ListItem>
-        <ListItem>Introduced a new <code>gen</code> shorthand command for faster code generation.</ListItem>
+        <ListItem>Introduced a new <InlineCode>gen</InlineCode> shorthand command for faster code generation.</ListItem>
       </List>
 
       <Spacer size="sm" />

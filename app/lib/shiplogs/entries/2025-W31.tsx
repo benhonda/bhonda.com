@@ -3,6 +3,7 @@ import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
 import { List, ListItem } from "~/components/misc/list";
+import { InlineCode } from "~/components/blog/inline-code";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -44,8 +45,8 @@ export default function Shiplog2025W31() {
         <ListItem>Built S3 destination setup with clear instructions.</ListItem>
         <ListItem>Integrated real-time status updates from the pipeline checker.</ListItem>
         <ListItem>Implemented video retrieval and playback from S3.</ListItem>
-        <ListItem>Created a shared <code>@autoscroll/types</code> package for consistency across services.</ListItem>
-        <ListItem>Added <code>.env.example</code> reference for required environment variables and improved environment configuration mapping.</ListItem>
+        <ListItem>Created a shared <InlineCode>@autoscroll/types</InlineCode> package for consistency across services.</ListItem>
+        <ListItem>Added <InlineCode>.env.example</InlineCode> reference for required environment variables and improved environment configuration mapping.</ListItem>
       </List>
 
       <Spacer size="sm" />

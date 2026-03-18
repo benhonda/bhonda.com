@@ -3,6 +3,7 @@ import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
 import { List, ListItem } from "~/components/misc/list";
+import { InlineCode } from "~/components/blog/inline-code";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -45,7 +46,7 @@ export default function Shiplog2025W36() {
         <ListItem>Enabled retry for jobs with unknown status.</ListItem>
         <ListItem>Removed unnecessary page reloads after bulk job refresh.</ListItem>
         <ListItem>Improved configuration settings UI with better documentation.</ListItem>
-        <ListItem>Hidden the cursor in video recordings using FFmpeg's <code>-draw_mouse</code> option.</ListItem>
+        <ListItem>Hidden the cursor in video recordings using FFmpeg's <InlineCode>-draw_mouse</InlineCode> option.</ListItem>
         <ListItem>Prevented cookie banners from hiding entire HTML elements.</ListItem>
         <ListItem>Implemented URL-based filename generation with date partitioning for better organization.</ListItem>
       </List>

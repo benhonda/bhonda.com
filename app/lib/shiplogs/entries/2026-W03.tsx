@@ -3,6 +3,7 @@ import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
 import { List, ListItem } from "~/components/misc/list";
+import { InlineCode } from "~/components/blog/inline-code";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -38,7 +39,7 @@ export default function Shiplog2026W03() {
         <ListItem>Soft-delete support and device tracking added</ListItem>
         <ListItem>Dynamic taxonomy system with configurable section layouts</ListItem>
         <ListItem>Styling data flattened from nested objects to top-level columns with a constrained color palette</ListItem>
-        <ListItem>Metadata override fields prefixed with <code>ii-set</code>; support for Open Graph images and favicons</ListItem>
+        <ListItem>Metadata override fields prefixed with <InlineCode>ii-set</InlineCode>; support for Open Graph images and favicons</ListItem>
       </List>
 
       <List>
@@ -56,9 +57,9 @@ export default function Shiplog2026W03() {
       </Text>
 
       <List>
-        <ListItem>Flexible numeric type mapping via a new <code>numericMode</code> config option</ListItem>
+        <ListItem>Flexible numeric type mapping via a new <InlineCode>numericMode</InlineCode> config option</ListItem>
         <ListItem>Typed include methods now support query options for more powerful relational queries</ListItem>
-        <ListItem>JSONB handling improved with better generic types and type-safe <code>JsonValue</code> replacing loose <code>Record&lt;string, any&gt;</code></ListItem>
+        <ListItem>JSONB handling improved with better generic types and type-safe <InlineCode>JsonValue</InlineCode> replacing loose <InlineCode>Record&lt;string, any&gt;</InlineCode></ListItem>
         <ListItem>Vector search expanded with support for all pgvector types and conditional generation of vector-specific code</ListItem>
         <ListItem>Pull token support and improved config merging simplify authentication</ListItem>
       </List>

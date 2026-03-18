@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
+import { Text } from "~/components/misc/text";
 
-type TranscriptLineProps = {
+export type TranscriptLineProps = {
   speaker: string;
   children: ReactNode;
 };
@@ -8,8 +9,8 @@ type TranscriptLineProps = {
 /** A single speaker turn in a transcript. */
 export function TranscriptLine({ speaker, children }: TranscriptLineProps) {
   return (
-    <p>
+    <Text as="p" variant="body-sm">
       <span className="font-semibold">{speaker}:</span> {children}
-    </p>
+    </Text>
   );
 }

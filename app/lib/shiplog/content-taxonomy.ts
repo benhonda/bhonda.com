@@ -3,6 +3,11 @@ import { PUBLIC_SPACER_SIZES, type SpacerProps } from "~/components/misc/spacer"
 import type { QuoteProps } from "~/components/people/quote";
 import type { TagProps } from "~/components/misc/tag";
 import { PROJECTS_CONFIG } from "~/lib/projects/projects-config";
+import type { InlineCodeProps } from "~/components/blog/inline-code";
+import type { CodeBlockProps } from "~/components/blog/code-block";
+import type { AudioPlayerProps } from "~/components/blog/audio-player";
+import type { TranscriptLineProps } from "~/components/blog/transcript-line";
+import type { ListProps, ListItemProps } from "~/components/misc/list";
 
 type PropDocs<T> = { [K in keyof T]?: string };
 type TaxonomyEntry<T> = { importPath: string; usage: string; props: PropDocs<T>; example: string };
@@ -46,6 +51,65 @@ const TAXONOMY = {
     },
     example: '<Tag project="bhonda-com" />',
   } satisfies TaxonomyEntry<TagProps>,
+
+  InlineCode: {
+    importPath: "~/components/blog/inline-code",
+    usage: "Inline code snippet within a sentence or paragraph. Use for identifiers, commands, file names, env vars, etc.",
+    props: {
+      children: "The code string to display",
+    },
+    example: "<InlineCode>x11grab</InlineCode>",
+  } satisfies TaxonomyEntry<InlineCodeProps>,
+
+  CodeBlock: {
+    importPath: "~/components/blog/code-block",
+    usage: "Multi-line code sample. Renders with syntax highlighting. Use for config files, shell commands, or code snippets.",
+    props: {
+      children: "The code string (required)",
+      language: "Optional language label shown top-right (e.g. bash, tsx, yaml)",
+      filename: "Optional filename label shown top-left (e.g. .env, docker-compose.yml)",
+    },
+    example: '<CodeBlock language="bash">npm install</CodeBlock>',
+  } satisfies TaxonomyEntry<CodeBlockProps>,
+
+  List: {
+    importPath: "~/components/misc/list",
+    usage: "Unordered or ordered list. Children must be <ListItem> elements.",
+    props: {
+      as: "ul|ol",
+      children: "<ListItem> elements",
+    },
+    example: '<List>\n  <ListItem>First point</ListItem>\n  <ListItem>Second point</ListItem>\n</List>',
+  } satisfies TaxonomyEntry<ListProps>,
+
+  ListItem: {
+    importPath: "~/components/misc/list",
+    usage: "A single item inside a <List>. Renders as body-variant text.",
+    props: {
+      children: "Item content (can include inline elements like <InlineCode>)",
+    },
+    example: "<ListItem>Install the dependency</ListItem>",
+  } satisfies TaxonomyEntry<ListItemProps>,
+
+  AudioPlayer: {
+    importPath: "~/components/blog/audio-player",
+    usage: "Sticky embedded audio player for NotebookLM-generated audio overviews or any CDN-hosted audio.",
+    props: {
+      cdnPath: 'Path relative to CDN root (e.g. "blog/2026-03-18/overview.m4a")',
+      title: "Optional label shown above the player",
+    },
+    example: '<AudioPlayer cdnPath="blog/2026-03-18/overview.m4a" title="Audio Overview" />',
+  } satisfies TaxonomyEntry<AudioPlayerProps>,
+
+  TranscriptLine: {
+    importPath: "~/components/blog/transcript-line",
+    usage: "A single speaker turn in a transcript. Use inside a <div className=\"space-y-3\"> wrapper.",
+    props: {
+      speaker: "Speaker label (e.g. \"Speaker 1\", \"Host\")",
+      children: "The spoken content — can include inline elements like <InlineCode>",
+    },
+    example: '<TranscriptLine speaker="Speaker 1">We found the bottleneck.</TranscriptLine>',
+  } satisfies TaxonomyEntry<TranscriptLineProps>,
 } as const;
 
 /** Serialized string injected into Claude's synthesis prompt */
@@ -60,8 +124,15 @@ export function buildTaxonomyString(): string {
     .join("\n\n");
 }
 
-/** Import paths for the generated TSX file */
-export const taxonomyImports = Object.entries(TAXONOMY).map(([name, entry]) => ({
-  name,
-  from: entry.importPath,
-}));
+/** Import paths for the generated TSX file — grouped by path to produce clean named imports. */
+export const taxonomyImports: { names: string[]; from: string }[] = Object.values(
+  Object.entries(TAXONOMY).reduce<Record<string, { names: string[]; from: string }>>(
+    (acc, [name, entry]) => {
+      const path = entry.importPath;
+      if (!acc[path]) acc[path] = { names: [], from: path };
+      acc[path].names.push(name);
+      return acc;
+    },
+    {}
+  )
+);

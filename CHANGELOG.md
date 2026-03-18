@@ -2,6 +2,11 @@
 
 ## 2026-03-18
 
+- feat: `CodeBlock` and `InlineCode` components added with sugar-high syntax highlighting; `MarkdownContent` updated to use them with remark-gfm for full GFM support (tables, strikethrough, proper fenced code blocks)
+- feat: `PostMeta` now accepts a typed `projects` field (`ProjectSlug[]`) rendered as linked Tag pills alongside free-form `tags` in the blog post layout
+- refactor: Blog post files migrated to `YYYY-WNN-slug` naming convention; `InlineCode`, `CodeBlock`, `AudioPlayer`, `TranscriptLine`, `List`, `ListItem` registered in content taxonomy for shiplog generation with grouped named imports
+- chore: Shiplog entries migrated from raw `<code>` to `<InlineCode>` component for consistency
+
 - refactor: Shiplog repo whitelist consolidated into `PROJECTS_CONFIG` via a `shiplogWhitelisted` flag on each repo, eliminating the separate duplicate `REPO_CONFIG` in `repo-whitelist.ts` and making projects the single source of truth for both display and inclusion logic
 - feat: `List` and `ListItem` misc components added; all shiplog entries migrated from prose paragraphs to structured lists for better readability
 - feat: Two new blog posts published — "Breaking the 39fps Cloud Capture Limit" and "Migrating Video Recording to Chrome for Testing" — featuring embedded audio players and transcript components

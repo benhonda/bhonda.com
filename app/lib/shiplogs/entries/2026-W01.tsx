@@ -4,6 +4,7 @@ import { Spacer } from "~/components/misc/spacer";
 import { Quote } from "~/components/people/quote";
 import { Tag } from "~/components/misc/tag";
 import { List, ListItem } from "~/components/misc/list";
+import { InlineCode } from "~/components/blog/inline-code";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -64,7 +65,7 @@ export default function Shiplog2026W01() {
       </Text>
 
       <List>
-        <ListItem>Added an <code>init pull</code> subcommand for simpler configuration</ListItem>
+        <ListItem>Added an <InlineCode>init pull</InlineCode> subcommand for simpler configuration</ListItem>
         <ListItem>Increased max pagination to 1,000 records</ListItem>
         <ListItem>Direct nested includes now work without wrapper syntax</ListItem>
         <ListItem>JWT secrets no longer hardcoded in generated code</ListItem>

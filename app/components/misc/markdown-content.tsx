@@ -1,4 +1,7 @@
 import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { CodeBlock } from "~/components/blog/code-block";
+import { InlineCode } from "~/components/blog/inline-code";
 import { Text } from "./text";
 
 interface MarkdownContentProps {
@@ -8,6 +11,7 @@ interface MarkdownContentProps {
 export function MarkdownContent({ content }: MarkdownContentProps) {
   return (
     <Markdown
+      remarkPlugins={[remarkGfm]}
       components={{
         h1: ({ children }) => (
           <Text as="h1" variant="display-xs" className="mb-4 mt-8">
@@ -41,16 +45,20 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
             {children}
           </Text>
         ),
+        /** Fenced code blocks: <pre><code class="language-*">…</code></pre> */
+        pre: ({ children }) => <>{children}</>,
+        /** Inline code and the inner <code> of fenced blocks (handled via pre above). */
         code: ({ children, className }) => {
-          const isInline = !className;
-          if (isInline) {
-            return <code className="bg-muted px-1 py-0.5 rounded text-sm font-mono">{children}</code>;
+          // react-markdown sets className="language-*" on fenced block <code> elements
+          if (className) {
+            const language = className.replace("language-", "");
+            return (
+              <CodeBlock language={language}>
+                {String(children) /* react-markdown always passes a string here */}
+              </CodeBlock>
+            );
           }
-          return (
-            <pre className="bg-muted p-4 rounded-lg overflow-x-auto mb-4">
-              <code className="text-sm font-mono">{children}</code>
-            </pre>
-          );
+          return <InlineCode>{children}</InlineCode>;
         },
         a: ({ children, href }) => (
           <a
@@ -71,6 +79,21 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
           <blockquote className="border-l-4 border-muted-foreground pl-4 italic my-4">{children}</blockquote>
         ),
         hr: () => <hr className="my-4 border-border" />,
+        table: ({ children }) => (
+          <div className="overflow-x-auto mb-4">
+            <table className="w-full text-sm border-collapse">{children}</table>
+          </div>
+        ),
+        thead: ({ children }) => <thead className="border-b border-border">{children}</thead>,
+        tbody: ({ children }) => <tbody>{children}</tbody>,
+        tr: ({ children }) => <tr className="border-b border-border last:border-0">{children}</tr>,
+        th: ({ children }) => (
+          <th className="text-left px-3 py-2 font-semibold text-foreground">{children}</th>
+        ),
+        td: ({ children }) => (
+          <td className="px-3 py-2 text-muted-foreground">{children}</td>
+        ),
+        del: ({ children }) => <del className="line-through text-muted-foreground">{children}</del>,
       }}
     >
       {content}

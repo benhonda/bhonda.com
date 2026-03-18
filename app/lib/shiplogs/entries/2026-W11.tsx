@@ -3,6 +3,7 @@ import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
 import { List, ListItem } from "~/components/misc/list";
+import { InlineCode } from "~/components/blog/inline-code";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
@@ -110,7 +111,7 @@ export default function Shiplog2026W11() {
       <List>
         <ListItem>Trigram search with multi-column fuzzy text search using pg_trgm</ListItem>
         <ListItem>Proper integer type emission in Zod schemas fixed a type safety gap</ListItem>
-        <ListItem><code>distinctOn</code> received subquery optimization for complex ordering scenarios</ListItem>
+        <ListItem><InlineCode>distinctOn</InlineCode> received subquery optimization for complex ordering scenarios</ListItem>
       </List>
     </ShiplogLayout>
   );
