@@ -3,8 +3,10 @@ import { serverEnv } from "~/lib/env/env.defaults.server";
 import { fetchShiplogs } from "~/lib/shiplog/fetcher.server";
 import { getAllProjects } from "~/lib/shiplog/project-db-service.server";
 import type { PersonModule } from "~/lib/people/people-types";
+import type { PostModule } from "~/lib/blog/blog-types";
 
 const profileModules = import.meta.glob<PersonModule>("../lib/people/profiles/*.tsx", { eager: true });
+const postModules = import.meta.glob<PostModule>("../lib/blog/posts/*.tsx", { eager: true });
 
 interface SitemapRoute {
   path: string;
@@ -33,6 +35,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const staticRoutes: SitemapRoute[] = [
     { path: "/", priority: 1.0, changefreq: "weekly" },
     { path: "/ships", priority: 0.9, changefreq: "weekly" },
+    { path: "/blog", priority: 0.9, changefreq: "weekly" },
     { path: "/people", priority: 0.9, changefreq: "monthly" },
     { path: "/projects", priority: 0.9, changefreq: "monthly" },
     { path: "/contact", priority: 0.8, changefreq: "monthly" },
@@ -63,7 +66,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
       changefreq: "monthly",
     }));
 
-  const allRoutes = [...staticRoutes, ...shiplogRoutes, ...projectRoutes, ...peopleRoutes];
+  const blogRoutes: SitemapRoute[] = Object.values(postModules)
+    .filter((m): m is PostModule => "postMeta" in m && m.postMeta.status === "published")
+    .map((m) => ({
+      path: `/blog/${m.postMeta.slug}`,
+      lastmod: m.postMeta.publishedAt,
+      priority: 0.8,
+      changefreq: "monthly",
+    }));
+
+  const allRoutes = [...staticRoutes, ...shiplogRoutes, ...projectRoutes, ...peopleRoutes, ...blogRoutes];
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

@@ -45,6 +45,7 @@ export function PageHeader({ description }: PageHeaderProps) {
           { label: "ships", to: { to: "/ships" } },
           { label: "projects", to: { to: "/projects" } },
           { label: "people", to: { to: "/people" } },
+          { label: "blog", to: { to: "/blog" } },
           { label: "contact", to: { to: "/contact" } },
         ]}
       />

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-03-18
+
+- feat: Blog section re-introduced at `/blog` and `/blog/:slug` alongside the existing People section — posts are file-based TSX modules exporting `postMeta`, with draft/published gating and admin visibility of drafts
+- feat: Blog routes, types, registry, and post layout component added; `/blog` included in sitemap with per-post `lastmod` and `priority`
+- feat: Jim Carrey added to People profiles
+- chore: `/blog` and `/blog/:slug` added to the typed route registry; breadcrumbs and page header nav updated to include blog
+
 ## 2026-03-06
 
 - fix: robots.txt simplified to gate on environment only (`PUBLIC_APP_ENV !== "production"`), removing unreliable host-based checks; cache-control changed to `no-store` so crawlers always get the current policy
