@@ -20,12 +20,13 @@ import { useI18n } from "~/hooks/use-i18n";
 import { useDebouncedCallback } from "use-debounce";
 import { logDebug } from "~/lib/logger";
 import { browserPageEvent, browserIdentifyEvent } from "~/lib/analytics/events.defaults.client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouteError } from "react-router";
-import { getThemeFromRequest } from "~/lib/theme/theme.server";
 import { cn } from "~/lib/utils";
 import { Footer } from "~/components/misc/footer";
 import { getUser } from "~/lib/auth-utils/user.server";
+import { getPreferencesFromRequest } from "./lib/preferences/preference-cookie.server";
+import { blockingThemeScript } from "./lib/theme/blocking-theme-script";
 
 const SITE_NAME = "bhonda.com";
 const SITE_DESC = "Ben Honda. Building, shipping, and writing.";
@@ -69,14 +70,15 @@ export const links: LinksFunction = () => [
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   // only take the public env vars (the ones that start with "PUBLIC_")
   const publicEnv = Object.fromEntries(Object.entries(serverEnv).filter(([key]) => key.startsWith("PUBLIC_")));
-
-  // Get theme preference from cookie
-  const theme = getThemeFromRequest(request);
-
-  // Get user if logged in
+  const preferences = getPreferencesFromRequest(request);
+  // Session-only read (no DB) — used to fire browser identify for returning users
   const user = await getUser(request);
 
-  return { publicEnv, theme, user };
+  return {
+    publicEnv,
+    theme: preferences.theme,
+    user: user ?? null,
+  };
 };
 
 /**
@@ -92,13 +94,33 @@ export function Layout({ children }: { children: React.ReactNode }) {
   // Defensive fallbacks for error boundary case
   const theme = data?.theme || "system";
   const publicEnv = data?.publicEnv || {};
-  const themeClass = theme === "system" ? "" : theme;
+
+  // Detect system preference - initialize to match blocking script to prevent hydration error
+  const [systemPrefersDark, setSystemPrefersDark] = useState(() => {
+    if (typeof window === "undefined") return false; // Server
+    return window.matchMedia("(prefers-color-scheme: dark)").matches; // Client initial render
+  });
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    const handler = (e: MediaQueryListEvent) => setSystemPrefersDark(e.matches);
+    mediaQuery.addEventListener("change", handler);
+
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+
+  // Apply "dark" class when theme is "dark" OR theme is "system" and OS prefers dark
+  const themeClass = theme === "dark" || (theme === "system" && systemPrefersDark) ? "dark" : "light";
 
   return (
     <html lang={language} translate="no" className={cn("notranslate", themeClass)}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* Blocking script — must stay first, no defer/async. See ~/lib/theme/blocking-theme-script.ts */}
+        <script dangerouslySetInnerHTML={{ __html: blockingThemeScript }} />
 
         <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

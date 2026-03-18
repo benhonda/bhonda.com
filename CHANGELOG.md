@@ -2,6 +2,10 @@
 
 ## 2026-03-18
 
+- refactor: Theme system overhauled — replaced CSS `@custom-variant dark` with Tailwind v4's `--dark-mode: class`, added a blocking inline script to `<head>` to apply the correct class before first paint (eliminating dark-mode flash), and moved system-preference detection into React state so the UI stays in sync with OS changes without a reload
+- feat: `buildPreferencesCookieHeader` utility added to `preference-cookie.server.ts` for serializing preferences to a `Set-Cookie` header value
+- refactor: `Tag` pill styling updated to use `bg-primary/20` with primary foreground colors and `#` prefix on topic tags
+
 - feat: `CodeBlock` and `InlineCode` components added with sugar-high syntax highlighting; `MarkdownContent` updated to use them with remark-gfm for full GFM support (tables, strikethrough, proper fenced code blocks)
 - feat: `PostMeta` now accepts a typed `projects` field (`ProjectSlug[]`) rendered as linked Tag pills alongside free-form `tags` in the blog post layout
 - refactor: Blog post files migrated to `YYYY-WNN-slug` naming convention; `InlineCode`, `CodeBlock`, `AudioPlayer`, `TranscriptLine`, `List`, `ListItem` registered in content taxonomy for shiplog generation with grouped named imports
