@@ -6,6 +6,9 @@
 - feat: `PostMeta` now accepts a typed `projects` field (`ProjectSlug[]`) rendered as linked Tag pills alongside free-form `tags` in the blog post layout
 - refactor: Blog post files migrated to `YYYY-WNN-slug` naming convention; `InlineCode`, `CodeBlock`, `AudioPlayer`, `TranscriptLine`, `List`, `ListItem` registered in content taxonomy for shiplog generation with grouped named imports
 - chore: Shiplog entries migrated from raw `<code>` to `<InlineCode>` component for consistency
+- feat: `/topics/:topic` route added — aggregates blog posts and shiplogs by topic tag on a single page, with `Tag` component updated to link to these topic pages
+- refactor: `PostMeta.tags` renamed to `topics` and both `PostMeta` and `ShiplogMeta` now support a `topics` field rendered as linked topic tag pills
+- refactor: `PostCard` extracted as a reusable component; blog index simplified to use it
 
 - refactor: Shiplog repo whitelist consolidated into `PROJECTS_CONFIG` via a `shiplogWhitelisted` flag on each repo, eliminating the separate duplicate `REPO_CONFIG` in `repo-whitelist.ts` and making projects the single source of truth for both display and inclusion logic
 - feat: `List` and `ListItem` misc components added; all shiplog entries migrated from prose paragraphs to structured lists for better readability

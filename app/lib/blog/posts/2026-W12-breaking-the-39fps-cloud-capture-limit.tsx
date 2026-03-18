@@ -17,7 +17,7 @@ export const postMeta = {
   status: "published",
   publishedAt: "2026-03-18",
   projects: ["autoscroll-recorder"],
-  tags: ["engineering", "gpu", "aws", "cloud"],
+  topics: ["engineering", "gpu", "aws", "cloud"],
 } satisfies PostMeta;
 
 export default function BreakingThe39FpsCloudCaptureLimit() {

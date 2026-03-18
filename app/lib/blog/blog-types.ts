@@ -12,8 +12,8 @@ export type PostMeta = {
   publishedAt: string; // YYYY-MM-DD
   /** Typed project links — rendered as linked Tag pills */
   projects?: ProjectSlug[];
-  /** Free-form topic tags — rendered as plain pills */
-  tags?: string[];
+  /** Free-form topic tags — rendered as linked Tag pills */
+  topics?: string[];
 };
 
 export type PostModule = {

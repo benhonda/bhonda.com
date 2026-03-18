@@ -12,6 +12,7 @@ export type ShiplogMeta = {
   year: number;
   status: ShiplogStatus;
   projectTags?: ProjectSlug[];
+  topics?: string[];
 };
 
 export type ShiplogModule = {

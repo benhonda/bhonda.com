@@ -23,6 +23,7 @@ export const routePaths = [
   "/ships/:slug",
   "/sitemap[/]xml",
   "/sitemap[/]xml/ts",
+  "/topics/:topic",
 ] as const;
 export type Path = (typeof routePaths)[number];
 
@@ -32,6 +33,7 @@ export type Params = {
   "/people/:slug": { slug: string };
   "/projects/:slug": { slug: string };
   "/ships/:slug": { slug: string };
+  "/topics/:topic": { topic: string };
 };
 
 // Utility type to extract the leaf nodes of Params

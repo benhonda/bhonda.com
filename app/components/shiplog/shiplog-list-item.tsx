@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "~/lib/router/routes";
 import { Text } from "~/components/misc/text";
+import { Tag } from "~/components/misc/tag";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 import { Info } from "lucide-react";
 import {
@@ -71,8 +72,15 @@ export function ShiplogListItem({ shiplog, userIsAdmin, showTypeLabel = false }:
             <Text as="p" variant="body" className="text-muted-foreground mb-3">
               {shiplog.previewText}
             </Text>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               <time dateTime={shiplog.publishedAt}>{shiplog.publishedAt}</time>
+              {shiplog.topics && shiplog.topics.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {shiplog.topics.map((topic) => (
+                    <Tag key={topic} topic={topic} />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           <div className="text-sm text-muted-foreground">W{shiplog.week}</div>

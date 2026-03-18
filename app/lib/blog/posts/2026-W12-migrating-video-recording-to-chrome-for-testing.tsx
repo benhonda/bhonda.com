@@ -17,7 +17,7 @@ export const postMeta = {
   status: "published",
   publishedAt: "2026-03-18",
   projects: ["autoscroll-recorder"],
-  tags: ["engineering", "browser", "chrome", "cloud"],
+  topics: ["engineering", "browser", "chrome", "cloud"],
 } satisfies PostMeta;
 
 export default function MigratingVideoRecordingToChromeForTesting() {

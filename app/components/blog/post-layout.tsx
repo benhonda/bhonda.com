@@ -3,7 +3,7 @@ import { PageHeader } from "~/components/misc/page-header";
 import { Breadcrumbs } from "~/components/misc/breadcrumbs";
 import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
-import { Tag, tagPillClass } from "~/components/misc/tag";
+import { Tag } from "~/components/misc/tag";
 import type { PostMeta } from "~/lib/blog/blog-types";
 
 type PostLayoutProps = {
@@ -31,16 +31,12 @@ export function PostLayout({ meta, children }: PostLayoutProps) {
                 {meta.publishedAt}
               </Text>
             </time>
-            {((meta.projects && meta.projects.length > 0) || (meta.tags && meta.tags.length > 0)) && (
+            {(meta.projects?.length || meta.topics?.length) ? (
               <div className="flex flex-wrap gap-1 mt-2">
                 {meta.projects?.map((slug) => <Tag key={slug} project={slug} />)}
-                {meta.tags?.map((tag) => (
-                  <Text key={tag} as="span" variant="microcopy" className={tagPillClass}>
-                    {tag}
-                  </Text>
-                ))}
+                {meta.topics?.map((topic) => <Tag key={topic} topic={topic} />)}
               </div>
-            )}
+            ) : null}
           </header>
 
           <article className="space-y-4">{children}</article>
