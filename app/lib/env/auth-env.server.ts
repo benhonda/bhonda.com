@@ -14,6 +14,10 @@ const authEnvSchema = z.object({
    * The Google OAuth2 client secret
    */
   GOOGLE_OAUTH2_CLIENT_SECRET: z.string(),
+  /**
+   * The admin email address for access control
+   */
+  ADMIN_EMAIL: z.string().email(),
 });
 
 const authEnv = authEnvSchema.parse({

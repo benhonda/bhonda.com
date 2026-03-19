@@ -8,8 +8,9 @@ import { db } from "~/lib/db/index.server";
 import { eq } from "drizzle-orm";
 import { serverRedirect } from "~/lib/router/server-responses.server";
 import { userFromSessionSchema } from "~/lib/types/user";
+import { authEnv } from "~/lib/env/auth-env.server";
 
-const ADMIN_EMAIL = "ben@theadpharm.com";
+const ADMIN_EMAIL = authEnv.ADMIN_EMAIL;
 
 /**
  * Must be called in a loader

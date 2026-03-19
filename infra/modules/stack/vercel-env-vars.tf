@@ -97,6 +97,16 @@ locals {
       comment    = "Cron secret for webhook authentication - Set manually in Vercel"
       tf_managed = false
     }
+    ADMIN_EMAIL = {
+      value      = "MANUALLY_SET_IN_VERCEL"
+      comment    = "Admin email for auth - Set manually in Vercel"
+      tf_managed = false
+    }
+    GITHUB_AUTHOR_EMAIL = {
+      value      = "MANUALLY_SET_IN_VERCEL"
+      comment    = "GitHub account email for shiplog commit filtering - Set manually in Vercel"
+      tf_managed = false
+    }
   }
 
   common_env_vars_base = merge(local.tf_managed_vars_base, local.manual_vars_base)

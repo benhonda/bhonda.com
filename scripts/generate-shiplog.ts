@@ -7,7 +7,7 @@
  * Defaults to the current ISO week/year if --week/--year are omitted.
  *
  * Requires in env (.env or .env.vercel):
- *   GITHUB_PAT, CLAUDE_CODE_OAUTH_TOKEN
+ *   GITHUB_PAT, CLAUDE_CODE_OAUTH_TOKEN, GITHUB_AUTHOR_EMAIL
  */
 
 import dotenv from "dotenv";
@@ -20,6 +20,7 @@ import { fetchCommitsForDateRange } from "~/lib/shiplog/github-service.server";
 import { buildShiplogPrompt } from "~/lib/shiplog/shiplog-prompt.server";
 import { codeWithClaude } from "~/lib/claude/claude-service.server";
 import { getDateRangeFromISOWeek, getISOWeekNumber, getISOWeekYear } from "~/lib/shiplog/date-utils.server";
+import { shiplogEnv } from "~/lib/env/shiplog-env.server";
 
 // ---------------------------------------------------------------------------
 // Parse CLI args
@@ -46,7 +47,7 @@ if (isNaN(year) || year < 2020) {
 }
 
 const MODEL_ID = "claude-sonnet-4-5-20250929";
-const AUTHOR_EMAIL = "bhonda89@gmail.com";
+const { GITHUB_AUTHOR_EMAIL: AUTHOR_EMAIL } = shiplogEnv;
 const slug = `${year}-W${String(week).padStart(2, "0")}`;
 const outPath = path.resolve(`app/lib/shiplogs/entries/${slug}.tsx`);
 

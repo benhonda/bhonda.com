@@ -8,6 +8,8 @@ const shiplogEnvSchema = z.object({
   GITHUB_PAT: z.string(),
   /** Claude Code OAuth token for AI synthesis */
   CLAUDE_CODE_OAUTH_TOKEN: z.string(),
+  /** GitHub account email for filtering commits by author */
+  GITHUB_AUTHOR_EMAIL: z.string().email(),
 });
 
 function getShiplogEnv() {

@@ -2,6 +2,10 @@
 
 ## 2026-03-18
 
+- refactor: Hardcoded private email addresses extracted to environment variables (`ADMIN_EMAIL`, `GITHUB_AUTHOR_EMAIL`) — prevents personal info from being exposed in this public repo
+
+
+
 - feat: SEO metadata expanded across all routes — added `description` meta to root, `article:published_time` OG tag to blog and shiplog detail pages, full OG tags + canonical + JSON-LD `CollectionPage` schema to `/topics/:topic`, JSON-LD `SoftwareApplication` schema to `/projects/:slug`, and topic routes added to sitemap
 - feat: Project description used as OG/meta description on project pages (fallback to generic text when absent)
 - chore: Web manifest `short_name` shortened to "bhonda" and `description` field added

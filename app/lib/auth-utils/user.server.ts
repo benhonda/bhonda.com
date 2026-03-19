@@ -2,8 +2,9 @@ import { BasicRateLimit } from "./rateLimit.server";
 import { cookieSessionStorage } from "./session.server";
 import { serverRedirect } from "~/lib/router/server-responses.server";
 import type { UserFromSession } from "~/lib/types/user";
+import { authEnv } from "~/lib/env/auth-env.server";
 
-const ADMIN_EMAIL = "ben@theadpharm.com";
+const ADMIN_EMAIL = authEnv.ADMIN_EMAIL;
 
 /**
  *
