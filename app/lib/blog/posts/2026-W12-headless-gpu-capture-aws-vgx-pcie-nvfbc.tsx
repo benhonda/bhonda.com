@@ -5,38 +5,33 @@ import { PostLayout } from "~/components/blog/post-layout";
 import { Text } from "~/components/misc/text";
 import { MarkdownContent } from "~/components/misc/markdown-content";
 import type { PostMeta } from "~/lib/blog/blog-types";
-import researchContent from "./2026-W12-breaking-the-39fps-cloud-capture-limit-research.md?raw";
+import researchContent from "./2026-W12-headless-gpu-capture-aws-vgx-pcie-nvfbc-research.md?raw";
 
 export const postMeta = {
-  title: "Breaking the 39fps Cloud Capture Limit",
-  slug: "breaking-the-39fps-cloud-capture-limit",
+  title: "Headless GPU Capture on AWS: VGX Caps, PCIe Bottlenecks, and NvFBC",
+  slug: "headless-gpu-capture-aws-vgx-pcie-nvfbc",
   preview:
-    "I fed my GPU pipeline debugging notes into NotebookLM. It turned them into a podcast. Surprisingly good.",
+    "Research notes on headless GPU capture on AWS: VGX resolution limits, x11grab PCIe bottlenecks, Docker driver constraints, and the NvFBC zero-copy fix.",
   metaDescription:
-    "How a dry engineering doc about AWS GPU capture pipelines, x11grab throughput ceilings, and smuggled .so files became a 15-minute deep-dive podcast via NotebookLM.",
+    "Research notes on headless GPU screen capture on AWS: VGX display caps, x11grab PCIe bus bottleneck, Docker driver constraints, and the NvFBC zero-copy solution.",
   status: "published",
   publishedAt: "2026-03-18",
   projects: ["autoscroll-recorder"],
   topics: ["engineering", "gpu", "aws", "cloud"],
 } satisfies PostMeta;
 
-export default function BreakingThe39FpsCloudCaptureLimit() {
+export default function HeadlessGpuCaptureAwsVgxPcieNvfbc() {
   return (
     <PostLayout meta={postMeta}>
       <Text as="p" variant="body">
-        I spent a few days grinding through a GPU capture pipeline issue on AWS — a hard 39fps
-        ceiling that turned out to have nothing to do with FFmpeg tuning and everything to do with
-        how <InlineCode>x11grab</InlineCode> physically moves frame data across the PCIe bus. I wrote it all up
-        in a research doc: root causes, dead ends, confirmed facts, the fix that shipped, and the
-        next step that's ready to go whenever 60fps becomes a hard requirement.
+        A GPU capture pipeline on AWS was hitting a hard 39fps ceiling. The bottleneck wasn't FFmpeg
+        configuration — it was how <InlineCode>x11grab</InlineCode> physically moves frame data across the PCIe
+        bus. The research doc below covers root causes, dead ends, the fix that shipped, and the
+        NvFBC zero-copy path for hitting 60fps.
       </Text>
       <Text as="p" variant="body">
-        Then I dropped that doc into NotebookLM. What came back was a 15-minute podcast where two
-        AI hosts unpacked my notes with analogies, dramatic pauses, and — honestly — genuine
-        insight. The "smuggling a <InlineCode>.so</InlineCode> file into a container" framing was their
-        invention, not mine. Not exactly new technology, NotebookLM has had audio overviews for a
-        while. But there's something satisfying about hearing a problem you built explained back to
-        you like it's actually interesting.
+        The research doc was fed into NotebookLM to generate an audio overview. The transcript and
+        original notes are below.
       </Text>
 
       <AudioPlayer
