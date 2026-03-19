@@ -21,6 +21,7 @@ export const meta: MetaFunction<typeof loader> = ({ data, params, matches }) => 
     { property: "og:title", content: `${shiplogMeta.titleText} | Ben Honda` },
     { property: "og:description", content: shiplogMeta.previewText },
     { property: "og:url", content: `https://www.bhonda.com/ships/${slug}` },
+    { property: "article:published_time", content: shiplogMeta.publishedAt },
   ]);
 };
 

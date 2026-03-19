@@ -15,6 +15,11 @@ export const meta: MetaFunction<typeof loader> = ({ data: loaderData, matches })
   return mergeMeta(matches, [
     { title: `#${topic} | Ben Honda` },
     { name: "description", content: `Posts and shiplogs tagged with "${topic}".` },
+    { tagName: "link", rel: "canonical", href: `https://www.bhonda.com/topics/${topic}` },
+    { property: "og:title", content: `#${topic} | Ben Honda` },
+    { property: "og:description", content: `Posts and shiplogs tagged with "${topic}".` },
+    { property: "og:url", content: `https://www.bhonda.com/topics/${topic}` },
+    { property: "og:type", content: "website" },
   ]);
 };
 
@@ -44,6 +49,18 @@ export default function TopicPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: `#${topic}`,
+            description: `Posts and shiplogs tagged with "${topic}".`,
+            url: `https://www.bhonda.com/topics/${topic}`,
+          }),
+        }}
+      />
       <PageHeader />
 
       <div className="mb-8">

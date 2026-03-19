@@ -2,6 +2,10 @@
 
 ## 2026-03-18
 
+- feat: SEO metadata expanded across all routes — added `description` meta to root, `article:published_time` OG tag to blog and shiplog detail pages, full OG tags + canonical + JSON-LD `CollectionPage` schema to `/topics/:topic`, JSON-LD `SoftwareApplication` schema to `/projects/:slug`, and topic routes added to sitemap
+- feat: Project description used as OG/meta description on project pages (fallback to generic text when absent)
+- chore: Web manifest `short_name` shortened to "bhonda" and `description` field added
+
 - refactor: Theme system overhauled — replaced CSS `@custom-variant dark` with Tailwind v4's `--dark-mode: class`, added a blocking inline script to `<head>` to apply the correct class before first paint (eliminating dark-mode flash), and moved system-preference detection into React state so the UI stays in sync with OS changes without a reload
 - feat: `buildPreferencesCookieHeader` utility added to `preference-cookie.server.ts` for serializing preferences to a `Set-Cookie` header value
 - refactor: `Tag` pill styling updated to use `bg-primary/20` with primary foreground colors and `#` prefix on topic tags

@@ -1,6 +1,7 @@
 {
   "name": "bhonda.com",
-  "short_name": "bhonda.com",
+  "short_name": "bhonda",
+  "description": "Ben Honda's dev blog – weekly shiplogs and projects.",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

@@ -67,7 +67,22 @@ export function loader({ request }: LoaderFunctionArgs) {
       changefreq: "monthly",
     }));
 
-  const allRoutes = [...staticRoutes, ...shiplogRoutes, ...projectRoutes, ...peopleRoutes, ...blogRoutes];
+  const publishedPostsFromModules = Object.values(postModules).filter(
+    (m): m is PostModule => "postMeta" in m && m.postMeta.status === "published",
+  );
+  const allTopics = [
+    ...new Set([
+      ...publishedPostsFromModules.flatMap((m) => m.postMeta.topics ?? []),
+      ...publishedShiplogs.flatMap((s) => s.topics ?? []),
+    ]),
+  ];
+  const topicRoutes: SitemapRoute[] = allTopics.map((topic) => ({
+    path: `/topics/${topic}`,
+    priority: 0.6,
+    changefreq: "weekly",
+  }));
+
+  const allRoutes = [...staticRoutes, ...shiplogRoutes, ...projectRoutes, ...peopleRoutes, ...blogRoutes, ...topicRoutes];
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

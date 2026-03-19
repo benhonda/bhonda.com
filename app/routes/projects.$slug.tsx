@@ -14,12 +14,13 @@ export const meta: MetaFunction<typeof loader> = ({ data, matches }) => {
   if (!data?.project) {
     return [{ title: "Project Not Found | Ben Honda's Dev Blog" }];
   }
+  const description = data.project.description ?? `Shiplogs and progress on ${data.project.name}.`;
   return mergeMeta(matches, [
     { title: `${data.project.name} | Ben Honda's Dev Blog` },
-    { name: "description", content: `Shiplogs for ${data.project.name}` },
+    { name: "description", content: description },
     { tagName: "link", rel: "canonical", href: `https://www.bhonda.com/projects/${data.project.slug}` },
     { property: "og:title", content: `${data.project.name} | Ben Honda's Dev Blog` },
-    { property: "og:description", content: `Shiplogs for ${data.project.name}` },
+    { property: "og:description", content: description },
     { property: "og:url", content: `https://www.bhonda.com/projects/${data.project.slug}` },
   ]);
 };
@@ -47,8 +48,26 @@ export default function ProjectDetail() {
   const { project, shiplogs, userIsAdmin } = useLoaderData<typeof loader>();
   const repoUrl = project.repos.find((r) => r.repoUrl)?.repoUrl;
 
+  const jsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: project.name,
+    applicationCategory: "DeveloperApplication",
+    author: {
+      "@type": "Person",
+      name: "Ben Honda",
+      url: "https://www.bhonda.com",
+    },
+  };
+  if (project.description) jsonLd.description = project.description;
+  if (project.url) jsonLd.url = project.url;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <PageHeader />
 
       <div className="w-full">

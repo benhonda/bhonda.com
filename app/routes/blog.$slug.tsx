@@ -17,6 +17,7 @@ export const meta: MetaFunction<typeof loader> = ({ data, matches }) => {
     { property: "og:title", content: `${postMeta.title} | Ben Honda` },
     { property: "og:description", content: postMeta.metaDescription },
     { property: "og:url", content: `https://www.bhonda.com/blog/${postMeta.slug}` },
+    { property: "article:published_time", content: postMeta.publishedAt },
   ]);
 };
 
@@ -50,6 +51,7 @@ export default function BlogPostPage() {
             headline: postMeta.title,
             description: postMeta.metaDescription,
             datePublished: postMeta.publishedAt,
+            image: "https://www.bhonda.com/og.png",
             url: `https://www.bhonda.com/blog/${postMeta.slug}`,
             author: {
               "@type": "Person",

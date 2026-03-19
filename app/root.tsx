@@ -32,6 +32,7 @@ const SITE_NAME = "bhonda.com";
 const SITE_DESC = "Ben Honda. Building, shipping, and writing.";
 
 export const meta: MetaFunction = () => [
+  { name: "description", content: SITE_DESC },
   { property: "og:title", content: "Ben Honda" },
   { property: "og:description", content: SITE_DESC },
   { property: "og:url", content: "https://www.bhonda.com" },
