@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-03-23
+
+- feat: "Bunny Cache Buster" project added to projects config as a tracked project with shiplog whitelisting
+- chore: Devcontainer volume mounts now use `${devcontainerId}` suffix to prevent cross-instance collisions
+
 ## 2026-03-18
 
 - refactor: Hardcoded private email addresses extracted to environment variables (`ADMIN_EMAIL`, `GITHUB_AUTHOR_EMAIL`) — prevents personal info from being exposed in this public repo

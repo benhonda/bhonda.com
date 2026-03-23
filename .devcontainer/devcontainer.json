@@ -66,17 +66,19 @@
   },
   // "remoteUser": "node",
   "mounts": [
-    "source=claude-code-bashhistory,target=/commandhistory,type=volume",
-    "source=claude-code-config,target=/home/vscode/.claude,type=volume",
+    "source=claude-code-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
+    "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume",
     // Mount the host's .aws directory into the container for AWS CLI access
     "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,consistency=cached",
     // Mount the host's ssh directory into the container for SSH access
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
   ],
   "remoteEnv": {
-    // "NODE_OPTIONS": "--max-old-space-size=4096",
+    "NODE_OPTIONS": "--max-old-space-size=4096",
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
-    "POWERLEVEL9K_DISABLE_GITSTATUS": "true"
+    "POWERLEVEL9K_DISABLE_GITSTATUS": "true",
+    // increase the max output tokens for claude code from 32000 to 64000
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": 64000
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
   "workspaceFolder": "/workspace",

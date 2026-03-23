@@ -184,6 +184,19 @@ export const PROJECTS_CONFIG = [
     ],
   },
   {
+    slug: "bunny-cache-buster",
+    name: "Bunny Cache Buster",
+    description: "BunnyNet CDN cache busting proxy",
+    repos: [
+      {
+        identifier: "adpharm/bunny-cache-buster",
+        displayName: "Bunny Cache Buster",
+        description: "BunnyNet CDN cache busting proxy",
+        shiplogWhitelisted: true,
+      },
+    ],
+  },
+  {
     slug: "bhonda-com",
     name: "bhonda.com",
     description: "This site — a dev blog with weekly shiplogs of what I've been building",
