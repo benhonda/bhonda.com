@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-03-25
+
+- feat: Accordion UI component added (Radix UI primitive) with `radix-ui` dependency
+- feat: New draft blog post — "Google Ads Search Campaigns in 2026: FAQ" covering UTM tracking, ValueTrack parameters, auto-tagging vs manual tagging, AI Max, Final URL Expansion, Page Feeds, and URL exclusions
+
 ## 2026-03-23
 
 - feat: "Bunny Cache Buster" project added to projects config as a tracked project with shiplog whitelisting
