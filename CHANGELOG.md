@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-03-27
+
+- feat: New FAQ added to Google Ads Search Campaigns post — "Why does the page feed upload dialog offer HTTPS as a source option?" with cited sources from Google Ads Help
+- docs: Audited all 7 FAQs for fluff — removed redundant cross-FAQ explanations, filler transitions, and restated paragraphs; replaced with cross-references
+
 ## 2026-03-25
 
 - feat: Accordion UI component added (Radix UI primitive) with `radix-ui` dependency

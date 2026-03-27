@@ -41,11 +41,9 @@ export default function GoogleAdsSearchCampaignsFaq() {
   return (
     <PostLayout meta={postMeta}>
       <Text as="p" variant="body">
-        This post is a running FAQ — answers to the questions we hit while
-        standing up Google Ads search campaigns. Most of the raw material came
-        from AI-assisted research sessions; every claim below has been
-        cross-checked against primary sources and the citations are preserved
-        inline.
+        A running FAQ — answers to the questions we hit while standing up
+        Google Ads search campaigns. Every claim is cross-checked against
+        primary sources; citations are inline.
       </Text>
 
       <Accordion type="multiple" className="w-full">
@@ -189,8 +187,7 @@ export default function GoogleAdsSearchCampaignsFaq() {
             </div>
 
             <Text as="p" variant="body">
-              A practical suffix that covers source attribution plus the most
-              common debugging dimensions:
+              A practical suffix covering attribution and debugging:
             </Text>
 
             <CodeBlock language="text" filename="Final URL suffix">
@@ -329,21 +326,14 @@ export default function GoogleAdsSearchCampaignsFaq() {
             </Text>
 
             <Text as="p" variant="body">
-              <strong>When to lean into Final URL Expansion:</strong> your site
-              architecture is clean, pages are clearly differentiated by topic,
-              and you want Google's ML to match queries to pages at scale. It
-              uses real-time signals — the exact search query, user intent
-              (location, device, browsing behavior), your crawled site content,
-              and any connected data feeds (Merchant Center, Page Feeds) — to
-              pick the landing page{" "}
+              <strong>When to lean into Final URL Expansion:</strong> clean site
+              architecture with clearly differentiated pages. It uses real-time
+              signals (query, device, location, crawled site content, connected
+              feeds) to pick the best landing page{" "}
               (<Cite href="https://support.google.com/google-ads/answer/14337539?hl=en">
                 Google Ads Help
               </Cite>
-              ). It also auto-generates ad copy to match the chosen page{" "}
-              (<Cite href="https://www.seroundtable.com/google-performance-max-best-practices-final-url-expansion-33396.html">
-                SE Roundtable
-              </Cite>
-              ).
+              ). See Q3 above for the full breakdown.
             </Text>
           </AccordionContent>
         </AccordionItem>
@@ -358,9 +348,8 @@ export default function GoogleAdsSearchCampaignsFaq() {
           </AccordionTrigger>
           <AccordionContent className="space-y-4">
             <Text as="p" variant="body">
-              This is a real, documented risk — Google's own best practices
-              recommend excluding "non-commercial pages like About Us, FAQ, or
-              Shipping Details"{" "}
+              Google's own best practices recommend excluding "non-commercial
+              pages like About Us, FAQ, or Shipping Details"{" "}
               (<Cite href="https://support.google.com/google-ads/answer/15995647?hl=en">
                 Google Ads Help
               </Cite>
@@ -447,11 +436,10 @@ export default function GoogleAdsSearchCampaignsFaq() {
             </Text>
 
             <Text as="p" variant="body">
-              To make matters worse, parameterized filter URLs are usually{" "}
-              <em>deliberately hidden</em> from Google's index. Standard SEO
-              practice is to block them via <InlineCode>robots.txt</InlineCode>{" "}
-              or canonicalize them back to the parent category page — which
-              means Google's ad crawler won't find them either{" "}
+              Parameterized filter URLs are usually{" "}
+              <em>deliberately hidden</em> from Google's index — blocked via{" "}
+              <InlineCode>robots.txt</InlineCode> or canonicalized to the parent
+              category page — so Google's ad crawler won't find them either{" "}
               (<Cite href="https://developers.google.com/search/docs/crawling-indexing/crawling-managing-faceted-navigation">
                 Google Search Central
               </Cite>,{" "}
@@ -513,9 +501,9 @@ https://example.com/shoes?color=blue&size=8,BLUE_SHOES;SIZE_8;FOOTWEAR`}
             </CodeBlock>
 
             <Text as="p" variant="body">
-              If you download Google's template, you'll see rows starting with{" "}
-              <InlineCode>#</InlineCode> at the bottom — those are just
-              comments and are ignored on import. Delete them or leave them.
+              Google's template includes rows starting with{" "}
+              <InlineCode>#</InlineCode> at the bottom — those are comments,
+              ignored on import.
             </Text>
 
             <Text as="h3" variant="heading-xs" className="pt-2">
@@ -569,13 +557,89 @@ https://example.com/shoes?color=blue&size=8,BLUE_SHOES;SIZE_8;FOOTWEAR`}
             </ol>
 
             <Text as="p" variant="body">
-              <strong>Critical reminder:</strong> if Final URL Expansion is{" "}
-              <em>on</em>, the Page Feed is advisory — Google can still choose
-              other pages. To use the feed as a strict allow-list, turn Final
-              URL Expansion <em>off</em>. See the{" "}
-              <em>"How do I prevent Final URL Expansion from sending traffic to
-              bad pages?"</em>{" "}
-              question above.
+              <strong>Remember:</strong> with Final URL Expansion <em>on</em>,
+              the Page Feed is advisory, not restrictive. See the URL exclusions
+              question above for the full breakdown.
+            </Text>
+          </AccordionContent>
+        </AccordionItem>
+        {/* -------------------------------------------------------------- */}
+        {/* Q7: HTTPS option in page feed upload */}
+        {/* -------------------------------------------------------------- */}
+        <AccordionItem value="https-feed-source">
+          <AccordionTrigger>
+            Why does the "Upload new page feed data" dialog offer HTTPS as a
+            source option?
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4">
+            <Text as="p" variant="body">
+              The "Select source" dropdown is about{" "}
+              <strong>how Google retrieves your feed file</strong>, not the URL
+              protocol of the pages in your feed. Four source options are
+              available when uploading business data{" "}
+              (<Cite href="https://support.google.com/google-ads/answer/7364634?hl=en">
+                Google Ads Help
+              </Cite>
+              ):
+            </Text>
+
+            <ul className="list-disc pl-6 space-y-2">
+              <li>
+                <Text as="span" variant="body">
+                  <strong>Upload a file</strong> — manual CSV/TSV upload from
+                  your computer
+                </Text>
+              </li>
+              <li>
+                <Text as="span" variant="body">
+                  <strong>Google Sheets</strong> — link a Sheet directly
+                </Text>
+              </li>
+              <li>
+                <Text as="span" variant="body">
+                  <strong>HTTPS</strong> — provide a URL to a hosted feed file
+                  (e.g.{" "}
+                  <InlineCode>
+                    https://yoursite.com/feeds/page-feed.csv
+                  </InlineCode>
+                  ) plus username/password credentials
+                </Text>
+              </li>
+              <li>
+                <Text as="span" variant="body">
+                  <strong>SFTP</strong> — fetch from an SFTP server using
+                  credentials
+                </Text>
+              </li>
+            </ul>
+
+            <Text as="p" variant="body">
+              The main reason HTTPS and SFTP exist:{" "}
+              <strong>scheduled automatic updates</strong>. You can configure
+              Google Ads to auto-fetch your feed daily, weekly, or on the first
+              of the month (15-minute increments){" "}
+              (<Cite href="https://support.google.com/google-ads/answer/7364396?hl=en">
+                Google Ads Help
+              </Cite>
+              ). Host your feed at a stable URL — ideally generated dynamically
+              by your CMS — and Google pulls the latest version on schedule.
+            </Text>
+
+            <Text as="p" variant="body">
+              <strong>Caveat:</strong> Google's scheduling docs explicitly
+              mention auto-updates for "Ad customizer and Dynamic display ad"
+              business data{" "}
+              (<Cite href="https://support.google.com/google-ads/answer/7364396?hl=en">
+                Google Ads Help
+              </Cite>
+              ). Page feeds use the same upload UI{" "}
+              (<Cite href="https://support.google.com/google-ads/answer/7166527?hl=en">
+                Google Ads Help
+              </Cite>
+              ), but whether scheduling applies to page feeds specifically is
+              undocumented. The scheduling flow also surfaces slightly different
+              source options (Google Drive, HTTP, HTTPS, FTP/SFTP) than the
+              initial upload dropdown.
             </Text>
           </AccordionContent>
         </AccordionItem>
