@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-03-30
+
+- chore: Draft W13 shiplog entry added covering email invites, performance wins, quality gates, and updates across five projects
+
 ## 2026-03-27
 
 - feat: New FAQ added to Google Ads Search Campaigns post — "Why does the page feed upload dialog offer HTTPS as a source option?" with cited sources from Google Ads Help
