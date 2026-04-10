@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-04-10
+
+- chore: Published W14 shiplog entry covering analytics reporting enhancements — key insights synthesis, period-over-period comparisons, and report template consolidation for silo-cdp
+
 ## 2026-03-30
 
 - chore: Draft W13 shiplog entry added covering email invites, performance wins, quality gates, and updates across five projects
