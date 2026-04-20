@@ -325,6 +325,20 @@ export const PROJECTS_CONFIG = [
       },
     ],
   },
+  {
+    slug: "adpharm-remotion",
+    name: "Adpharm Remotion",
+    description: "Programmatic video generation with Remotion for pharma marketing campaigns",
+    repos: [
+      {
+        identifier: "adpharm/adpharm-remotion",
+        displayName: "Adpharm Remotion",
+        description: "Programmatic video generation with Remotion for pharma marketing campaigns",
+        repoUrl: "https://github.com/adpharm/adpharm-remotion",
+        shiplogWhitelisted: true,
+      },
+    ],
+  },
 ] as const satisfies readonly ProjectConfig[];
 
 export type ProjectSlug = (typeof PROJECTS_CONFIG)[number]["slug"];

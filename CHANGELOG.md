@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-04-20
+
+- chore: Published W13 shiplog (status flipped from draft) and added W15 and W16 shiplog entries covering CLI tooling improvements, video animation library launch, and UI polish across multiple projects
+- feat: Added `adpharm-remotion` project to projects config — new shiplog-whitelisted project for programmatic video generation with Remotion for pharma marketing campaigns
+- chore: Enabled Python devcontainer feature (latest version) for local tooling needs
+
 ## 2026-04-10
 
 - chore: Published W14 shiplog entry covering analytics reporting enhancements — key insights synthesis, period-over-period comparisons, and report template consolidation for silo-cdp
