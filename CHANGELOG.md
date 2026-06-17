@@ -20,6 +20,7 @@
 - chore: Vercel Terraform API token now reads from SSM Parameter Store (`/adpharm/vercel-api-token-benhonda`) instead of Secrets Manager.
 - feat: `task reconcile-shiplog-repos` (+ `scripts/reconcile-shiplog-repos.ts`) diffs the GitHub repos you've committed to against the whitelist; Octokit now uses the throttling plugin with retry on primary/secondary rate limits.
 - chore: Projects config reconciled with GitHub — Silo (`silo-web`/`silo-services`), CD2 (single `adpharm/cd2`), and Inspiration Index repos updated; archived repos dropped.
+- chore: Added draft shiplog entries W17–W20 (`app/lib/shiplogs/entries/2026-W17..W20.tsx`).
 
 ## 2026-04-20
 
