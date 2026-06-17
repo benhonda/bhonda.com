@@ -11,7 +11,7 @@
       "source": "git@github.com:adpharm/adpharm-skills.git",
       "sourceType": "git",
       "skillPath": "skills/engineering/adpharm-stack/SKILL.md",
-      "computedHash": "7eca31e8f50df3a064735dc506874bac961254906469a23e810529f11fbeb4c5"
+      "computedHash": "9cb16026752f0551cd9dda606893f53bc198bf6a9e55ceb4fb281cdc95cc0daa"
     },
     "audit-code-quality": {
       "source": "git@github.com:adpharm/adpharm-skills.git",

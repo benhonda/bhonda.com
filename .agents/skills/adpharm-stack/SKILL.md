@@ -115,18 +115,23 @@ SKILL.md). Never restate a fact in two files — that's how the registry rotted.
 | Drizzle DB — client, schemas, the generate/push flow | `references/db.md` | ✓ |
 | Google sign-in | `references/auth-google-oauth.md` | — (shape) |
 | AWS access — S3 client, local-SSO-vs-Vercel-OIDC credentials | `references/aws-oidc.md` | — (shape) |
-| Event tracking, Silo, identify/page/track | `references/analytics-silo.md` | — (shape) |
+| Event tracking, Silo, identify/page/track | not here → `silo-analytics` skill (HOW) + `product-tracking` skill (WHAT) | — |
 | Dark/light theme, no-flash blocking script, tweakcn themes | `references/theming.md` | ✓ |
 | Adding UI components / shadcn init (Base UI) | `references/components.md` | ✓ (components.json) |
 | The Taskfile — `task generate`, guardrails, adding tasks | `references/taskfile.md` | ✓ (Taskfile) |
 | Provisioning infra, Vercel + AWS, env-var ownership | `references/terraform.md` | — (shape) |
 
+The analytics row points to **separate skills, not files here**: `silo-analytics` and
+`product-tracking` are sibling skills in the same adpharm-skills registry — invoke them with
+the Skill tool, don't look for a `references/` file. If they're not installed, add them with
+`npx skills add` (its picker lists every `skills/<category>/<name>`).
+
 **Bootstrapping a new app?** First settle two things (`references/project-setup.md`): app at
 the repo root vs a subdir, and the project name (recommend `.devcontainer/devcontainer.json`'s
 `name`). Then scaffold only the pieces it needs, roughly: `project-setup` +
 `taskfile` + `env` → `routing` → `db` → `theming` → (auth + `aws-oidc` if accounts/uploads) →
-`actions`/`data-fetching` → `i18n`/`analytics` as required → `terraform` when it's time
-to deploy.
+`actions`/`data-fetching` → `i18n` as required (analytics → the `silo-analytics` skill) →
+`terraform` when it's time to deploy.
 
 ## Parallelize multi-subsystem work (it's slow done serially)
 
