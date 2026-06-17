@@ -17,6 +17,7 @@
 - chore: Installed the `cd2-email-sdk` skill (from `adpharm/cd2`) and registered it in `skills-lock.json`.
 - feat: Contact page now has a working message form — `contact-form` action sends via CD2 (`@cdv2/email`) from `m.bhonda.com`, with a hidden honeypot field and success toast.
 - feat: `cd2EmailEnv` (`CD2_API_KEY`) added and merged into the server env map; `.env.example` and the Vercel manual env var updated.
+- chore: Vercel Terraform API token now reads from SSM Parameter Store (`/adpharm/vercel-api-token-benhonda`) instead of Secrets Manager.
 
 ## 2026-04-20
 

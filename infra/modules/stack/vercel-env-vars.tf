@@ -1,18 +1,14 @@
 ########################################################################################################################
 # VERCEL PROVIDER SETUP
 ########################################################################################################################
-data "aws_secretsmanager_secret" "vercel_secret" {
+# Vercel API token: shared SSM Parameter Store SecureString (see adpharm-stack skill)
+data "aws_ssm_parameter" "vercel_token" {
   count = var.enable_vercel_integration ? 1 : 0
-  name  = "shared/vercel"
-}
-
-data "aws_secretsmanager_secret_version" "vercel_secret_version" {
-  count     = var.enable_vercel_integration ? 1 : 0
-  secret_id = data.aws_secretsmanager_secret.vercel_secret[0].id
+  name  = "/adpharm/vercel-api-token-benhonda"
 }
 
 locals {
-  vercel_api_token = var.enable_vercel_integration ? jsondecode(data.aws_secretsmanager_secret_version.vercel_secret_version[0].secret_string)["tf_token_adpharm_exp_apr_2026"] : ""
+  vercel_api_token = var.enable_vercel_integration ? data.aws_ssm_parameter.vercel_token[0].value : ""
 }
 
 provider "vercel" {
