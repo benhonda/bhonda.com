@@ -6,6 +6,7 @@
 - chore: `.claude/settings.json` added with permission allow/deny lists (denies `task push`, `tfapply`, `terragrunt/terraform apply`, `git stash`/`checkout`, and `.env`/`secrets` reads).
 - docs: `CLAUDE.md` rewritten around the "4 pillars" framing (simple, best-practice, DRY, type-safe); dropped the deleted `CLAUDE-rr7-stack.md` reference.
 - chore: Devcontainer base image bumped from Ubuntu `jammy` to `noble`; `devcontainer-lock.json` added pinning feature versions (aws-cli, node, python, terraform, go-task).
+- refactor: Removed the unused config-driven form generator system — `app/lib/form/*`, `ui/form.tsx`, `use-form-generator.tsx`, and the `react-hook-form` + `@hookform/resolvers` deps (~2400 lines).
 
 ## 2026-04-20
 

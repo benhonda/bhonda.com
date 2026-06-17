@@ -48,8 +48,6 @@ async function authenticate({
   inputData: { email: string; password: string };
   request: Request;
 }): Promise<typeof usersTable.$inferSelect> {
-  // const { l } = langUtils(request.url);
-  // const { default: loginFormSchema } = formConfigToZodSchemas(loginFormConfig, l);
   const { email: plainTextEmail, password: plainTextPassword } = inputData;
 
   // trim and lowercase the email
