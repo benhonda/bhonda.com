@@ -11,6 +11,9 @@
 - chore: Removed the EventBridge job-map generator — `generate-jobs` Taskfile target and its `vite.config.ts` watcher entry.
 - fix: `shiplogEnv` collapsed to a single canonical export (dropped `getShiplogEnv`) so the env-map generator's single-identifier regex picks it up; `shiplogEnv` now merged into `getAllPublicEnv` to expose its `PUBLIC_` vars client-side.
 - chore: `adpharm-stack` skill now delegates analytics to the sibling `silo-analytics`/`product-tracking` skills; removed its local `references/analytics-silo.md` and bumped `skills-lock.json`.
+- feat: Analytics migrated from `@segment/analytics-next` to `@adpharm/silo-analytics` — single-object `load()` with `env`-namespaced storage and opt-out consent.
+- feat: `AnalyticsConsentDialog` added to the footer — visitors can deny analytics, live-flipping the silo consent gate (GPC still denies unconditionally) via new `consent.client.ts`.
+- fix: `browserPageEvent` now dispatches inside `analyticsBrowser.ready()` so the cold-load page view isn't dropped before device-mode destinations wire up.
 
 ## 2026-04-20
 

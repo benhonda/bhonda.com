@@ -167,7 +167,13 @@ export function browserIdentifyEvent(eventProps: {
  * @description Track when a user views a page
  */
 export function browserPageEvent(eventProps: { language: "en" | "fr" }) {
-  analyticsBrowser.page(undefined, undefined, {
-    ...eventProps,
+  // Gate on ready() so the initial (cold-load) page view dispatches against the
+  // fully-wired pipeline instead of the pre-init buffer — otherwise the first
+  // view of a fresh visit can be dropped when device-mode destinations are slow
+  // to wire. ready() resolves immediately on subsequent SPA navigations.
+  analyticsBrowser.ready(() => {
+    analyticsBrowser.page(undefined, undefined, {
+      ...eventProps,
+    });
   });
 }
