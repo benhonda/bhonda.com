@@ -18,6 +18,8 @@
 - feat: Contact page now has a working message form — `contact-form` action sends via CD2 (`@cdv2/email`) from `m.bhonda.com`, with a hidden honeypot field and success toast.
 - feat: `cd2EmailEnv` (`CD2_API_KEY`) added and merged into the server env map; `.env.example` and the Vercel manual env var updated.
 - chore: Vercel Terraform API token now reads from SSM Parameter Store (`/adpharm/vercel-api-token-benhonda`) instead of Secrets Manager.
+- feat: `task reconcile-shiplog-repos` (+ `scripts/reconcile-shiplog-repos.ts`) diffs the GitHub repos you've committed to against the whitelist; Octokit now uses the throttling plugin with retry on primary/secondary rate limits.
+- chore: Projects config reconciled with GitHub — Silo (`silo-web`/`silo-services`), CD2 (single `adpharm/cd2`), and Inspiration Index repos updated; archived repos dropped.
 
 ## 2026-04-20
 

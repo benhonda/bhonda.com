@@ -101,6 +101,16 @@ tasks:
         {{if .YEAR}}ARGS="$ARGS --year {{.YEAR}}"{{end}}
         bun run scripts/generate-shiplog.ts $ARGS
 
+  reconcile-shiplog-repos:
+    desc: Diff GitHub repos you've committed to against the shiplog whitelist (use WEEKS=12)
+    vars:
+      WEEKS: '{{default "" .WEEKS}}'
+    cmds:
+      - |
+        ARGS=""
+        {{if .WEEKS}}ARGS="$ARGS --weeks {{.WEEKS}}"{{end}}
+        bun run scripts/reconcile-shiplog-repos.ts $ARGS
+
   show-weeks:
     desc: Show week numbers with their date ranges
     cmds:

@@ -19,6 +19,7 @@
     "@nanostores/react": "^1.0.0",
     "@neondatabase/serverless": "^1.0.2",
     "@node-rs/argon2": "^2.0.2",
+    "@octokit/plugin-throttling": "^11.0.3",
     "@octokit/rest": "^22.0.1",
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
