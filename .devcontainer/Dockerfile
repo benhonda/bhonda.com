@@ -1,7 +1,7 @@
 ###############################################################################
-# Claude dev-container layer – Ubuntu 22.04 “Jammy” base image                #
+# Claude dev-container layer – Ubuntu 24.XX “noble” base image                #
 ###############################################################################
-FROM mcr.microsoft.com/devcontainers/base:jammy
+FROM mcr.microsoft.com/devcontainers/base:noble
 
 # ── Environment ──────────────────────────────────────────────────────────────
 ARG TZ
