@@ -9,6 +9,7 @@
 - refactor: Removed the unused config-driven form generator system — `app/lib/form/*`, `ui/form.tsx`, `use-form-generator.tsx`, and the `react-hook-form` + `@hookform/resolvers` deps (~2400 lines).
 - fix: Theme resolution reworked — `app.css` back to `@custom-variant dark` and `useTheme` now toggles both `light`/`dark` classes so `system` resolves to a concrete class instead of clearing both; cookie parse uses `slice` past the name so `=` in encoded JSON is safe.
 - chore: Removed the EventBridge job-map generator — `generate-jobs` Taskfile target and its `vite.config.ts` watcher entry.
+- fix: `shiplogEnv` collapsed to a single canonical export (dropped `getShiplogEnv`) so the env-map generator's single-identifier regex picks it up; `shiplogEnv` now merged into `getAllPublicEnv` to expose its `PUBLIC_` vars client-side.
 
 ## 2026-04-20
 

@@ -12,10 +12,8 @@ const shiplogEnvSchema = z.object({
   GITHUB_AUTHOR_EMAIL: z.string().email(),
 });
 
-function getShiplogEnv() {
-  return shiplogEnvSchema.parse({ ...process.env });
-}
+// Single canonical `export { shiplogEnv }` — the env-map generator's discovery regex
+// only matches a single export identifier, so multi-name exports get silently dropped.
+const shiplogEnv = shiplogEnvSchema.parse({ ...process.env });
 
-const shiplogEnv = getShiplogEnv();
-
-export { shiplogEnv, getShiplogEnv };
+export { shiplogEnv };
