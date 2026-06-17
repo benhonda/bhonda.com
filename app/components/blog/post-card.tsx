@@ -27,7 +27,7 @@ export function PostCard({ post }: PostCardProps) {
             {post.publishedAt}
           </time>
           {post.status === "draft" && (
-            <Text as="span" variant="microcopy" className="bg-yellow-100 text-yellow-800 rounded px-2 py-0.5">
+            <Text as="span" variant="microcopy" className="bg-primary/20 text-foreground rounded px-2 py-0.5">
               draft
             </Text>
           )}

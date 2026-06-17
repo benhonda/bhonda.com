@@ -7,7 +7,8 @@ export type TagProps =
   | { project: ProjectSlug; topic?: never }
   | { topic: string; project?: never };
 
-const pillClass = "bg-primary/20 text-primary-foreground dark:text-primary rounded px-2 py-0.5 hover:bg-primary/10 transition-colors";
+// Neutral foreground on a translucent primary tint → readable in both light & dark (primary is yellow, so it can't double as the label color)
+const pillClass = "bg-primary/20 text-foreground rounded px-2 py-0.5 hover:bg-primary/30 transition-colors";
 
 /** Inline tag pill. `project` variant links to /projects/:slug; `topic` variant links to /topics/:topic. */
 export function Tag({ project, topic }: TagProps) {
