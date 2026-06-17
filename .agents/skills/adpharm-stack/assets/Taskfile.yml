@@ -1,0 +1,168 @@
+version: "3"
+
+# https://taskfile.dev/usage/#output-syntax
+output: prefixed
+
+vars:
+  AWS_PROFILE: "pharmer"
+
+dotenv:
+  - .env
+  - .env.vercel
+
+# CORE tasks (cross-cutting). Domain-specific operational tasks live with their domain
+# and are appended here when you scaffold that domain:
+#   - tf* (terraform/terragrunt) → references/terraform.md
+#   - db-push (drizzle schema push) → references/db.md
+tasks:
+  default:
+    cmds:
+      - task --list-all
+
+  # ---------------------------------------------------------------- AWS identity
+  login:
+    requires:
+      vars: [AWS_PROFILE]
+    cmds:
+      - aws sso login --profile {{.AWS_PROFILE}}
+
+  check-aws-identity:
+    requires:
+      vars: [AWS_PROFILE]
+    silent: true
+    cmds:
+      - |
+        if ! aws sts get-caller-identity --profile {{.AWS_PROFILE}}; then
+          echo "\nYour '{{.AWS_PROFILE}}' AWS profile is not logged in. Run 'task login'."
+          exit 1
+        fi
+
+  # ---------------------------------------------------------------- Dev / build
+  start:
+    aliases: [dev]
+    desc: Start development server
+    interactive: true
+    cmds:
+      - bunx --bun react-router dev
+
+  install:
+    desc: Install dependencies with Bun
+    cmds:
+      - bun install {{.CLI_ARGS}}
+
+  build:
+    desc: Build the application
+    cmds:
+      - bun run build
+
+  typecheck:
+    desc: Type check (generates first so types reflect fresh codegen)
+    aliases: [typecheck:all]
+    deps: [generate]
+    cmds:
+      - bun run typecheck
+
+  typecheck-app:
+    desc: Type check only, no generate
+    aliases: [typecheck:app]
+    cmds:
+      - bun run typecheck
+
+  # ---------------------------------------------------------------- Tests
+  test:
+    desc: Run all tests
+    cmds:
+      - bun test
+  test-watch:
+    aliases: [test:watch]
+    cmds:
+      - bun test --watch
+  test-coverage:
+    aliases: [test:coverage]
+    cmds:
+      - bun test --coverage
+  test-unit:
+    aliases: [test:unit]
+    cmds:
+      - bun test app/lib
+  test-integration:
+    aliases: [test:integration]
+    cmds:
+      - bun test tests/integration
+
+  # ---------------------------------------------------------------- Codegen pipeline
+  # Each generator is guarded by `if [ -f ]`, so dropping a subsystem is a safe no-op —
+  # no Taskfile edits needed when you trim one.
+  generate:
+    desc: Run all code generators
+    cmds:
+      - task: generate-actions
+      - task: generate-routes
+      - task: generate-env
+      - task: generate-db
+
+  generate-actions:
+    aliases: [generate:actions]
+    cmds:
+      - |
+        f=app/lib/actions/_core/action-map.generate.ts
+        [ -f "$f" ] && bun run "$f" || echo "⚠️  skip generate-actions ($f not found)"
+  generate-routes:
+    aliases: [generate:routes]
+    cmds:
+      - |
+        f=app/lib/router/generouted-generate-routes.ts
+        [ -f "$f" ] && bun run "$f" || echo "⚠️  skip generate-routes ($f not found)"
+  generate-env:
+    aliases: [generate:env]
+    cmds:
+      - |
+        f=app/lib/env/_core/env-map.generate.ts
+        [ -f "$f" ] && bun run "$f" || echo "⚠️  skip generate-env ($f not found)"
+  generate-db:
+    aliases: [generate:db]
+    cmds:
+      - |
+        f=app/lib/db/schema.generate.ts
+        [ -f "$f" ] && bun run "$f" || echo "⚠️  skip generate-db ($f not found)"
+
+  # ---------------------------------------------------------------- Vercel
+  env:
+    desc: Pull dev env vars from Vercel into .env.vercel
+    aliases: [pull-env, pull]
+    interactive: true
+    cmds:
+      - bunx vercel env pull .env.vercel
+
+  link:
+    desc: Link to a Vercel project
+    interactive: true
+    cmds:
+      - bunx vercel link
+
+  # ---------------------------------------------------------------- One-offs (temp)
+  # Throwaway scripts STILL run through `task` (so .env/.env.vercel/AWS_PROFILE load the
+  # same as everything else) — but they're quarantined and short-lived. Convention:
+  #   1. script file → scripts/tmp/<slug>.ts   (scripts/tmp/ MUST be gitignored — a
+  #      one-off is never committed)
+  #   2. add a `tmp-<slug>` block below, dated, with a DELETE-AFTER-RUN banner
+  #   3. once it has served its purpose: delete the block + the script, then
+  #      `task tmp-sweep` to confirm nothing lingers
+  tmp-sweep:
+    desc: List lingering one-offs (tmp-* tasks + scripts/tmp/ files) so they can be removed
+    aliases: [tmp:sweep]
+    silent: true
+    cmds:
+      - |
+        echo "── tmp-* task blocks still in Taskfile.yml ──"
+        grep -nE '^  tmp-[a-z0-9-]+:' Taskfile.yml | grep -v 'tmp-sweep:' || echo "  (none — clean)"
+        echo "── files in scripts/tmp/ ──"
+        ls -1 scripts/tmp/ 2>/dev/null | grep -v '^\.gitkeep$' || echo "  (none — clean)"
+
+  # ---- one-off task blocks go below; DELETE each (block + script) once it has run ----
+  # tmp-backfill-foo:        # added 2026-01-01 — DELETE AFTER RUN
+  #   desc: '[ONE-OFF 2026-01-01] backfill foo, then remove this task + its script'
+  #   aliases: [tmp:backfill-foo]
+  #   deps: [check-aws-identity]      # only if it touches AWS
+  #   cmds:
+  #     - bun run scripts/tmp/backfill-foo.ts {{.CLI_ARGS}}

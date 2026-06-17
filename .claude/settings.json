@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Read",
+      "Edit",
+      "Write",
+      "WebFetch",
+      "WebSearch",
+      "Read(./.env.example)",
+      "Read(./node_modules/@segment/**)",
+      "Read(//workspace/node_modules/@segment/**)"
+    ],
+    "deny": [
+      "Bash(task push)",
+      "Bash(task push *)",
+      "Bash(task db:push)",
+      "Bash(task db-push *)",
+      "Bash(task db-push:*)",
+      "Bash(task tfapply)",
+      "Bash(task tfapply *)",
+      "Bash(terragrunt apply)",
+      "Bash(terragrunt apply *)",
+      "Bash(terraform apply)",
+      "Bash(terraform apply *)",
+      "Bash(git stash)",
+      "Bash(git stash *)",
+      "Bash(git checkout)",
+      "Bash(git checkout *)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)"
+    ]
+  }
+}

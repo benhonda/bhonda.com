@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-17
+
+- chore: Migrated Claude tooling from local `.claude/commands/*.md` slash commands to managed `adpharm-skills` — `.agents/skills/` symlinked into `.claude/skills/`, pinned via `skills-lock.json`; removed 10 command files and `CLAUDE-rr7-stack.md`.
+- chore: `.claude/settings.json` added with permission allow/deny lists (denies `task push`, `tfapply`, `terragrunt/terraform apply`, `git stash`/`checkout`, and `.env`/`secrets` reads).
+- docs: `CLAUDE.md` rewritten around the "4 pillars" framing (simple, best-practice, DRY, type-safe); dropped the deleted `CLAUDE-rr7-stack.md` reference.
+
 ## 2026-04-20
 
 - chore: Published W13 shiplog (status flipped from draft) and added W15 and W16 shiplog entries covering CLI tooling improvements, video animation library launch, and UI polish across multiple projects
