@@ -14,6 +14,7 @@
 - feat: Analytics migrated from `@segment/analytics-next` to `@adpharm/silo-analytics` — single-object `load()` with `env`-namespaced storage and opt-out consent.
 - feat: `AnalyticsConsentDialog` added to the footer — visitors can deny analytics, live-flipping the silo consent gate (GPC still denies unconditionally) via new `consent.client.ts`.
 - fix: `browserPageEvent` now dispatches inside `analyticsBrowser.ready()` so the cold-load page view isn't dropped before device-mode destinations wire up.
+- chore: Installed the `cd2-email-sdk` skill (from `adpharm/cd2`) and registered it in `skills-lock.json`.
 
 ## 2026-04-20
 

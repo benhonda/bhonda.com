@@ -19,6 +19,12 @@
       "skillPath": "skills/engineering/audit-code-quality/SKILL.md",
       "computedHash": "11f6ab00b2ecf026542c199c3c7eb0beac5ef970863e10a0ad23af8f3bf4bd69"
     },
+    "cd2-email-sdk": {
+      "source": "git@github.com:adpharm/cd2.git",
+      "sourceType": "git",
+      "skillPath": "skills/cd2-email-sdk/SKILL.md",
+      "computedHash": "a1f144a3b52791dd42bcdfbd9c598ae39581f55eeadca13e3eda1ed732a30089"
+    },
     "pdf": {
       "source": "git@github.com:adpharm/adpharm-skills.git",
       "sourceType": "git",
