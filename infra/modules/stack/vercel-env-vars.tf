@@ -107,6 +107,11 @@ locals {
       comment    = "GitHub account email for shiplog commit filtering - Set manually in Vercel"
       tf_managed = false
     }
+    CD2_API_KEY = {
+      value      = "MANUALLY_SET_IN_VERCEL"
+      comment    = "CD2 sender API key for contact-form email - Set manually in Vercel"
+      tf_managed = false
+    }
   }
 
   common_env_vars_base = merge(local.tf_managed_vars_base, local.manual_vars_base)

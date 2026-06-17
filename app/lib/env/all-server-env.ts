@@ -11,6 +11,7 @@
  */
 
 import { authEnv } from "./auth-env.server";
+import { cd2EmailEnv } from "./cd2-email-env.server";
 import { dbEnv } from "./db-env.server";
 import { shiplogEnv } from "./shiplog-env.server";
 
@@ -22,6 +23,7 @@ import { shiplogEnv } from "./shiplog-env.server";
 export const getAllPublicEnv = () => {
   const allEnvs = {
     ...authEnv,
+    ...cd2EmailEnv,
     ...dbEnv,
     ...shiplogEnv,
   };
@@ -37,6 +39,7 @@ export const getAllPublicEnv = () => {
  */
 export {
   authEnv,
+  cd2EmailEnv,
   dbEnv,
   shiplogEnv,
 };

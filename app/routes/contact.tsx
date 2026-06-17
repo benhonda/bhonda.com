@@ -1,9 +1,17 @@
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { useRef, useState } from "react";
 import { mergeMeta } from "~/lib/meta-utils";
 import { Text } from "~/components/misc/text";
 import { PageHeader } from "~/components/misc/page-header";
 import { LinkedInSvg } from "~/components/svgs/LinkedInSvg";
 import GithubSvg from "~/components/svgs/GithubSvg";
+import { useAction } from "~/hooks/use-action";
+import { action_handler } from "~/lib/actions/_core/action-runner.server";
+import { contactFormActionDefinition } from "~/lib/actions/contact-form/action-definition";
+import { Input } from "~/components/ui/input";
+import { Textarea } from "~/components/ui/textarea";
+import { Label } from "~/components/ui/label";
+import { Button } from "~/components/ui/button";
 
 export const meta: MetaFunction = ({ matches }) =>
   mergeMeta(matches, [
@@ -19,7 +27,32 @@ export async function loader({}: LoaderFunctionArgs) {
   return {};
 }
 
+// Wire the route to the action framework so the contact form can POST here.
+export const action = action_handler;
+
 export default function Contact() {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [sent, setSent] = useState(false);
+
+  const contactForm = useAction(contactFormActionDefinition, {
+    onSuccess: () => {
+      formRef.current?.reset();
+      setSent(true);
+    },
+    toastOnSuccess: { message: "Thanks! Your message has been sent." },
+  });
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    contactForm.submit({
+      name: String(formData.get("name") ?? ""),
+      email: String(formData.get("email") ?? ""),
+      message: String(formData.get("message") ?? ""),
+      company: String(formData.get("company") ?? ""), // honeypot
+    });
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <PageHeader />
@@ -63,6 +96,55 @@ export default function Contact() {
               github.com/benhonda
             </Text>
           </a>
+        </div>
+
+        {/* Contact form */}
+        <div className="mt-10 max-w-2xl">
+          <Text as="h3" variant="heading-sm" className="mb-4">
+            Send me a message
+          </Text>
+
+          <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="contact-name">Name</Label>
+                <Input id="contact-name" name="name" type="text" required maxLength={100} autoComplete="name" />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="contact-email">Email</Label>
+                <Input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="contact-message">Message</Label>
+              <Textarea id="contact-message" name="message" required minLength={10} maxLength={5000} rows={6} />
+            </div>
+
+            {/* Honeypot — visually hidden, off-screen; real users never fill it. */}
+            <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+              <label htmlFor="contact-company">Company</label>
+              <input id="contact-company" name="company" type="text" tabIndex={-1} autoComplete="off" />
+            </div>
+
+            <div className="flex items-center gap-4">
+              <Button type="submit" disabled={contactForm.isValidating}>
+                {contactForm.isValidating ? "Sending…" : "Send message"}
+              </Button>
+              {sent && (
+                <Text as="span" variant="body" className="text-muted-foreground">
+                  Message sent — thanks for reaching out!
+                </Text>
+              )}
+            </div>
+          </form>
         </div>
       </div>
     </div>
