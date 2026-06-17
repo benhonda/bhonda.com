@@ -98,14 +98,6 @@ const generators: {
       { pattern: "app/lib/actions", event: "unlink", suffix: "action-handler.server.ts" },
     ],
   },
-  // {
-  //   name: "eventbridge api handler map",
-  //   script: "app/lib/eventbridge-api-jobs/_core/eventbridge-job-map.generate.ts",
-  //   watchPatterns: [
-  //     { pattern: "app/lib/eventbridge-api-jobs", event: "add", suffix: "job-handler.server.ts" },
-  //     { pattern: "app/lib/eventbridge-api-jobs", event: "unlink", suffix: "job-handler.server.ts" },
-  //   ],
-  // },
   {
     name: "database schema",
     script: "app/lib/db/schema.generate.ts",

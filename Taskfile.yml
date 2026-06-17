@@ -209,7 +209,6 @@ tasks:
       - task: generate-routes
       - task: generate-env
       - task: generate-db
-      - task: generate-jobs
 
   generate-actions:
     aliases:
@@ -257,18 +256,6 @@ tasks:
           bun run app/lib/db/schema.generate.ts
         else
           echo "⚠️  Skipping generate-db: app/lib/db/schema.generate.ts not found"
-        fi
-
-  generate-jobs:
-    aliases:
-      - generate:jobs
-    desc: Generate EventBridge job map
-    cmds:
-      - |
-        if [ -f app/lib/eventbridge-api-jobs/_core/eventbridge-job-map.generate.ts ]; then
-          bun run app/lib/eventbridge-api-jobs/_core/eventbridge-job-map.generate.ts
-        else
-          echo "⚠️  Skipping generate-jobs: app/lib/eventbridge-api-jobs/_core/eventbridge-job-map.generate.ts not found"
         fi
 
   # --------------------------------------------------------------------------------------------------------------------
