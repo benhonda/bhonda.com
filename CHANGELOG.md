@@ -7,6 +7,7 @@
 - docs: `CLAUDE.md` rewritten around the "4 pillars" framing (simple, best-practice, DRY, type-safe); dropped the deleted `CLAUDE-rr7-stack.md` reference.
 - chore: Devcontainer base image bumped from Ubuntu `jammy` to `noble`; `devcontainer-lock.json` added pinning feature versions (aws-cli, node, python, terraform, go-task).
 - refactor: Removed the unused config-driven form generator system — `app/lib/form/*`, `ui/form.tsx`, `use-form-generator.tsx`, and the `react-hook-form` + `@hookform/resolvers` deps (~2400 lines).
+- fix: Theme resolution reworked — `app.css` back to `@custom-variant dark` and `useTheme` now toggles both `light`/`dark` classes so `system` resolves to a concrete class instead of clearing both; cookie parse uses `slice` past the name so `=` in encoded JSON is safe.
 
 ## 2026-04-20
 

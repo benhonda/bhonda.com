@@ -19,12 +19,12 @@ export function useTheme() {
   // Update DOM class based on theme
   const updateDOMClass = useCallback((newTheme: Theme) => {
     const root = document.documentElement;
-    root.classList.remove("light", "dark");
-
-    if (newTheme === "light" || newTheme === "dark") {
-      root.classList.add(newTheme);
-    }
-    // "system" mode: no class, CSS media query handles it
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = newTheme === "dark" || (newTheme === "system" && prefersDark);
+    // Always toggle both so the resolved class is always present (mirrors root.tsx + blocking script).
+    // "system" must resolve to a concrete class, not clear both — else <html> has no theme class.
+    root.classList.toggle("dark", isDark);
+    root.classList.toggle("light", !isDark);
   }, []);
 
   // Set theme and persist to cookie
@@ -39,7 +39,8 @@ export function useTheme() {
       let preferences: Record<string, unknown> = {};
       if (existingCookie) {
         try {
-          preferences = JSON.parse(decodeURIComponent(existingCookie.split("=")[1]));
+          // slice past "name=" rather than split("=")[1] — safe when the value contains "=" (encoded JSON)
+          preferences = JSON.parse(decodeURIComponent(existingCookie.slice(PREFERENCE_COOKIE_NAME.length + 1)));
         } catch {
           // ignore parse errors
         }

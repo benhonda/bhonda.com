@@ -3,9 +3,11 @@
 @import "tw-animate-css";
 
 /* Dark variant: applies when .dark class OR system prefers dark (unless .light forced) */
-@theme {
-  /* Use class-based dark mode */
-  --dark-mode: class;
+@custom-variant dark {
+  &:where(.dark, .dark *);
+  @media (prefers-color-scheme: dark) {
+    &:where(:not(.light, .light *));
+  }
 }
 
 :root {
