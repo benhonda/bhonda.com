@@ -38,8 +38,8 @@ export function AnalyticsConsentDialog() {
           <DialogTitle>{t("Privacy", "Confidentialité")}</DialogTitle>
           <DialogDescription>
             {t(
-              "We collect anonymous usage analytics to improve this site. No personal information is sold or shared.",
-              "Nous recueillons des données d'utilisation anonymes pour améliorer ce site. Aucune information personnelle n'est vendue ou partagée."
+              "I track anonymous visits to see what's working — no personal details, never sold. Flip this off anytime.",
+              "Je suis les visites de façon anonyme pour voir ce qui fonctionne — aucune donnée personnelle, jamais vendue. Désactivez quand vous voulez."
             )}
           </DialogDescription>
         </DialogHeader>
