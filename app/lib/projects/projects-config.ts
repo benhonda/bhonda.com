@@ -165,7 +165,7 @@ export const PROJECTS_CONFIG = [
       {
         identifier: "adpharm/synapse-app",
         displayName: "Synapse App",
-        description: "TODO", // own product — confirm description
+        description: "Core application for the Synapse medical communications platform",
         shiplogWhitelisted: true,
       },
       {
@@ -367,12 +367,12 @@ export const PROJECTS_CONFIG = [
   {
     slug: "adpharm-activity",
     name: "Adpharm Activity",
-    description: "TODO", // own product — confirm description
+    description: "Internal tool that measures and visualizes agency activity and output from project history",
     repos: [
       {
         identifier: "adpharm/adpharm-activity",
         displayName: "Adpharm Activity",
-        description: "TODO",
+        description: "Internal tool that measures and visualizes agency activity and output from project history",
         shiplogWhitelisted: true,
       },
     ],
@@ -406,12 +406,12 @@ export const PROJECTS_CONFIG = [
   {
     slug: "devrounds",
     name: "Devrounds",
-    description: "TODO", // own product — confirm description
+    description: "Internal sprint-planning board for managing project work, synced with the team's task tracker",
     repos: [
       {
         identifier: "adpharm/devrounds",
         displayName: "Devrounds",
-        description: "TODO",
+        description: "Internal sprint-planning board for managing project work, synced with the team's task tracker",
         shiplogWhitelisted: true,
       },
     ],
@@ -432,12 +432,12 @@ export const PROJECTS_CONFIG = [
   {
     slug: "hearth-press",
     name: "Hearth Press",
-    description: "TODO", // personal project — confirm description
+    description: "Create beautiful printed recipe books — import, organize, and lay out your own recipes",
     repos: [
       {
         identifier: "benhonda/hearth-press",
         displayName: "Hearth Press",
-        description: "TODO",
+        description: "Create beautiful printed recipe books — import, organize, and lay out your own recipes",
         repoUrl: "https://github.com/benhonda/hearth-press",
         shiplogWhitelisted: true,
       },

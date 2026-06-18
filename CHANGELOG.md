@@ -2,6 +2,7 @@
 
 ## 2026-06-18
 
+- chore: Filled in `PROJECTS_CONFIG` descriptions for Synapse App, Adpharm Activity, Devrounds, and Hearth Press (replacing `TODO` placeholders).
 - chore: Published shiplogs W17–W18 (flipped from draft) and added published entries W19–W24 (`app/lib/shiplogs/entries/2026-W19..W24.tsx`).
 - refactor: Dropped the stored `publishedAt` from `ShiplogMeta` — the week-ending date now derives from `week`+`year` via new client-safe `app/lib/shiplog/iso-week.ts` (`getDateRangeFromISOWeek`/`isoWeekEndDateString` SSOT); registry sorts by `year`/`week`.
 - chore: Removed `foundation-emails-fork` from `PROJECTS_CONFIG` and dropped its `projectTags` from the shiplog drafts.
