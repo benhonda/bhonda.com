@@ -16,6 +16,11 @@ export type ProjectConfig = {
   description?: string;
   /** Primary public URL for the project */
   url?: string;
+  /**
+   * Optional explicit dot color (any CSS color string, e.g. an `oklch(...)`).
+   * When unset, {@link projectDotColor} derives a deterministic hue from the slug.
+   */
+  color?: string;
   /** Individual repos that make up this project */
   repos: readonly RepoConfig[];
 };
@@ -480,3 +485,19 @@ export const projectsBySlug = Object.fromEntries(PROJECTS_CONFIG.map((p) => [p.s
 export const projectByRepoIdentifier = Object.fromEntries(
   PROJECTS_CONFIG.flatMap((p) => p.repos.map((r) => [r.identifier, p as ProjectConfig]))
 ) as Record<string, ProjectConfig>;
+
+/** Deterministic hue (0–359) from a slug — stable across renders, evenly spread. */
+function slugHue(slug: string): number {
+  let h = 0;
+  for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) % 360;
+  return h;
+}
+
+/**
+ * Per-project dot color, GitHub-language-dot style. Uses an explicit `color` from
+ * config when set, else a deterministic OKLCH hue from the slug — fixed L/C so every
+ * dot reads at equal weight in both light and dark themes (SSOT for project color).
+ */
+export function projectDotColor(slug: ProjectSlug): string {
+  return projectsBySlug[slug]?.color ?? `oklch(0.7 0.16 ${slugHue(slug)})`;
+}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "~/lib/router/routes";
 import { Text } from "~/components/misc/text";
 import { Tag } from "~/components/misc/tag";
+import { ProjectChips } from "~/components/projects/project-chips";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 import { isoWeekEndDateString } from "~/lib/shiplog/iso-week";
 import { Info } from "lucide-react";
@@ -83,6 +84,7 @@ export function ShiplogListItem({ shiplog, userIsAdmin, showTypeLabel = false }:
                 </div>
               )}
             </div>
+            <ProjectChips slugs={shiplog.projectTags ?? []} className="mt-2" />
           </div>
           <div className="text-sm text-muted-foreground">W{shiplog.week}</div>
         </div>

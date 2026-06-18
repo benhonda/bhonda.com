@@ -2,6 +2,7 @@
 
 ## 2026-06-18
 
+- feat: Per-project color dots (`projectDotColor` SSOT — explicit `color` or deterministic OKLCH hue from slug) drive new `ProjectChips` on shiplog cards and a trailing-90-day `ProjectActivityMatrix` heatmap on the projects index.
 - feat: Silo CDP, CD2, GTM Proxy, and ADAPTS now link to their theadpharm.com/products pages; new `projectUrlLabel` keeps the path so shared-domain product URLs don't collapse to the bare host.
 - feat: "Writing elsewhere" — external theadpharm.com posts (`external-posts.ts`) surfaced in the blog grid / topic hubs / `llms.txt` via `getBlogListItems` + `ExternalPostCard`/`ExternalPostDetail` pointer pages (canonical → home domain, excluded from sitemap).
 - feat: Cross-site entity reconciliation — `Person` schema gets stable `@id` (`#person`), `worksFor` `@id` → theadpharm `#organization`, and a `sameAs` link to the theadpharm author page; `BlogPosting`/shiplog authors reference the `@id`.

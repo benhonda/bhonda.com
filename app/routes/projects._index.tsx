@@ -5,9 +5,81 @@ import { useLoaderData } from "react-router";
 import { PageHeader } from "~/components/misc/page-header";
 import { Link } from "~/lib/router/routes";
 import { ExternalLink, Github } from "lucide-react";
-import { PROJECTS_CONFIG, projectUrlLabel, type ProjectConfig } from "~/lib/projects/projects-config";
+import {
+  PROJECTS_CONFIG,
+  projectUrlLabel,
+  projectDotColor,
+  projectsBySlug,
+  type ProjectConfig,
+  type ProjectSlug,
+} from "~/lib/projects/projects-config";
 import { allShiplogs } from "~/lib/shiplogs/shiplog-registry";
-import { isoWeekEndDateString } from "~/lib/shiplog/iso-week";
+import { getDateRangeFromISOWeek, isoWeekEndDateString } from "~/lib/shiplog/iso-week";
+import { ProjectActivityMatrix } from "~/components/projects/project-activity-matrix";
+
+/** Trailing window for the activity matrix. */
+const WINDOW_DAYS = 90;
+
+/** Build the project × week presence matrix for shiplogs in the trailing window. */
+function buildActivityMatrix() {
+  const now = new Date(); // request-time, server-side
+  const cutoff = new Date(now);
+  cutoff.setUTCDate(now.getUTCDate() - WINDOW_DAYS);
+
+  const inWindow = allShiplogs.filter((s) => {
+    const end = getDateRangeFromISOWeek(s.year, s.week).end;
+    return end >= cutoff && end <= now;
+  });
+
+  const weekKey = (year: number, week: number) => `${year}-${week}`;
+
+  // Week columns, oldest → newest, deduped (defends against >1 shiplog per ISO week).
+  const weekMap = new Map<string, { year: number; week: number; date: string }>();
+  for (const s of inWindow) {
+    weekMap.set(weekKey(s.year, s.week), {
+      year: s.year,
+      week: s.week,
+      date: isoWeekEndDateString(s.year, s.week),
+    });
+  }
+  const weeks = [...weekMap.values()].sort((a, b) => a.year - b.year || a.week - b.week);
+
+  // Projects tagged per week.
+  const taggedByWeek = new Map<string, Set<ProjectSlug>>();
+  const activeSlugs = new Set<ProjectSlug>();
+  for (const s of inWindow) {
+    const k = weekKey(s.year, s.week);
+    const set = taggedByWeek.get(k) ?? new Set<ProjectSlug>();
+    for (const slug of s.projectTags ?? []) {
+      set.add(slug);
+      activeSlugs.add(slug);
+    }
+    taggedByWeek.set(k, set);
+  }
+
+  const rows = [...activeSlugs]
+    .map((slug) => {
+      const cells = weeks.map((w) => taggedByWeek.get(weekKey(w.year, w.week))?.has(slug) ?? false);
+      return {
+        slug,
+        name: projectsBySlug[slug]?.name ?? slug,
+        color: projectDotColor(slug),
+        cells,
+        count: cells.filter(Boolean).length,
+        lastActiveIdx: cells.lastIndexOf(true),
+      };
+    })
+    // most-recently-active first, then most-active, then alphabetical
+    .sort((a, b) => b.lastActiveIdx - a.lastActiveIdx || b.count - a.count || a.name.localeCompare(b.name))
+    .map(({ lastActiveIdx: _drop, ...row }) => row);
+
+  return {
+    weeks,
+    rows,
+    rangeStart: weeks[0]?.date ?? null,
+    rangeEnd: weeks[weeks.length - 1]?.date ?? null,
+  };
+}
 
 export const meta: MetaFunction = ({ matches }) =>
   mergeMeta(matches, [
@@ -30,22 +102,33 @@ export function loader() {
       latestShiplogDate: tagged[0] ? isoWeekEndDateString(tagged[0].year, tagged[0].week) : null,
     };
   });
-  return { projects };
+  return { projects, matrix: buildActivityMatrix() };
 }
 
 export default function ProjectsIndex() {
-  const { projects } = useLoaderData<typeof loader>();
+  const { projects, matrix } = useLoaderData<typeof loader>();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <PageHeader />
 
-      <div className="w-full">
-        <Text as="h2" variant="heading-md" className="mb-6">
-          Projects
-        </Text>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        {/* DOM-first so it stacks above the cards when collapsed; pinned to the right column on lg */}
+        <aside className="lg:col-start-3 lg:row-start-1 lg:sticky lg:top-8">
+          <ProjectActivityMatrix
+            weeks={matrix.weeks}
+            rows={matrix.rows}
+            rangeStart={matrix.rangeStart}
+            rangeEnd={matrix.rangeEnd}
+          />
+        </aside>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        <section className="lg:col-span-2 lg:col-start-1 lg:row-start-1">
+          <Text as="h2" variant="heading-md" className="mb-6">
+            All projects
+          </Text>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {projects.map((project) => (
             <Link
               key={project.slug}
@@ -99,9 +182,10 @@ export default function ProjectsIndex() {
                   )}
                 </div>
               </div>
-            </Link>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );
