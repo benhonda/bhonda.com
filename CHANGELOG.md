@@ -2,6 +2,7 @@
 
 ## 2026-06-18
 
+- chore: Devcontainer bashhistory/config volumes renamed to stable `*-bhondacom` names (from per-instance `${devcontainerId}`) so they persist across container rebuilds.
 - chore: Installed the `ai-seo` and `product-marketing` skills (from `coreyhaines31/marketingskills`) — `.agents/skills/` dirs symlinked into `.claude/skills/`, pinned in `skills-lock.json`.
 - chore: Filled in `PROJECTS_CONFIG` descriptions for Synapse App, Adpharm Activity, Devrounds, and Hearth Press (replacing `TODO` placeholders).
 - chore: Published shiplogs W17–W18 (flipped from draft) and added published entries W19–W24 (`app/lib/shiplogs/entries/2026-W19..W24.tsx`).

@@ -45,7 +45,7 @@
         // "continue.continue",
         "bradlc.vscode-tailwindcss",
         "heybourn.headwind",
-        "esbenp.prettier-vscode",
+        "esbenp.prettier-vscode"
         // "astro-build.astro-vscode"
       ],
       "settings": {
@@ -66,8 +66,8 @@
   },
   // "remoteUser": "node",
   "mounts": [
-    "source=claude-code-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
-    "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume",
+    "source=claude-code-bashhistory-bhondacom,target=/commandhistory,type=volume",
+    "source=claude-code-config-bhondacom,target=/home/vscode/.claude,type=volume",
     // Mount the host's .aws directory into the container for AWS CLI access
     "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,consistency=cached",
     // Mount the host's ssh directory into the container for SSH access
