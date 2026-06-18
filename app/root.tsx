@@ -141,6 +141,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
               url: "https://www.bhonda.com/",
               image: "https://www.bhonda.com/og.png",
               jobTitle: "Software Engineer",
+              description:
+                "Software engineer who builds in public, shipping weekly across web apps, cloud infrastructure, and AI tooling.",
+              worksFor: {
+                "@type": "Organization",
+                name: "The Adpharm",
+                url: "https://theadpharm.com",
+              },
+              // Disambiguates the entity and signals topical authority to AI search engines.
+              knowsAbout: [
+                "Software engineering",
+                "AWS",
+                "Cloud infrastructure",
+                "GPU capture",
+                "Web analytics",
+                "Google Ads attribution",
+                "React Router",
+                "TypeScript",
+                "AI tooling",
+              ],
               sameAs: ["https://github.com/benhonda", "https://www.linkedin.com/in/benhonda/"],
             }),
           }}

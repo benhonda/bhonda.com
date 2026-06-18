@@ -70,6 +70,7 @@ export default function ShiplogPage() {
             headline: shiplogMeta.titleText,
             description: shiplogMeta.previewText,
             datePublished: isoWeekEndDateString(shiplogMeta.year, shiplogMeta.week),
+            keywords: shiplogMeta.topics?.join(", "),
             image: "https://www.bhonda.com/og.png",
             url: `https://www.bhonda.com/ships/${shiplogMeta.slug}`,
             author: {

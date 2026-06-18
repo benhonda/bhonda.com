@@ -51,6 +51,8 @@ export default function BlogPostPage() {
             headline: postMeta.title,
             description: postMeta.metaDescription,
             datePublished: postMeta.publishedAt,
+            dateModified: postMeta.publishedAt,
+            keywords: postMeta.topics?.join(", "),
             image: "https://www.bhonda.com/og.png",
             url: `https://www.bhonda.com/blog/${postMeta.slug}`,
             author: {

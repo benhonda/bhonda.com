@@ -11,6 +11,8 @@ export const routePaths = [
   "/blog",
   "/blog/:slug",
   "/contact",
+  "/llms[/]txt",
+  "/llms[/]txt/ts",
   "/login",
   "/oauth2/google/callback",
   "/people",

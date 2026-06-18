@@ -1,4 +1,5 @@
 import { CodeBlock } from "~/components/blog/code-block";
+import { FaqSchema, type FaqItem } from "~/components/blog/faq-schema";
 import { InlineCode } from "~/components/blog/inline-code";
 import { PostLayout } from "~/components/blog/post-layout";
 import { Text } from "~/components/misc/text";
@@ -23,6 +24,54 @@ export const postMeta = {
   topics: ["google-ads", "analytics", "marketing"],
 } satisfies PostMeta;
 
+/**
+ * Plain-text mirror of the accordion Q&A below, used to emit FAQPage JSON-LD.
+ * Keep each `answer` in sync with its visible AccordionItem — the markup must
+ * match on-page content for valid structured data.
+ */
+const faqItems: readonly FaqItem[] = [
+  {
+    question:
+      "Do I need to set a Final URL suffix for UTM parameters, or does Google Ads add them automatically?",
+    answer:
+      "Google Ads does not add UTM parameters automatically. If you want utm_source, utm_medium, or utm_campaign on your landing-page URLs, configure them yourself via the Final URL suffix or a tracking template. Auto-tagging is on by default and appends a gclid to every click, which GA4 can decode for full campaign attribution without manual UTMs — but non-Google tools like Plausible or Matomo can only detect the gclid, not extract campaign details from it. Best practice: keep auto-tagging on and add manual UTMs, so auto-tagging feeds GA4 and UTMs feed everything else (and act as a fallback if an ad blocker strips the gclid).",
+  },
+  {
+    question: "What dynamic parameters can I use in the Final URL suffix?",
+    answer:
+      "Google calls them ValueTrack parameters — placeholders in curly braces that Google replaces at click time. The most useful for a Final URL suffix include {campaignid}, {adgroupid}, {creative}, {keyword}, {matchtype}, {device}, {network}, {gclid}, {loc_physical_ms}, and {adposition}. A practical suffix: utm_source=google&utm_medium=cpc&utm_campaign={campaignid}&utm_content={adgroupid}&utm_term={keyword}&device={device}&matchtype={matchtype}&network={network}. The field doesn't need a leading '?' — Google adds it. Note that {matchtype} now returns 'a' for AI Max keywordless matches, a fourth value that didn't exist before 2025, so update any downstream match-type parsing.",
+  },
+  {
+    question: "What is AI Max for Search campaigns and should I use it?",
+    answer:
+      "AI Max is an opt-in optimization layer for standard Search campaigns, launched in open beta in May 2025. It bundles three coupled features: Search Term Matching (broad/keywordless expansion, source of the new 'a' matchtype), Text Customization (auto-generated headlines and descriptions), and Final URL Expansion (dynamically routing clicks to the most relevant page on your domain). Google reports ~14% more conversions at similar CPA/ROAS, up to ~27% for campaigns mostly on exact/phrase match. Keep it off if you need strict control over landing pages or ad copy (legal, compliance, tightly segmented funnels); test it if your site has clean architecture and clearly differentiated pages. You can't enable Final URL Expansion without Text Customization.",
+  },
+  {
+    question:
+      "Can I set different landing pages per keyword, or should I use Final URL Expansion?",
+    answer:
+      "Both work. Keyword-level Final URLs are still fully supported and override the ad-level URL. But if AI Max's Final URL Expansion is enabled, it can override both ad-level and keyword-level URLs, giving the priority chain: AI Max decision > keyword URL > ad URL. Use keyword-level URLs for high-intent exact-match keywords with bespoke landing pages, localized campaigns, or compliance-driven funnel control. Lean into Final URL Expansion when you have clean site architecture with clearly differentiated pages, since it uses real-time signals (query, device, location, crawled content, feeds) to pick the best page.",
+  },
+  {
+    question:
+      "How do I prevent Final URL Expansion from sending traffic to bad pages?",
+    answer:
+      "Google recommends excluding non-commercial pages like About Us, FAQ, or Shipping Details. Configure URL Exclusions in campaign settings under the Final URL Expansion section, either by exact URL (paste individual URLs) or by Rules (block directories with patterns like 'URL contains /blog'). Your campaign's original Final URL can't be excluded — it always stays eligible. A common misconception: uploading a Page Feed does not restrict expansion to only those URLs when expansion is on — the feed is advisory then, and only acts as a hard allow-list when Final URL Expansion is off. E-commerce tip: add a rule excluding URLs containing 'out-of-stock' to avoid routing buyers to dead ends.",
+  },
+  {
+    question:
+      "What if my landing pages use query-string filters? Can Final URL Expansion handle URLs like ?color=red&size=10?",
+    answer:
+      "No. Final URL Expansion selects only from pages Google has already crawled — it cannot construct or compose parameterized URLs on the fly, so an unindexed URL like /shoes?color=red&size=10 will never be served. Parameterized filter URLs are usually deliberately hidden from Google's index (blocked via robots.txt or canonicalized to the parent category), so the ad crawler won't find them either. The fix is a Page Feed: upload a CSV of the exact URLs you want used (including parameterized ones) under Tools > Business Data > Page feed, with a 'Page URL' column (required, no tracking parameters) and a 'Custom label' column (recommended). Custom labels are targeting triggers, not just notes — they restrict which URLs the AI can pick for a given ad group.",
+  },
+  {
+    question:
+      "Why does the \"Upload new page feed data\" dialog offer HTTPS as a source option?",
+    answer:
+      "The 'Select source' dropdown controls how Google retrieves your feed file, not the URL protocol of the pages inside it. Four source options exist: Upload a file (manual CSV/TSV), Google Sheets (link a Sheet), HTTPS (a URL to a hosted feed file plus credentials), and SFTP (fetch from an SFTP server). HTTPS and SFTP mainly exist to enable scheduled automatic updates — Google can auto-fetch your feed on a schedule if you host it at a stable URL. Caveat: Google's scheduling docs explicitly cover ad customizer and dynamic display ad data; whether scheduling applies to page feeds specifically is undocumented, and the scheduling flow surfaces slightly different source options than the initial upload dropdown.",
+  },
+];
+
 /** Inline citation link. Opens in a new tab. */
 function Cite({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -40,6 +89,7 @@ function Cite({ href, children }: { href: string; children: React.ReactNode }) {
 export default function GoogleAdsSearchCampaignsFaq() {
   return (
     <PostLayout meta={postMeta}>
+      <FaqSchema items={faqItems} />
       <Text as="p" variant="body">
         A running FAQ — answers to the questions we hit while standing up
         Google Ads search campaigns. Every claim is cross-checked against

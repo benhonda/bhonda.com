@@ -11,13 +11,21 @@ import { publishedPeople } from "~/lib/people/people-registry";
 import type { ReactNode } from "react";
 
 
+/** Entity description — kept in sync with the visible homepage bio (BIO) for AI/snippet extraction. */
+const HOME_DESC =
+  "Ben Honda is a software engineer who builds in public — weekly shiplogs auto-generated from real git commits, plus cited deep-dives on the problems he solved.";
+
+/** Visible homepage intro. Definition-first and self-contained so AI search engines can extract it as a standalone answer to \"who is Ben Honda?\". */
+const BIO =
+  "Ben Honda is a software engineer at The Adpharm who builds in public. Each week he publishes a shiplog — a development summary auto-generated from real git commits — across 30+ projects spanning web apps, cloud infrastructure, and AI tooling, plus long-form, cited write-ups of the problems he solved.";
+
 export const meta: MetaFunction = ({ matches }) =>
   mergeMeta(matches, [
     { title: "Ben Honda's Dev Blog" },
-    { name: "description", content: "Weekly development shiplogs and projects" },
+    { name: "description", content: HOME_DESC },
     { tagName: "link", rel: "canonical", href: "https://www.bhonda.com/" },
     { property: "og:title", content: "Ben Honda's Dev Blog" },
-    { property: "og:description", content: "Weekly development shiplogs and projects" },
+    { property: "og:description", content: HOME_DESC },
     { property: "og:url", content: "https://www.bhonda.com/" },
   ]);
 
@@ -49,7 +57,7 @@ export default function Index() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <PageHeader />
+      <PageHeader description={BIO} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <LatestBox
