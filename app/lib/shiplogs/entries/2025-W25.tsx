@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W25",
   titleText: "Search, Screenshots, and Smart Prompts: Building the Inspiration Index",
   previewText: "A week of rapid iteration on the Inspiration Index: authentication, smart search, screenshot processing workflows, and AI-powered content descriptions powered by Gemini.",
-  publishedAt: "2025-06-22",
   week: 25,
   year: 2025,
   status: "published",

@@ -14,10 +14,10 @@ export const shiplogsBySlug: Record<string, ShiplogModule> = allModules.reduce<R
   {},
 );
 
-/** All shiplogs sorted by publishedAt descending */
+/** All shiplogs sorted newest-first by ISO week (year, then week) */
 export const allShiplogs: ShiplogMeta[] = allModules
   .map((m) => m.shiplogMeta)
-  .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+  .sort((a, b) => b.year - a.year || b.week - a.week);
 
 /** Only published shiplogs */
 export const publishedShiplogs: ShiplogMeta[] = allShiplogs.filter((s) => s.status === "published");

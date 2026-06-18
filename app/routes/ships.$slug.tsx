@@ -3,6 +3,7 @@ import { useLoaderData, data as routerData } from "react-router";
 import { mergeMeta } from "~/lib/meta-utils";
 import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
 import { shiplogsBySlug } from "~/lib/shiplogs/shiplog-registry";
+import { isoWeekEndDateString } from "~/lib/shiplog/iso-week";
 import { useEffect, useRef } from "react";
 import { browserTrackEvent } from "~/lib/analytics/events.defaults.client";
 import { getOrCreateStartTime } from "~/lib/analytics/session-utils";
@@ -21,7 +22,7 @@ export const meta: MetaFunction<typeof loader> = ({ data, params, matches }) => 
     { property: "og:title", content: `${shiplogMeta.titleText} | Ben Honda` },
     { property: "og:description", content: shiplogMeta.previewText },
     { property: "og:url", content: `https://www.bhonda.com/ships/${slug}` },
-    { property: "article:published_time", content: shiplogMeta.publishedAt },
+    { property: "article:published_time", content: isoWeekEndDateString(shiplogMeta.year, shiplogMeta.week) },
   ]);
 };
 
@@ -68,7 +69,7 @@ export default function ShiplogPage() {
             "@type": "BlogPosting",
             headline: shiplogMeta.titleText,
             description: shiplogMeta.previewText,
-            datePublished: shiplogMeta.publishedAt,
+            datePublished: isoWeekEndDateString(shiplogMeta.year, shiplogMeta.week),
             image: "https://www.bhonda.com/og.png",
             url: `https://www.bhonda.com/ships/${shiplogMeta.slug}`,
             author: {

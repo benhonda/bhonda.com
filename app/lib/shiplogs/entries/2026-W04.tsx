@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2026-W04",
   titleText: "Collections, Alerts, and Architecture Refinements",
   previewText: "Shipped collection management for saved designs, production monitoring across the stack, and a wave of type safety improvements that make everything more reliable.",
-  publishedAt: "2026-01-25",
   week: 4,
   year: 2026,
   status: "published",

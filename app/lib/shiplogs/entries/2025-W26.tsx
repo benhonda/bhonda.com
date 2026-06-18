@@ -8,7 +8,6 @@ export const shiplogMeta = {
   slug: "2025-W26",
   titleText: "Forms & Dashboards: A Week of Polish",
   previewText: "Expanded form capabilities with new components and smoothed out analytics workflows across ADAPTS.",
-  publishedAt: "2025-06-29",
   week: 26,
   year: 2025,
   status: "published",

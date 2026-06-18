@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { serverEnv } from "~/lib/env/env.defaults.server";
 import { publishedShiplogs } from "~/lib/shiplogs/shiplog-registry";
+import { isoWeekEndDateString } from "~/lib/shiplog/iso-week";
 import { PROJECTS_CONFIG } from "~/lib/projects/projects-config";
 import type { PersonModule } from "~/lib/people/people-types";
 import type { PostModule } from "~/lib/blog/blog-types";
@@ -38,7 +39,7 @@ export function loader({ request }: LoaderFunctionArgs) {
 
   const shiplogRoutes: SitemapRoute[] = publishedShiplogs.map((s) => ({
     path: `/ships/${s.slug}`,
-    lastmod: s.publishedAt,
+    lastmod: isoWeekEndDateString(s.year, s.week),
     priority: 0.9,
     changefreq: "monthly",
   }));

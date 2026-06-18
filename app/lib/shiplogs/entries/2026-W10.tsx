@@ -10,7 +10,6 @@ export const shiplogMeta = {
   slug: "2026-W10",
   titleText: "Email Platform Launch & AI Search Evolution",
   previewText: "Shipped a full-stack email platform with sending, receiving, and domain management. Overhauled Inspiration Index search with AI-generated queries and added pricing pages.",
-  publishedAt: "2026-03-08",
   week: 10,
   year: 2026,
   status: "published",

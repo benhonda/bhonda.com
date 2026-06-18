@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W43",
   titleText: "Multi-Round Reviews, Viewport Controls, and Smarter UI Navigation",
   previewText: "This week brought major UX improvements to the Agentic Editor with conversation-style feedback, browser viewport controls, and a redesigned review interface that makes iterating on changes smoother than ever.",
-  publishedAt: "2025-10-26",
   week: 43,
   year: 2025,
   status: "published",

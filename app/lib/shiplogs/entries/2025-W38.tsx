@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W38",
   titleText: "Pipeline Hardening & GPU-Accelerated Recording",
   previewText: "Major infrastructure improvements to the Inspiration Index pipeline and autoscroll recorder, plus retry functionality for failed recordings.",
-  publishedAt: "2025-09-21",
   week: 38,
   year: 2025,
   status: "published",

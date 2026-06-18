@@ -8,7 +8,6 @@ export const shiplogMeta = {
   slug: "2025-W23",
   titleText: "New Clients & GTM Infrastructure Updates",
   previewText: "Onboarded two new ADAPTS clients and refined the GTM proxy infrastructure with environment configuration improvements.",
-  publishedAt: "2025-06-08",
   week: 23,
   year: 2025,
   status: "published",

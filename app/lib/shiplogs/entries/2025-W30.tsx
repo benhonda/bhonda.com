@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W30",
   titleText: "Autoscroll Magic, Component Registries, and CDP Refinements",
   previewText: "Shipped a smooth autoscroll recorder demo, rebuilt the component registry system with multi-stack support, and polished the Inspiration Index with better theming and pipeline improvements.",
-  publishedAt: "2025-07-27",
   week: 30,
   year: 2025,
   status: "published",

@@ -2,6 +2,7 @@
 
 ## 2026-06-18
 
+- refactor: Dropped the stored `publishedAt` from `ShiplogMeta` — the week-ending date now derives from `week`+`year` via new client-safe `app/lib/shiplog/iso-week.ts` (`getDateRangeFromISOWeek`/`isoWeekEndDateString` SSOT); registry sorts by `year`/`week`.
 - chore: Removed `foundation-emails-fork` from `PROJECTS_CONFIG` and dropped its `projectTags` from the shiplog drafts.
 - chore: Rewrote draft shiplogs W17–W18 narratives; deleted draft entries W19–W20.
 

@@ -5,6 +5,7 @@ import { Text } from "~/components/misc/text";
 import { Spacer } from "~/components/misc/spacer";
 import { Tag } from "~/components/misc/tag";
 import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
+import { isoWeekEndDateString } from "~/lib/shiplog/iso-week";
 
 type ShiplogLayoutProps = {
   meta: ShiplogMeta;
@@ -27,9 +28,9 @@ export function ShiplogLayout({ meta, children }: ShiplogLayoutProps) {
             </Text>
             <Spacer size="xs" />
             <div className="flex items-center gap-3 flex-wrap">
-              <time dateTime={meta.publishedAt}>
+              <time dateTime={isoWeekEndDateString(meta.year, meta.week)}>
                 <Text as="span" variant="microcopy" className="text-muted-foreground">
-                  {meta.publishedAt}
+                  {isoWeekEndDateString(meta.year, meta.week)}
                 </Text>
               </time>
               <Text as="span" variant="microcopy" className="text-muted-foreground">

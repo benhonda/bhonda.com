@@ -10,7 +10,6 @@ export const shiplogMeta = {
   slug: "2026-W03",
   titleText: "Navigation Overhauls, SDK Power-Ups, and Video Intelligence",
   previewText: "A week of major UX improvements across Inspiration Index, powerful new features in PostgreSDK, and smarter video analysis for the Autoscroll ecosystem.",
-  publishedAt: "2026-01-18",
   week: 3,
   year: 2026,
   status: "published",

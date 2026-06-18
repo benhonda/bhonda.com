@@ -1,6 +1,10 @@
 /**
- * ISO week date utilities for shiplog generation
+ * ISO week date utilities for shiplog generation.
+ * `getDateRangeFromISOWeek` lives in the client-safe `./iso-week` module (SSOT) and is
+ * re-exported here so existing server-side importers keep their import path.
  */
+
+export { getDateRangeFromISOWeek } from "./iso-week";
 
 /**
  * Calculates the ISO week number for a given date
@@ -22,38 +26,6 @@ export function getISOWeekYear(date: Date): number {
   const dayNum = d.getUTCDay() || 7;
   d.setUTCDate(d.getUTCDate() + 4 - dayNum);
   return d.getUTCFullYear();
-}
-
-/**
- * Converts ISO week number to start and end dates (Monday-Sunday)
- * @param year - The ISO week year
- * @param week - The ISO week number (1-53)
- * @returns Object with start (Monday) and end (Sunday) dates
- */
-export function getDateRangeFromISOWeek(
-  year: number,
-  week: number
-): { start: Date; end: Date } {
-  // January 4th is always in week 1
-  const jan4 = new Date(Date.UTC(year, 0, 4));
-
-  // Get the Monday of week 1
-  const dayOfWeek = jan4.getUTCDay() || 7; // Sunday = 7
-  const week1Monday = new Date(jan4);
-  week1Monday.setUTCDate(jan4.getUTCDate() - dayOfWeek + 1);
-
-  // Calculate the Monday of the target week
-  const targetMonday = new Date(week1Monday);
-  targetMonday.setUTCDate(week1Monday.getUTCDate() + (week - 1) * 7);
-
-  // Calculate the Sunday of the target week
-  const targetSunday = new Date(targetMonday);
-  targetSunday.setUTCDate(targetMonday.getUTCDate() + 6);
-
-  return {
-    start: targetMonday,
-    end: targetSunday,
-  };
 }
 
 /**

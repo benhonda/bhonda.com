@@ -8,7 +8,6 @@ export const shiplogMeta = {
   slug: "2025-W44",
   titleText: "Footer Fixes and Automated Workflows",
   previewText: "Updated contact information for synapsemedcom.ca and shipped automated refinement workflows for the Agentic Editor with screenshot generation.",
-  publishedAt: "2025-11-02",
   week: 44,
   year: 2025,
   status: "published",

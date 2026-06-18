@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W27",
   titleText: "Building the Foundation: New Tooling & Registry Infrastructure",
   previewText: "Launched the Adpharm Toolshed automation platform and expanded reporting capabilities in Silo CDP with Excel generation for data analysis.",
-  publishedAt: "2025-07-06",
   week: 27,
   year: 2025,
   status: "published",

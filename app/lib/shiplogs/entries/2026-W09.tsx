@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2026-W09",
   titleText: "AI Search, Launch Prep, and Platform Polish",
   previewText: "Shipped AI-powered search with CMD+K interface, overhauled pricing and billing, launched pre-launch IP allowlist, and polished recording automation with quality tracking and tech detection.",
-  publishedAt: "2026-03-01",
   week: 9,
   year: 2026,
   status: "published",

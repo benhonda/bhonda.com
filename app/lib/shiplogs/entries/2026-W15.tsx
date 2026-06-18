@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2026-W15",
   titleText: "CLI Tooling & Developer Experience",
   previewText: "Shipped install-skill command for PostgreSDK and improved API key management for Bunny Cache Buster",
-  publishedAt: "2026-04-12",
   week: 15,
   year: 2026,
   status: "published",

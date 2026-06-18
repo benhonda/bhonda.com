@@ -15,7 +15,6 @@ export const shiplogMeta = {
   titleText: "Video Animation Library & UI Polish",
   previewText:
     "Launched programmatic video effects library, improved accessibility in Inspiration Index, and documented adblock resilience patterns.",
-  publishedAt: "2026-04-19",
   week: 16,
   year: 2026,
   status: "published",

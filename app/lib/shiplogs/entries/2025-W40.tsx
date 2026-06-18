@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W40",
   titleText: "The Infrastructure & Automation Overhaul",
   previewText: "Major upgrades across the board: one-click GitHub setup, dual database support, global CDN delivery, and comprehensive pipeline observability for video processing.",
-  publishedAt: "2025-10-05",
   week: 40,
   year: 2025,
   status: "published",

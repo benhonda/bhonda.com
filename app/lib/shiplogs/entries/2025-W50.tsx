@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W50",
   titleText: "Dark Mode, Event Intelligence, and Infrastructure Evolution",
   previewText: "Shipped comprehensive dark mode theming, advanced IP risk detection for event tracking, and streamlined infrastructure across multiple projects.",
-  publishedAt: "2025-12-14",
   week: 50,
   year: 2025,
   status: "published",

@@ -10,7 +10,6 @@ export const shiplogMeta = {
   slug: "2025-W34",
   titleText: "Multi-Destination Video Distribution, PostgreSDK Relation Magic, and Infrastructure Automation",
   previewText: "Shipped cross-account S3 video distribution with Google Drive support, powerful typed database relationships with WHERE clause filtering, and streamlined Terraform workflows across multiple projects.",
-  publishedAt: "2025-08-24",
   week: 34,
   year: 2025,
   status: "published",

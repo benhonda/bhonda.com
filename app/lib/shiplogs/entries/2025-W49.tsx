@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W49",
   titleText: "Week of Infrastructure, Analytics, and Polish",
   previewText: "Launched bhonda.com with automated weekly shiplogs, enhanced Agentic Editor with team collaboration and iframe-bridge improvements, and added comprehensive analytics tracking to Formgen.",
-  publishedAt: "2025-12-07",
   week: 49,
   year: 2025,
   status: "published",

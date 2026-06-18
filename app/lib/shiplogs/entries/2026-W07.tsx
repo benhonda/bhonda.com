@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2026-W07",
   titleText: "Analytics Overhaul, Smarter Crawling, and a Big Migration Week",
   previewText: "A massive week across the stack: a full React Router 7 migration, a redesigned analytics reporting system, smarter link discovery, and a wave of recorder reliability improvements.",
-  publishedAt: "2026-02-15",
   week: 7,
   year: 2026,
   status: "published",

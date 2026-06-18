@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W46",
   titleText: "The Type Safety Renaissance: PostgreSDK, Synapse CRM, and Infrastructure Evolution",
   previewText: "A massive week of shipping: PostgreSDK hits v0.13 with pagination and enum support, Synapse CRM gets audit logging and Google Sheets seeding, plus infrastructure tooling across the board.",
-  publishedAt: "2025-11-16",
   week: 46,
   year: 2025,
   status: "published",

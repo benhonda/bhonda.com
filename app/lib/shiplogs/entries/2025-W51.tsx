@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W51",
   titleText: "Automation, Documentation, and Email Infrastructure",
   previewText: "Rolling out cron-powered automation, polishing documentation across projects, and shipping a complete email system with Gmail-style compose UI and retry capabilities.",
-  publishedAt: "2025-12-21",
   week: 51,
   year: 2025,
   status: "published",

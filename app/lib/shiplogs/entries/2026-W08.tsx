@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2026-W08",
   titleText: "Projects Showcase, Stories-Style Browsing, and Pipeline Reliability",
   previewText: "This week brought a new projects section to the portfolio, a complete UX overhaul for Inspiration Index with stories-style browsing, and major reliability improvements to the capture pipeline.",
-  publishedAt: "2026-02-22",
   week: 8,
   year: 2026,
   status: "published",

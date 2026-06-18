@@ -15,7 +15,6 @@ export const shiplogMeta = {
   titleText: "Report Insights & Period Comparisons",
   previewText:
     "Enhanced analytics reporting with key insights, data quality indicators, and period-over-period comparison capabilities.",
-  publishedAt: "2026-04-05",
   week: 14,
   year: 2026,
   status: "published",

@@ -84,14 +84,13 @@ function renderEntryTsx(opts: {
   slug: string;
   titleText: string;
   previewText: string;
-  publishedAt: string;
   week: number;
   year: number;
   status: ShiplogStatus;
   projectTags: ProjectSlug[];
   markdownBody: string;
 }): string {
-  const { slug, titleText, previewText, publishedAt, week, year, status, projectTags, markdownBody } = opts;
+  const { slug, titleText, previewText, week, year, status, projectTags, markdownBody } = opts;
   const componentName = slugToComponentName(slug);
 
   const projectTagsLine = projectTags.length > 0
@@ -106,7 +105,6 @@ export const shiplogMeta = {
   slug: "${slug}",
   titleText: "${titleText.replace(/"/g, '\\"')}",
   previewText: "${previewText.replace(/"/g, '\\"')}",
-  publishedAt: "${publishedAt}",
   week: ${week},
   year: ${year},
   status: "${status}",
@@ -237,7 +235,6 @@ async function main() {
       slug: shiplog.slug,
       titleText: shiplog.title_text,
       previewText: shiplog.preview_text,
-      publishedAt: shiplog.published_at,
       week: shiplog.week,
       year: shiplog.year,
       status: shiplog.status,

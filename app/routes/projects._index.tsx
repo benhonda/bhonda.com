@@ -7,6 +7,7 @@ import { Link } from "~/lib/router/routes";
 import { ExternalLink, Github } from "lucide-react";
 import { PROJECTS_CONFIG, type ProjectConfig } from "~/lib/projects/projects-config";
 import { allShiplogs } from "~/lib/shiplogs/shiplog-registry";
+import { isoWeekEndDateString } from "~/lib/shiplog/iso-week";
 
 export const meta: MetaFunction = ({ matches }) =>
   mergeMeta(matches, [
@@ -26,7 +27,7 @@ export function loader() {
       ...config,
       repoUrl: config.repos.find((r) => r.repoUrl)?.repoUrl ?? null,
       shiplogCount: tagged.length,
-      latestShiplogDate: tagged[0]?.publishedAt ?? null,
+      latestShiplogDate: tagged[0] ? isoWeekEndDateString(tagged[0].year, tagged[0].week) : null,
     };
   });
   return { projects };

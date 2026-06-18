@@ -15,7 +15,6 @@ export const shiplogMeta = {
   titleText: "Search Polish, GPU Recording, Dark Mode",
   previewText:
     "Target-level search with deduplication, GPU-accelerated HEVC recording with multi-snapshot UI, theme system overhaul, and PostgreSDK transaction primitives.",
-  publishedAt: "2026-03-22",
   week: 12,
   year: 2026,
   status: "published",

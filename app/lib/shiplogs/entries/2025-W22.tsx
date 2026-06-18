@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W22",
   titleText: "Component Libraries, Analytics Refinements & Bug Squashing",
   previewText: "Launched a new shadcn component registry, refined analytics filtering across multiple projects, and knocked out critical URL handling bugs.",
-  publishedAt: "2025-06-01",
   week: 22,
   year: 2025,
   status: "published",

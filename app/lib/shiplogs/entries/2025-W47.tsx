@@ -8,7 +8,6 @@ export const shiplogMeta = {
   slug: "2025-W47",
   titleText: "Email Campaigns, Event Store Overhaul, and SDK Improvements",
   previewText: "Shipped email campaign automation with Gmail integration in Synapse CRM, restructured the Event Store API with better tooling, and streamlined PostgreSDK configuration.",
-  publishedAt: "2025-11-23",
   week: 47,
   year: 2025,
   status: "published",

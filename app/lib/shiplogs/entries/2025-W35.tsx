@@ -7,7 +7,6 @@ export const shiplogMeta = {
   slug: "2025-W35",
   titleText: "Smarter S3 Access Controls Ship",
   previewText: "Enhanced infrastructure flexibility with distribution-aware access controls for better multi-environment deployments.",
-  publishedAt: "2025-08-31",
   week: 35,
   year: 2025,
   status: "published",

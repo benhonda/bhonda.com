@@ -10,9 +10,8 @@ export function buildShiplogPrompt(args: {
   slug: string;
   week: number;
   year: number;
-  publishedAt: string;
 }): string {
-  const { repoCommits, startDate, endDate, outPath, slug, week, year, publishedAt } = args;
+  const { repoCommits, startDate, endDate, outPath, slug, week, year } = args;
   const taxonomy = buildTaxonomyString();
   const fnName = `Shiplog${slug.replace(/-/g, "")}`;
 
@@ -59,7 +58,6 @@ export const shiplogMeta = {
   slug: "${slug}",
   titleText: "YOUR TITLE HERE",
   previewText: "YOUR PREVIEW HERE",
-  publishedAt: "${publishedAt}",
   week: ${week},
   year: ${year},
   status: "draft",        // change to "published" when ready

@@ -58,9 +58,9 @@ async function main() {
   console.log(`\n=== generate-shiplog: ${slug} ===`);
 
   const { start, end } = getDateRangeFromISOWeek(year, week);
-  const publishedAt = end.toISOString().split("T")[0]; // Sunday YYYY-MM-DD
+  const weekEnding = end.toISOString().split("T")[0]; // Sunday YYYY-MM-DD
 
-  console.log(`Date range: ${start.toISOString().split("T")[0]} to ${publishedAt}`);
+  console.log(`Date range: ${start.toISOString().split("T")[0]} to ${weekEnding}`);
   console.log(`Author: ${AUTHOR_EMAIL}\n`);
 
   // Check if file already exists
@@ -81,7 +81,7 @@ async function main() {
 
   // 2. Synthesize + write via Claude
   console.log("[2/2] Synthesizing and writing with Claude...");
-  const prompt = buildShiplogPrompt({ repoCommits, startDate: start, endDate: end, outPath, slug, week, year, publishedAt });
+  const prompt = buildShiplogPrompt({ repoCommits, startDate: start, endDate: end, outPath, slug, week, year });
   const claudeOutput = await codeWithClaude(prompt, {
     model: MODEL_ID,
     maxTurns: 10,

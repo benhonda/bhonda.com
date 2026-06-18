@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W33",
   titleText: "Shipping PostgreSDK, Synapse CRM, and Registry Updates",
   previewText: "A productive week building out PostgreSDK's testing infrastructure, launching Synapse CRM's contacts system, and refining component registries.",
-  publishedAt: "2025-08-17",
   week: 33,
   year: 2025,
   status: "published",

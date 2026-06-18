@@ -7,7 +7,10 @@ export type ShiplogMeta = {
   slug: string; // YYYY-WNN
   titleText: string;
   previewText: string;
-  publishedAt: string; // YYYY-MM-DD (Sunday of that ISO week)
+  /**
+   * The week-ending (Sunday) date used for display/sort is derived from `week` + `year`
+   * via `isoWeekEndDateString` — not stored, since it's fully determined by them.
+   */
   week: number;
   year: number;
   status: ShiplogStatus;

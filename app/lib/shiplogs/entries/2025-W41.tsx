@@ -8,7 +8,6 @@ export const shiplogMeta = {
   slug: "2025-W41",
   titleText: "ADAPTS: Axsome Integration",
   previewText: "Added support for Axsome to the ADAPTS platform this week.",
-  publishedAt: "2025-10-12",
   week: 41,
   year: 2025,
   status: "published",

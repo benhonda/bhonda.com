@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W32",
   titleText: "PostgreSDK Ships, Autoscroll Gets Type-Safe, and Synapse Takes Shape",
   previewText: "A week of database tooling innovation, type-safe configuration systems, and CRM foundation building. PostgreSDK hit v0.4.0, Autoscroll Recorder got JSON Schema validation, and Synapse CRM launched.",
-  publishedAt: "2025-08-10",
   week: 32,
   year: 2025,
   status: "published",

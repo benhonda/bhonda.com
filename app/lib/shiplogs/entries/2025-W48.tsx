@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W48",
   titleText: "Teams, Themes, and Testing: A Week of Polish",
   previewText: "Multi-tenancy came to Agentic Editor, Formgen got drag-and-drop rankings and custom theming, and ADAPTS grew a proper testing suite with IP geolocation.",
-  publishedAt: "2025-11-30",
   week: 48,
   year: 2025,
   status: "published",

@@ -10,7 +10,6 @@ export const shiplogMeta = {
   slug: "2026-W11",
   titleText: "Search intelligence, mobile polish, and screenshot capture",
   previewText: "Major search and mobile UX improvements across the inspiration index, full-page screenshot capture for autoscroll recordings, and email platform enhancements.",
-  publishedAt: "2026-03-15",
   week: 11,
   year: 2026,
   status: "draft",

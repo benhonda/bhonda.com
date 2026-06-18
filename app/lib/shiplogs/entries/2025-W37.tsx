@@ -8,7 +8,6 @@ export const shiplogMeta = {
   slug: "2025-W37",
   titleText: "Streamlining the Changelog Process",
   previewText: "Making it easier to keep the development history clean and organized with better documentation practices.",
-  publishedAt: "2025-09-14",
   week: 37,
   year: 2025,
   status: "published",

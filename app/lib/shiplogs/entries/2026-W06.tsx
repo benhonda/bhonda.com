@@ -10,7 +10,6 @@ export const shiplogMeta = {
   slug: "2026-W06",
   titleText: "Type Safety Everywhere & The Pipeline Grows",
   previewText: "A massive week of infrastructure hardening — PostgreSDK leveled up with deep TypeScript type inference, the scraper pipeline added seven new sources, and the recorder stack got smarter tech detection and role-based access control.",
-  publishedAt: "2026-02-08",
   week: 6,
   year: 2026,
   status: "published",

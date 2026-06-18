@@ -15,7 +15,6 @@ export const shiplogMeta = {
   titleText: "Email invites, performance wins, and quality gates",
   previewText:
     "Shipped email-based team invites, major performance improvements across the stack, and stricter quality controls for captured content.",
-  publishedAt: "2026-03-29",
   week: 13,
   year: 2026,
   status: "published",

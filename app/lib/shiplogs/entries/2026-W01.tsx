@@ -11,7 +11,6 @@ export const shiplogMeta = {
   slug: "2026-W01",
   titleText: "From Page Intelligence to Pipeline Precision: A Week of Distributed Systems",
   previewText: "Shipped automatic collision detection for inspiration pipelines, complete distribution retry systems for video recording, and multi-service authentication for PostgreSDK—all while teaching machines to understand web pages.",
-  publishedAt: "2026-01-04",
   week: 1,
   year: 2026,
   status: "published",

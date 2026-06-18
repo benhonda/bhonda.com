@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2026-W02",
   titleText: "SEO, Vectors, and Cookie Carnage",
   previewText: "Shipped SEO infrastructure, migrated to pgvector for unified embeddings, crushed cookie banners with AdGuard filters, and leveled up content discovery across the stack.",
-  publishedAt: "2026-01-11",
   week: 2,
   year: 2026,
   status: "published",

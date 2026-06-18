@@ -10,7 +10,6 @@ export const shiplogMeta = {
   slug: "2025-W36",
   titleText: "Job Monitoring, Multi-Site Scraping, and Production Polish",
   previewText: "Enhanced video recording job tracking with unknown status detection, launched a multi-site link scraper with Firecrawl integration, and shipped API-driven job creation for programmatic workflows.",
-  publishedAt: "2025-09-07",
   week: 36,
   year: 2025,
   status: "published",

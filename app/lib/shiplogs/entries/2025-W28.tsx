@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W28",
   titleText: "Framework Foundations & Pharmacy Validation",
   previewText: "Rebuilt the actions framework from the ground up and added pharmacy license validation tools. Major architectural improvements across the stack.",
-  publishedAt: "2025-07-13",
   week: 28,
   year: 2025,
   status: "published",

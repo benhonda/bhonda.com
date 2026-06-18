@@ -10,7 +10,6 @@ export const shiplogMeta = {
   slug: "2025-W31",
   titleText: "Autoscroll Recorder: From Zero to Production",
   previewText: "Shipped a complete video recording platform with pipeline visualization, S3 destinations, and job management—plus infrastructure automation across the board.",
-  publishedAt: "2025-08-03",
   week: 31,
   year: 2025,
   status: "published",

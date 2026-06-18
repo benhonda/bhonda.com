@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W24",
   titleText: "Inspiration Index Takes Flight: AI-Powered Content Capture & Form Infrastructure",
   previewText: "Launched the Inspiration Index with intelligent webpage analysis, automated content capture via EventBridge, and built a complete form system with type-safe validation across the stack.",
-  publishedAt: "2025-06-15",
   week: 24,
   year: 2025,
   status: "published",

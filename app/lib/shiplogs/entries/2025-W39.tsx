@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W39",
   titleText: "Pipelines, Pixels, and Polish: A Week of Infrastructure & UX Wins",
   previewText: "Shipped AI-powered video analysis with Gemini, overhauled autoscroll recording with GPU acceleration and mobile support, plus a dozen UX improvements across the board.",
-  publishedAt: "2025-09-28",
   week: 39,
   year: 2025,
   status: "published",

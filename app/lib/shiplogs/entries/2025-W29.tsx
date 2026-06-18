@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W29",
   titleText: "Shadcn Migration & Toolshed Validation",
   previewText: "Major UI library migration underway for Inspiration Index, plus new website validation tools in Adpharm Toolshed.",
-  publishedAt: "2025-07-20",
   week: 29,
   year: 2025,
   status: "published",

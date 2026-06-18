@@ -10,7 +10,6 @@ export const shiplogMeta = {
   slug: "2026-W11",
   titleText: "Auth Overhaul, Mobile Polish, and Multi-Output Recording",
   previewText: "Passwordless authentication, 14-day trials, and a complete mobile UX refresh land across the Inspiration Index. Plus: multi-resolution recording, dark mode, and smarter email routing.",
-  publishedAt: "2026-03-15",
   week: 11,
   year: 2026,
   status: "published",

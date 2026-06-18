@@ -9,7 +9,6 @@ export const shiplogMeta = {
   slug: "2025-W42",
   titleText: "Screenshot Auth, Smarter Comments & GitHub Workflows",
   previewText: "This week brought authenticated screenshots to the Agentic Editor, a complete overhaul of the commenting system, and streamlined GitHub automation across the toolshed.",
-  publishedAt: "2025-10-19",
   week: 42,
   year: 2025,
   status: "published",
