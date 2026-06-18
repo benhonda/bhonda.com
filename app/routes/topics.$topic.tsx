@@ -3,8 +3,8 @@ import { useLoaderData, data } from "react-router";
 import { mergeMeta } from "~/lib/meta-utils";
 import { PageHeader } from "~/components/misc/page-header";
 import { Text } from "~/components/misc/text";
-import { PostCard } from "~/components/blog/post-card";
-import { allPosts, publishedPosts } from "~/lib/blog/blog-registry";
+import { BlogGrid } from "~/components/blog/blog-grid";
+import { getBlogListItems } from "~/lib/blog/blog-registry";
 import { allShiplogs, publishedShiplogs } from "~/lib/shiplogs/shiplog-registry";
 import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
 import { ShiplogListItem } from "~/components/shiplog/shiplog-list-item";
@@ -30,9 +30,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const user = await getUser(request);
   const userIsAdmin = isAdmin(user);
 
-  const posts = (userIsAdmin ? allPosts : publishedPosts).filter((p) =>
-    (p.topics ?? []).includes(topic),
-  );
+  const posts = getBlogListItems(userIsAdmin).filter((it) => (it.post.topics ?? []).includes(topic));
   const shiplogs = (userIsAdmin ? allShiplogs : publishedShiplogs).filter((s) =>
     (s.topics ?? []).includes(topic),
   );
@@ -77,11 +75,7 @@ export default function TopicPage() {
           <Text as="h3" variant="heading-sm" className="mb-4">
             Posts
           </Text>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-            {posts.map((post) => (
-              <PostCard key={post.slug} post={post} />
-            ))}
-          </div>
+          <BlogGrid items={posts} />
         </section>
       )}
 

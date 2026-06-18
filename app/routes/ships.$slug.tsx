@@ -75,6 +75,7 @@ export default function ShiplogPage() {
             url: `https://www.bhonda.com/ships/${shiplogMeta.slug}`,
             author: {
               "@type": "Person",
+              "@id": "https://www.bhonda.com/#person",
               name: "Ben Honda",
               url: "https://www.bhonda.com/",
             },

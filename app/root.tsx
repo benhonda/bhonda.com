@@ -137,6 +137,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Person",
+              // Canonical entity anchor — referenced as author across bhonda.com and from
+              // theadpharm.com posts so crawlers/AI merge both sites into one "Ben Honda".
+              "@id": "https://www.bhonda.com/#person",
               name: "Ben Honda",
               url: "https://www.bhonda.com/",
               image: "https://www.bhonda.com/og.png",
@@ -145,8 +148,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 "Software engineer who builds in public, shipping weekly across web apps, cloud infrastructure, and AI tooling.",
               worksFor: {
                 "@type": "Organization",
+                // References the canonical Org node defined on theadpharm.com (both sides
+                // must point at this exact @id). www is the canonical host — match it everywhere.
+                "@id": "https://www.theadpharm.com/#organization",
                 name: "The Adpharm",
-                url: "https://theadpharm.com",
+                url: "https://www.theadpharm.com",
               },
               // Disambiguates the entity and signals topical authority to AI search engines.
               knowsAbout: [
@@ -160,7 +166,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 "TypeScript",
                 "AI tooling",
               ],
-              sameAs: ["https://github.com/benhonda", "https://www.linkedin.com/in/benhonda/"],
+              // www is theadpharm's canonical host — reciprocates the author page that points
+              // back here, the bidirectional link engines use for entity reconciliation.
+              // Append authoritative profiles (ORCID, Crunchbase, Wikidata) here as they go live.
+              sameAs: [
+                "https://github.com/benhonda",
+                "https://www.linkedin.com/in/benhonda/",
+                "https://www.theadpharm.com/insights/author/ben-honda",
+              ],
             }),
           }}
         />

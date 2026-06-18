@@ -3,6 +3,7 @@ import { serverEnv } from "~/lib/env/env.defaults.server";
 import { publishedShiplogs } from "~/lib/shiplogs/shiplog-registry";
 import { isoWeekEndDateString } from "~/lib/shiplog/iso-week";
 import { PROJECTS_CONFIG } from "~/lib/projects/projects-config";
+import { externalPosts } from "~/lib/blog/external-posts";
 import type { PersonModule } from "~/lib/people/people-types";
 import type { PostModule } from "~/lib/blog/blog-types";
 
@@ -75,6 +76,8 @@ export function loader({ request }: LoaderFunctionArgs) {
     ...new Set([
       ...publishedPostsFromModules.flatMap((m) => m.postMeta.topics ?? []),
       ...publishedShiplogs.flatMap((s) => s.topics ?? []),
+      // External posts aren't sitemap URLs themselves, but their topic hubs are real bhonda.com pages.
+      ...externalPosts.flatMap((p) => p.topics ?? []),
     ]),
   ];
   const topicRoutes: SitemapRoute[] = allTopics.map((topic) => ({

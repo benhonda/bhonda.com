@@ -3,8 +3,8 @@ import { useLoaderData } from "react-router";
 import { mergeMeta } from "~/lib/meta-utils";
 import { PageHeader } from "~/components/misc/page-header";
 import { Text } from "~/components/misc/text";
-import { PostCard } from "~/components/blog/post-card";
-import { allPosts, publishedPosts } from "~/lib/blog/blog-registry";
+import { BlogGrid } from "~/components/blog/blog-grid";
+import { getBlogListItems } from "~/lib/blog/blog-registry";
 import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
 
 export const meta: MetaFunction = ({ matches }) =>
@@ -19,11 +19,11 @@ export const meta: MetaFunction = ({ matches }) =>
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getUser(request);
-  return { posts: isAdmin(user) ? allPosts : publishedPosts };
+  return { items: getBlogListItems(isAdmin(user)) };
 }
 
 export default function BlogIndex() {
-  const { posts } = useLoaderData<typeof loader>();
+  const { items } = useLoaderData<typeof loader>();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -36,16 +36,12 @@ export default function BlogIndex() {
         Writing on software, ideas, and things I find interesting.
       </Text>
 
-      {posts.length === 0 ? (
+      {items.length === 0 ? (
         <Text as="p" variant="body" className="text-muted-foreground">
           No posts yet.
         </Text>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          {posts.map((post) => (
-            <PostCard key={post.slug} post={post} />
-          ))}
-        </div>
+        <BlogGrid items={items} />
       )}
     </div>
   );

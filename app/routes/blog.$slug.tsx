@@ -1,13 +1,30 @@
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { useLoaderData, data as routerData } from "react-router";
-import { postsBySlug } from "~/lib/blog/blog-registry";
+import { postsBySlug, externalPostsBySlug } from "~/lib/blog/blog-registry";
+import { ExternalPostDetail } from "~/components/blog/external-post-detail";
 import { mergeMeta } from "~/lib/meta-utils";
 import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
 
 export const meta: MetaFunction<typeof loader> = ({ data, matches }) => {
-  if (!data?.postMeta) {
+  if (!data) {
     return [{ title: "Not Found | Ben Honda" }];
   }
+
+  if (data.kind === "external") {
+    const { externalPost: post } = data;
+    return mergeMeta(matches, [
+      { title: `${post.title} | Ben Honda` },
+      { name: "description", content: post.description },
+      // The content's home is its own domain — point canonical there so this pointer page
+      // never competes for the article and the post stays correctly attributed.
+      { tagName: "link", rel: "canonical", href: post.externalUrl },
+      { property: "og:type", content: "article" },
+      { property: "og:title", content: `${post.title} | Ben Honda` },
+      { property: "og:description", content: post.description },
+      { property: "og:url", content: post.externalUrl },
+    ]);
+  }
+
   const { postMeta } = data;
   return mergeMeta(matches, [
     { title: `${postMeta.title} | Ben Honda` },
@@ -23,21 +40,30 @@ export const meta: MetaFunction<typeof loader> = ({ data, matches }) => {
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   const { slug } = params;
-  if (!slug) throw new Response("Not Found", { status: 404 });
+  if (!slug) throw routerData(null, { status: 404 });
 
   const module = postsBySlug[slug];
-  if (!module) throw routerData(null, { status: 404 });
+  if (module) {
+    const user = await getUser(request);
+    if (module.postMeta.status !== "published" && !isAdmin(user)) throw routerData(null, { status: 404 });
+    return { kind: "native" as const, postMeta: module.postMeta };
+  }
 
-  const user = await getUser(request);
-  if (module.postMeta.status !== "published" && !isAdmin(user)) throw routerData(null, { status: 404 });
+  const externalPost = externalPostsBySlug[slug];
+  if (externalPost) return { kind: "external" as const, externalPost };
 
-  return { postMeta: module.postMeta };
+  throw routerData(null, { status: 404 });
 }
 
 export default function BlogPostPage() {
-  const { postMeta } = useLoaderData<typeof loader>();
-  const Post = postsBySlug[postMeta.slug]?.default;
+  const data = useLoaderData<typeof loader>();
 
+  if (data.kind === "external") {
+    return <ExternalPostDetail post={data.externalPost} />;
+  }
+
+  const { postMeta } = data;
+  const Post = postsBySlug[postMeta.slug]?.default;
   if (!Post) return null;
 
   return (
@@ -57,6 +83,7 @@ export default function BlogPostPage() {
             url: `https://www.bhonda.com/blog/${postMeta.slug}`,
             author: {
               "@type": "Person",
+              "@id": "https://www.bhonda.com/#person",
               name: "Ben Honda",
               url: "https://www.bhonda.com",
             },

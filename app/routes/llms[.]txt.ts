@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { serverEnv } from "~/lib/env/env.defaults.server";
 import { publishedShiplogs } from "~/lib/shiplogs/shiplog-registry";
+import { externalPosts } from "~/lib/blog/external-posts";
 import { PROJECTS_CONFIG } from "~/lib/projects/projects-config";
 import type { PersonModule } from "~/lib/people/people-types";
 import type { PostModule } from "~/lib/blog/blog-types";
@@ -27,6 +28,7 @@ export function loader(_: LoaderFunctionArgs) {
     ...new Set([
       ...publishedPosts.flatMap((m) => m.postMeta.topics ?? []),
       ...publishedShiplogs.flatMap((s) => s.topics ?? []),
+      ...externalPosts.flatMap((p) => p.topics ?? []),
     ]),
   ].sort();
 
@@ -43,6 +45,13 @@ export function loader(_: LoaderFunctionArgs) {
     "## Shiplogs",
     ...publishedShiplogs.map((s) => `- [${s.titleText}](${baseUrl}/ships/${s.slug}): ${s.previewText}`),
     "",
+    ...(externalPosts.length > 0
+      ? [
+          "## Writing elsewhere",
+          ...externalPosts.map((p) => `- [${p.title}](${p.externalUrl}) (${p.source}): ${p.description}`),
+          "",
+        ]
+      : []),
     "## Projects",
     ...PROJECTS_CONFIG.map(
       (p) => `- [${p.name}](${baseUrl}/projects/${p.slug})${p.description ? `: ${p.description}` : ""}`,

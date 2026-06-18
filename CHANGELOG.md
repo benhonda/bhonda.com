@@ -2,6 +2,8 @@
 
 ## 2026-06-18
 
+- feat: "Writing elsewhere" — external theadpharm.com posts (`external-posts.ts`) surfaced in the blog grid / topic hubs / `llms.txt` via `getBlogListItems` + `ExternalPostCard`/`ExternalPostDetail` pointer pages (canonical → home domain, excluded from sitemap).
+- feat: Cross-site entity reconciliation — `Person` schema gets stable `@id` (`#person`), `worksFor` `@id` → theadpharm `#organization`, and a `sameAs` link to the theadpharm author page; `BlogPosting`/shiplog authors reference the `@id`.
 - feat: Contact form now gated by Cloudflare Turnstile — `@marsidev/react-turnstile` widget on `/contact`, server-side `verifyTurnstileToken` (fail-closed) in the action, new `TURNSTILE_SECRET_KEY` (server) + `PUBLIC_TURNSTILE_SITE_KEY` (defaulted) env vars and Vercel manual var.
 - chore: Removed the dead `basic-ssl` dev-SSL scaffolding from `vite.config.ts` (and dropped the `@vitejs/plugin-basic-ssl` devDependency).
 - docs: Added `.agents/product-marketing.md` — product/audience/positioning context doc that the marketing skills reference.
