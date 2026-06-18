@@ -2,6 +2,7 @@
 
 ## 2026-06-18
 
+- feat: Contact form now gated by Cloudflare Turnstile — `@marsidev/react-turnstile` widget on `/contact`, server-side `verifyTurnstileToken` (fail-closed) in the action, new `TURNSTILE_SECRET_KEY` (server) + `PUBLIC_TURNSTILE_SITE_KEY` (defaulted) env vars and Vercel manual var.
 - chore: Removed the dead `basic-ssl` dev-SSL scaffolding from `vite.config.ts` (and dropped the `@vitejs/plugin-basic-ssl` devDependency).
 - docs: Added `.agents/product-marketing.md` — product/audience/positioning context doc that the marketing skills reference.
 - feat: AI-SEO pass — new `/llms.txt` route (auto-generated site map for LLMs), `FaqSchema` FAQPage JSON-LD wired into the Google Ads FAQ post, enriched `Person` schema (`knowsAbout`/`worksFor`/`description`) in `root.tsx`, entity-first homepage bio, and `keywords`/`dateModified` on blog & shiplog JSON-LD.

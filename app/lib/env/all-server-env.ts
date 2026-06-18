@@ -14,6 +14,7 @@ import { authEnv } from "./auth-env.server";
 import { cd2EmailEnv } from "./cd2-email-env.server";
 import { dbEnv } from "./db-env.server";
 import { shiplogEnv } from "./shiplog-env.server";
+import { turnstileEnv } from "./turnstile-env.server";
 
 /**
  * Extract public environment variables from all sources
@@ -26,6 +27,7 @@ export const getAllPublicEnv = () => {
     ...cd2EmailEnv,
     ...dbEnv,
     ...shiplogEnv,
+    ...turnstileEnv,
   };
   
   // Filter only PUBLIC_ prefixed variables
@@ -42,4 +44,5 @@ export {
   cd2EmailEnv,
   dbEnv,
   shiplogEnv,
+  turnstileEnv,
 };

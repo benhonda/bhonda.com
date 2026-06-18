@@ -1,5 +1,6 @@
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { useRef, useState } from "react";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { mergeMeta } from "~/lib/meta-utils";
 import { Text } from "~/components/misc/text";
 import { PageHeader } from "~/components/misc/page-header";
@@ -12,6 +13,8 @@ import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
+import { useLoaderData } from "react-router";
+import { serverEnv } from "~/lib/env/env.defaults.server";
 
 export const meta: MetaFunction = ({ matches }) =>
   mergeMeta(matches, [
@@ -24,20 +27,32 @@ export const meta: MetaFunction = ({ matches }) =>
   ]);
 
 export async function loader({}: LoaderFunctionArgs) {
-  return {};
+  // Site key is non-secret; passed via the loader so the widget renders SSR-safe.
+  return { turnstileSiteKey: serverEnv.PUBLIC_TURNSTILE_SITE_KEY };
 }
 
 // Wire the route to the action framework so the contact form can POST here.
 export const action = action_handler;
 
 export default function Contact() {
+  const { turnstileSiteKey } = useLoaderData<typeof loader>();
   const formRef = useRef<HTMLFormElement>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
   const [sent, setSent] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   const contactForm = useAction(contactFormActionDefinition, {
     onSuccess: () => {
       formRef.current?.reset();
       setSent(true);
+      // Turnstile tokens are single-use — fetch a fresh one for the next submit.
+      turnstileRef.current?.reset();
+      setTurnstileToken("");
+    },
+    onError: () => {
+      // Token is consumed even on a failed submit; reset so a retry can succeed.
+      turnstileRef.current?.reset();
+      setTurnstileToken("");
     },
     toastOnSuccess: { message: "Thanks! Your message has been sent." },
   });
@@ -50,6 +65,7 @@ export default function Contact() {
       email: String(formData.get("email") ?? ""),
       message: String(formData.get("message") ?? ""),
       company: String(formData.get("company") ?? ""), // honeypot
+      turnstileToken,
     });
   }
 
@@ -134,8 +150,18 @@ export default function Contact() {
               <input id="contact-company" name="company" type="text" tabIndex={-1} autoComplete="off" />
             </div>
 
+            {/* Cloudflare Turnstile — produces the token verified server-side. */}
+            <Turnstile
+              ref={turnstileRef}
+              siteKey={turnstileSiteKey}
+              onSuccess={setTurnstileToken}
+              onExpire={() => setTurnstileToken("")}
+              onError={() => setTurnstileToken("")}
+              options={{ theme: "auto" }}
+            />
+
             <div className="flex items-center gap-4">
-              <Button type="submit" disabled={contactForm.isValidating}>
+              <Button type="submit" disabled={contactForm.isValidating || !turnstileToken}>
                 {contactForm.isValidating ? "Sending…" : "Send message"}
               </Button>
               {sent && (

@@ -1,6 +1,7 @@
 import { createActionHandler, parseActionInput } from "~/lib/actions/_core/action-utils";
 import { ReadableError } from "~/lib/readable-error";
 import { createCd2EmailClient } from "~/lib/email/cd2-email-client.server";
+import { verifyTurnstileToken } from "~/lib/turnstile/verify-turnstile.server";
 import { contactFormActionDefinition } from "./action-definition";
 
 /** RFC 5322 from-address — domain must be authorized for the CD2 API key. */
@@ -22,8 +23,15 @@ function escapeHtml(value: string): string {
  * Server action — sends a contact-form submission to TO_ADDRESS via CD2.
  * replyTo is set to the submitter so a plain "Reply" reaches them directly.
  */
-export default createActionHandler(contactFormActionDefinition, async ({ inputData: unsafeInputData }) => {
-  const { name, email, message } = parseActionInput(contactFormActionDefinition, unsafeInputData);
+export default createActionHandler(contactFormActionDefinition, async ({ inputData: unsafeInputData }, request) => {
+  const { name, email, message, turnstileToken } = parseActionInput(contactFormActionDefinition, unsafeInputData);
+
+  // Bot gate — verify the Turnstile token before doing any work.
+  const remoteip = request.headers.get("cf-connecting-ip") ?? undefined;
+  const human = await verifyTurnstileToken(turnstileToken, remoteip);
+  if (!human) {
+    throw new ReadableError("CAPTCHA verification failed. Please try again.");
+  }
 
   const client = createCd2EmailClient();
 

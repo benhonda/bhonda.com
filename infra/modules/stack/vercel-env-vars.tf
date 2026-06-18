@@ -108,6 +108,11 @@ locals {
       comment    = "CD2 sender API key for contact-form email - Set manually in Vercel"
       tf_managed = false
     }
+    TURNSTILE_SECRET_KEY = {
+      value      = "MANUALLY_SET_IN_VERCEL"
+      comment    = "Cloudflare Turnstile secret key for contact-form verification - Set manually in Vercel"
+      tf_managed = false
+    }
   }
 
   common_env_vars_base = merge(local.tf_managed_vars_base, local.manual_vars_base)

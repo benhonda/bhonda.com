@@ -21,6 +21,8 @@ declare global {
       PUBLIC_APP_FQDN?: string;
       // BunnyNet CDN base URL (environment-specific, no trailing slash)
       PUBLIC_CDN_URL?: string;
+      // Cloudflare Turnstile site key for the contact-form widget
+      PUBLIC_TURNSTILE_SITE_KEY?: string;
     };
   }
 }

@@ -23,6 +23,12 @@ const serverEnvSchema = z.object({
    * CDN URL
    */
   PUBLIC_CDN_URL: z.string(),
+  /**
+   * Cloudflare Turnstile site key (exposed to client to render the widget).
+   * Non-secret by design; defaults to the bhonda.com key so no per-env config
+   * is required. The matching secret is `TURNSTILE_SECRET_KEY` (server-only).
+   */
+  PUBLIC_TURNSTILE_SITE_KEY: z.string().min(1).default("0x4AAAAAADnThTlLraqtL33x"),
 });
 
 const vercelEnv = process.env.VERCEL_ENV;

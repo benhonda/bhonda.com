@@ -15,5 +15,7 @@ export const contactFormActionDefinition = defineAction<{
      * every field trip this and the submission is rejected as spam.
      */
     company: z.string().max(0, "Spam detected").optional(),
+    /** Cloudflare Turnstile token, verified server-side before sending. */
+    turnstileToken: z.string().min(1, "Please complete the CAPTCHA"),
   }),
 });
