@@ -2,6 +2,7 @@
 
 ## 2026-06-18
 
+- feat: Silo CDP, CD2, GTM Proxy, and ADAPTS now link to their theadpharm.com/products pages; new `projectUrlLabel` keeps the path so shared-domain product URLs don't collapse to the bare host.
 - feat: "Writing elsewhere" — external theadpharm.com posts (`external-posts.ts`) surfaced in the blog grid / topic hubs / `llms.txt` via `getBlogListItems` + `ExternalPostCard`/`ExternalPostDetail` pointer pages (canonical → home domain, excluded from sitemap).
 - feat: Cross-site entity reconciliation — `Person` schema gets stable `@id` (`#person`), `worksFor` `@id` → theadpharm `#organization`, and a `sameAs` link to the theadpharm author page; `BlogPosting`/shiplog authors reference the `@id`.
 - feat: Contact form now gated by Cloudflare Turnstile — `@marsidev/react-turnstile` widget on `/contact`, server-side `verifyTurnstileToken` (fail-closed) in the action, new `TURNSTILE_SECRET_KEY` (server) + `PUBLIC_TURNSTILE_SITE_KEY` (defaulted) env vars and Vercel manual var.

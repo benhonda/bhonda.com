@@ -5,7 +5,7 @@ import { useLoaderData } from "react-router";
 import { PageHeader } from "~/components/misc/page-header";
 import { Link } from "~/lib/router/routes";
 import { ExternalLink, Github } from "lucide-react";
-import { PROJECTS_CONFIG, type ProjectConfig } from "~/lib/projects/projects-config";
+import { PROJECTS_CONFIG, projectUrlLabel, type ProjectConfig } from "~/lib/projects/projects-config";
 import { allShiplogs } from "~/lib/shiplogs/shiplog-registry";
 import { isoWeekEndDateString } from "~/lib/shiplog/iso-week";
 
@@ -73,7 +73,7 @@ export default function ProjectsIndex() {
                         className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
                       >
                         <ExternalLink className="size-3" />
-                        {new URL(project.url).hostname.replace("www.", "")}
+                        {projectUrlLabel(project.url)}
                       </a>
                     )}
                     {project.repoUrl && (

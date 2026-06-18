@@ -6,7 +6,7 @@ import { PageHeader } from "~/components/misc/page-header";
 import { Breadcrumbs } from "~/components/misc/breadcrumbs";
 import { ExternalLink, Github } from "lucide-react";
 import { ShiplogListItem } from "~/components/shiplog/shiplog-list-item";
-import { projectsBySlug, type ProjectConfig, type ProjectSlug } from "~/lib/projects/projects-config";
+import { projectsBySlug, projectUrlLabel, type ProjectConfig, type ProjectSlug } from "~/lib/projects/projects-config";
 import { getUser, isAdmin } from "~/lib/auth-utils/user.server";
 import { allShiplogs, publishedShiplogs } from "~/lib/shiplogs/shiplog-registry";
 
@@ -91,7 +91,7 @@ export default function ProjectDetail() {
                 className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ExternalLink className="size-3.5" />
-                {new URL(project.url).hostname.replace("www.", "")}
+                {projectUrlLabel(project.url)}
               </a>
             )}
             {repoUrl && (

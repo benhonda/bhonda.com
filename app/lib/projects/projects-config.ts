@@ -39,6 +39,7 @@ export const PROJECTS_CONFIG = [
     slug: "silo-cdp",
     name: "Silo CDP",
     description: "Segment, for cheap & data-hungry agencies",
+    url: "https://www.theadpharm.com/products/silo",
     repos: [
       // NOTE: silo restructured — old adpharm/silo-cdp + adpharm/silo-event-store-api
       // are archived and replaced by the repos below.
@@ -121,6 +122,7 @@ export const PROJECTS_CONFIG = [
     slug: "cd2",
     name: "CD2",
     description: "Adpharm's single-tenant Resend clone for transactional email",
+    url: "https://www.theadpharm.com/products/cd2",
     repos: [
       // NOTE: cd2 consolidated — old cd2-web/cd2-workers/cd2-db are archived,
       // replaced by the single adpharm/cd2 repo.
@@ -180,6 +182,7 @@ export const PROJECTS_CONFIG = [
     slug: "gtm-proxy",
     name: "GTM Proxy",
     description: "First-party proxy so analytics keeps working even when ad blockers are on",
+    url: "https://www.theadpharm.com/products/gtm-proxy",
     repos: [
       {
         identifier: "adpharm/gtm-proxy",
@@ -222,6 +225,7 @@ export const PROJECTS_CONFIG = [
     slug: "adapts",
     name: "ADAPTS",
     description: "Create and manage tracking links for pharma digital marketing campaigns",
+    url: "https://www.theadpharm.com/products/adapts",
     repos: [
       {
         identifier: "adpharm/adapts",
@@ -446,6 +450,18 @@ export const PROJECTS_CONFIG = [
 ] as const satisfies readonly ProjectConfig[];
 
 export type ProjectSlug = (typeof PROJECTS_CONFIG)[number]["slug"];
+
+/**
+ * Display label for a project's public URL. Strips protocol + leading "www.",
+ * but keeps the path when it isn't root so shared-domain product pages
+ * (e.g. theadpharm.com/products/silo) don't all collapse to the bare host.
+ */
+export function projectUrlLabel(url: string): string {
+  const { hostname, pathname } = new URL(url);
+  const host = hostname.replace(/^www\./, "");
+  const path = pathname.replace(/\/$/, ""); // drop trailing slash; root → ""
+  return `${host}${path}`;
+}
 
 /**
  * O(1) lookup map by slug.
