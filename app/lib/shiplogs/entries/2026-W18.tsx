@@ -14,10 +14,9 @@ export const shiplogMeta = {
   slug: "2026-W18",
   titleText: "Insights Publication & New Agency Tooling",
   previewText: "Launched a full-featured publication platform with multiple posts and author profiles, shipped design improvements to photo processing workflows, and scaffolded a new agency activity measurement tool.",
-  publishedAt: "2026-05-03",
   week: 18,
   year: 2026,
-  status: "draft",
+  status: "published",
   projectTags: ["theadpharm-com", "hearth-press", "devrounds"],
 } satisfies ShiplogMeta;
 

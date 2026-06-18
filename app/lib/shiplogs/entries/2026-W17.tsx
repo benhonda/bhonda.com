@@ -14,10 +14,9 @@ export const shiplogMeta = {
   slug: "2026-W17",
   titleText: "Foundations and Launches",
   previewText: "Hearth Press takes shape, theadpharm.com goes live with full SEO, Inspiration Index pricing evolves, and new text effects land in Remotion.",
-  publishedAt: "2026-04-26",
   week: 17,
   year: 2026,
-  status: "draft",
+  status: "published",
   projectTags: ["hearth-press", "theadpharm-com", "inspiration-index", "cd2", "caniemail-for-agents", "adpharm-remotion"],
 } satisfies ShiplogMeta;
 
