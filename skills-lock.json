@@ -13,6 +13,12 @@
       "skillPath": "skills/engineering/adpharm-stack/SKILL.md",
       "computedHash": "9cb16026752f0551cd9dda606893f53bc198bf6a9e55ceb4fb281cdc95cc0daa"
     },
+    "ai-seo": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "skillPath": "skills/ai-seo/SKILL.md",
+      "computedHash": "8fbda031c25d3a198725dd8b5a61133d2ac5c409f7b79fe893ee6b77b84d9b54"
+    },
     "audit-code-quality": {
       "source": "git@github.com:adpharm/adpharm-skills.git",
       "sourceType": "git",
@@ -30,6 +36,12 @@
       "sourceType": "git",
       "skillPath": "skills/vendor/pdf/SKILL.md",
       "computedHash": "15ecaa867c5bea37b8bd971233bcd08b7439329ce87c74923299c5e87fe714d1"
+    },
+    "product-marketing": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "skillPath": "skills/product-marketing/SKILL.md",
+      "computedHash": "2fe9e9093e385345d17e0e77d032d68015417c37ceffeb5fb34fc761c46c94a0"
     },
     "product-tracking": {
       "source": "git@github.com:adpharm/adpharm-skills.git",
