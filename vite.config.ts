@@ -5,7 +5,6 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { $ } from "zx";
 import devToolsJson from "vite-plugin-devtools-json";
 import { existsSync } from "fs";
-import basicSsl from "@vitejs/plugin-basic-ssl";
 
 // Helper to run a generator only if it exists
 async function runGenerator(gen: { name: string; script: string }) {
@@ -21,9 +20,6 @@ export default defineConfig({
   server: {
     host: "0.0.0.0", // required to work in a devcontainer
     port: 3014,
-
-    // NOTE: FOR SSL, ADD:
-    proxy: {},
   },
 
   optimizeDeps: {
@@ -34,8 +30,6 @@ export default defineConfig({
   plugins: [
     // to get rid of annoying chrome devtools errors in console
     devToolsJson(),
-    // NOTE: FOR SSL, ADD:
-    basicSsl(),
     tailwindcss(),
     reactRouter(),
     tsconfigPaths(),
