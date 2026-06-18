@@ -2,6 +2,7 @@
 
 ## 2026-06-18
 
+- docs: Added `.agents/product-marketing.md` — product/audience/positioning context doc that the marketing skills reference.
 - feat: AI-SEO pass — new `/llms.txt` route (auto-generated site map for LLMs), `FaqSchema` FAQPage JSON-LD wired into the Google Ads FAQ post, enriched `Person` schema (`knowsAbout`/`worksFor`/`description`) in `root.tsx`, entity-first homepage bio, and `keywords`/`dateModified` on blog & shiplog JSON-LD.
 - chore: Devcontainer bashhistory/config volumes renamed to stable `*-bhondacom` names (from per-instance `${devcontainerId}`) so they persist across container rebuilds.
 - chore: Installed the `ai-seo` and `product-marketing` skills (from `coreyhaines31/marketingskills`) — `.agents/skills/` dirs symlinked into `.claude/skills/`, pinned in `skills-lock.json`.
