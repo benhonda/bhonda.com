@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-06-18
+
+- chore: Removed `foundation-emails-fork` from `PROJECTS_CONFIG` and dropped its `projectTags` from the shiplog drafts.
+- chore: Rewrote draft shiplogs W17–W18 narratives; deleted draft entries W19–W20.
+
 ## 2026-06-17
 
 - chore: Migrated Claude tooling from local `.claude/commands/*.md` slash commands to managed `adpharm-skills` — `.agents/skills/` symlinked into `.claude/skills/`, pinned via `skills-lock.json`; removed 10 command files and `CLAUDE-rr7-stack.md`.

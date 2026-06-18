@@ -404,19 +404,6 @@ export const PROJECTS_CONFIG = [
     ],
   },
   {
-    slug: "foundation-emails-fork",
-    name: "Foundation for Emails Fork",
-    description: "Adpharm's fork of Foundation for Emails (Inky) for responsive HTML email",
-    repos: [
-      {
-        identifier: "adpharm/foundation-emails-fork",
-        displayName: "Foundation for Emails Fork",
-        description: "Adpharm's fork of Foundation for Emails (Inky) for responsive HTML email",
-        shiplogWhitelisted: true,
-      },
-    ],
-  },
-  {
     slug: "devrounds",
     name: "Devrounds",
     description: "TODO", // own product — confirm description

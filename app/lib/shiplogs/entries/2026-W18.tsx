@@ -12,20 +12,20 @@ import type { ShiplogMeta } from "~/lib/shiplogs/shiplog-types";
 
 export const shiplogMeta = {
   slug: "2026-W18",
-  titleText: "Insights Publication, Email Tooling, and Activity Tracking",
-  previewText: "Launched the Insights publication with AI & Tech and Compliance categories, shipped template generation improvements for email workflows, and started building the Activity Tool in Devrounds.",
+  titleText: "Insights Publication & New Agency Tooling",
+  previewText: "Launched a full-featured publication platform with multiple posts and author profiles, shipped design improvements to photo processing workflows, and scaffolded a new agency activity measurement tool.",
   publishedAt: "2026-05-03",
   week: 18,
   year: 2026,
   status: "draft",
-  projectTags: ["theadpharm-com", "foundation-emails-fork", "devrounds", "hearth-press"],
+  projectTags: ["theadpharm-com", "hearth-press", "devrounds"],
 } satisfies ShiplogMeta;
 
 export default function Shiplog2026W18() {
   return (
     <ShiplogLayout meta={shiplogMeta}>
       <Text as="p" variant="body">
-        Big publishing launch this week. The Insights publication went live with AI & Tech and Compliance categories, RSS feeds, and author profiles. Email template generation got faster and more flexible. And a new project emerged to track agency activity across repositories.
+        A publishing-heavy week. Launched a complete Insights publication platform, reimagined photo import flows for recipe preservation, and stood up new tooling to measure agency output.
       </Text>
 
       <Spacer size="sm" />
@@ -35,54 +35,39 @@ export default function Shiplog2026W18() {
       </Text>
 
       <Text as="p" variant="body">
-        Shipped the full Insights publication platform. The site now hosts posts across AI & Tech and Compliance Insights categories, complete with author profiles, featured post layouts, and progressive disclosure filters on the index page. Added RSS feeds for syndication and an <InlineCode>llms.txt</InlineCode> file for AI discoverability.
+        Shipped a full-featured publication platform with two categories: AI & Tech and Compliance Insights. The platform includes markdown-based posts, author profiles with bios and headshots, featured post layouts, category filtering, RSS feeds, and an email-only newsletter signup.
       </Text>
 
       <Text as="p" variant="body">
-        Redesigned the Digital Products navigation dropdown to accommodate the new publication and launched an email-only newsletter signup. The navigation and footer are now centralized in the app layout for consistency across all pages.
+        Redesigned the Insights index with progressive disclosure and filtering controls. The layout adapts based on post count, maintaining visual consistency whether showing one featured post or multiple across categories. Navigation and footer were centralized into the app layout for consistency across all sections.
       </Text>
 
-      <Quote>Four AI & Tech posts and one Compliance Insights post published, with backfilled dates.</Quote>
+      <Quote note="via new feature">
+        Four AI & Tech posts and the first Compliance Insights post launched with backfilled publish dates and a broader framing for the publication's scope.
+      </Quote>
 
       <Spacer size="sm" />
 
       <Text as="h2" variant="heading-sm">
-        <Tag project="foundation-emails-fork" /> Email Template Generation
+        <Tag project="hearth-press" /> Photo Processing & Import Flow
       </Text>
 
       <Text as="p" variant="body">
-        Email template workflows got a major upgrade. Each template now generates three hosted HTML derivatives, and the compare page includes a download-HTML button for quick exports. Added language-scoped preview tokens and fully-substituted hide-block markers for recipient views.
+        Redesigned the photo import experience with a new always-editing preview mode and a dedicated photo processing screen. The import flow now offers both textarea and photo entry points, consolidating the library and recipe registry into a unified view. Added a unit-picker sub-flow for recipe measurements.
       </Text>
 
       <Text as="p" variant="body">
-        Refined the Veeva workflow with fragment builds now integrated into the gulp pipeline, shared layouts across projects, and a button-image composer for CTA creation. Fixed an issue where account tokens were incorrectly translated to French on the OCA Resources page.
-      </Text>
-
-      <List as="ul">
-        <ListItem>Download button for hosted HTML comparison</ListItem>
-        <ListItem>Three HTML derivatives per template</ListItem>
-        <ListItem>Veeva fragment build integration</ListItem>
-        <ListItem>Button-image composer for CTAs</ListItem>
-      </List>
-
-      <Spacer size="sm" />
-
-      <Text as="h2" variant="heading-sm">
-        <Tag project="devrounds" /> Activity Tool Launch
-      </Text>
-
-      <Text as="p" variant="body">
-        Started building Devrounds with the Activity Tool at its core. The tool tracks agency metrics across repositories, showing build-time architecture decisions and development patterns. Shipped the initial pipeline, data sources, and viewer routes along with infrastructure scaffolding and a GitHub reader skill.
+        Shipped landing page v2 and added two new user flows: a page-lived-in scenario and an exploratory friends-sharing flow. These flows help validate the photo processing and import redesign with real-world use cases.
       </Text>
 
       <Spacer size="sm" />
 
       <Text as="h2" variant="heading-sm">
-        <Tag project="hearth-press" /> Design Iteration
+        <Tag project="devrounds" /> Agency Activity Tool
       </Text>
 
       <Text as="p" variant="body">
-        Refined the import experience with a restructured flow that splits photo and text entry paths. Added an always-editing import preview, unit picker sub-flow, and new flows for page-lived-in and friend exploration scenarios. Consolidated the library and recipe registry views for simpler navigation.
+        Scaffolded a new project to measure agency activity and output. The tool includes a data pipeline with multiple sources, viewer routes for exploring activity, and infrastructure provisioning with Terragrunt. Built a GitHub reader skill and AI agent skill scaffolding to power the activity measurement engine.
       </Text>
     </ShiplogLayout>
   );
