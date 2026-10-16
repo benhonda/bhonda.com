@@ -1,21 +1,11 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-# install psql (postgresql-client) and xdg-utils (to open files in the browser)
-sudo apt-get update && sudo apt-get install -y postgresql-client xdg-utils
+# Everything else is baked into the base image. This stays here because it clones
+# over SSH with the host's mounted keys, which aren't available at image build time.
 
-echo "Installing Bun"
-curl -fsSL https://bun.sh/install | bash
-
-# echo "Installing Claude CLI"
-# ~/.bun/bin/bun add -g @anthropic-ai/claude-code
-
-# Try to trust the package, but don't fail if it's already trusted or has no scripts
-# echo "Trusting Claude CLI package (if needed)..."
-# ~/.bun/bin/bun pm -g trust @anthropic-ai/claude-code 2>/dev/null || true
-
-# Install Claude CLI
-curl -fsSL https://claude.ai/install.sh | bash
-
-# echo "Running init-firewall.sh..."
-# sudo /usr/local/bin/init-firewall.sh
+# adskills
+d=$(mktemp -d)
+trap 'rm -rf "$d"' EXIT
+git clone -q --depth 1 git@github.com:adpharm/adpharm-skills.git "$d"
+bash "$d/scripts/install.sh"
