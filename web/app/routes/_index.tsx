@@ -17,7 +17,7 @@ export default function Home() {
       <img src="/favicon.svg" alt="" className="size-10" />
       <h1 className="text-3xl font-semibold tracking-tight">Ben Honda</h1>
       <p className="leading-relaxed text-muted-foreground">
-        Enjoy this riveting (temporary) site. You can find me on{" "}
+        Enjoy this riveting (temporary) site. While I think of something to put up here, you can find me on{" "}
         <a href="https://github.com/benhonda" className={linkClassName}>
           GitHub
         </a>
