@@ -1,0 +1,7 @@
+# Bun never auto-loads .env here — env comes only from the Taskfile's `dotenv:` lists.
+# Without this, `bun test` reads .env (and .env.test) itself, and the test task's missing
+# `dotenv:` protects nothing (`tests-see-no-secrets` in references/taskfile.md).
+env = false
+
+[test]
+preload = ["./test-preload.ts"]

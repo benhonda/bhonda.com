@@ -5,466 +5,309 @@ output: prefixed
 
 vars:
   AWS_PROFILE: "pharmer"
+  # Per-app facts, declared once at the root (references/taskfile.md). `web` = app #1's
+  # dir — rename with it.
+  # Dev port, pinned (dev-port-pinned): `--strictPort` fails loudly on a busy port instead
+  # of drifting to the next one and breaking anything that embeds the URL.
+  WEB_DEV_PORT: "3000"
 
-dotenv:
-  - .env
-  - .env.vercel
+# Exported to every task's process env so app code (the S3 client's
+# fromIni()) and check-aws-identity read the same profile the tasks do — one
+# fact, declared once here. Note the precedence: an AWS_PROFILE already
+# exported in the developer's shell still wins over this (go-task lets the
+# real env override `env:`), so the gate reports "$AWS_PROFILE", not the var.
+env:
+  AWS_PROFILE: "{{.AWS_PROFILE}}"
 
+# No root-level `dotenv:` — every app task carries its own (per-app-dotenv), and a root
+# one would reach the test tasks too (tests-see-no-secrets).
+
+# CORE tasks (cross-cutting). Domain-specific operational tasks live with their domain
+# and are appended here when you scaffold that domain:
+#   - tf* (terraform/terragrunt) → references/terraform.md
+#   - db-push (drizzle schema push) → references/db.md
 tasks:
   default:
     cmds:
       - task --list-all
-  ########################################################################################################################
-  #
-  #                                        AWS commands (archived)
-  #
-  ########################################################################################################################
+
+  # ---------------------------------------------------------------- AWS identity
   login:
     requires:
-      vars:
-        - AWS_PROFILE
-    vars:
-      AWS_PROFILE: "{{.AWS_PROFILE}}"
+      vars: [AWS_PROFILE]
     cmds:
       - aws sso login --profile {{.AWS_PROFILE}}
 
   check-aws-identity:
     requires:
-      vars:
-        - AWS_PROFILE
-    vars:
-      AWS_PROFILE: "{{.AWS_PROFILE}}"
+      vars: [AWS_PROFILE]
+    silent: true
     cmds:
+      # NOT `aws sts get-caller-identity`: the CLI answers from its own role-cred
+      # cache (~/.aws/cli/cache), which stays green until those creds hit their own
+      # expiry — the permission set's session duration, 1h by default and up to 12h —
+      # even though the SSO token behind them is already dead. In that window the
+      # gate says ready while the app's fromIni() and terraform, which read the token
+      # itself, are failing. Resolving through fromIni() — the app's own call — means
+      # the gate and the app share one code path and can never disagree. In a cloud
+      # session (CLAUDE_CODE_REMOTE=true) the profile fetches its own pass, so
+      # `task login` is never the fix there. `web` = app #1's dir (rename with
+      # it) — where @aws-sdk/credential-providers is installed; drop the `cd` entirely
+      # if this repo was flattened to a single standalone app (no subdir).
+      # The braces matter: without them a failing `cd` writes to the task's stderr
+      # instead of $err, and the fallback branch prints an empty reason.
       - |
-        if ! aws sts get-caller-identity --profile {{.AWS_PROFILE}}; then
-          echo ""
-          echo "Your '{{.AWS_PROFILE}}' AWS profile is not logged in. Run 'task login' to log in."
+        if ! err=$({ cd web && bun -e 'import("@aws-sdk/credential-providers").then(m=>m.fromIni()()).then(()=>{},e=>{console.error(e.message);process.exit(1)})'; } 2>&1 >/dev/null); then
+          if [ "${CLAUDE_CODE_REMOTE:-}" = true ]; then
+            echo "This cloud session couldn't get an AWS pass for '$AWS_PROFILE': $err"
+          else
+            case "$err" in
+              *[Ee]xpired*|*[Ss][Ss][Oo]*|*[Tt]oken*) echo "Your '$AWS_PROFILE' AWS SSO session has expired. Run 'task login'." ;;
+              *) echo "AWS credential check failed: $err" ;;
+            esac
+          fi
           exit 1
         fi
-    silent: true
 
-  ########################################################################################################################
-  #
-  #                                        Lambda Build commands
-  #
-  ########################################################################################################################
-
-  ########################################################################################################################
-  #
-  #                                        Docker / ECR commands
-  #
-  ########################################################################################################################
-
-  ########################################################################################################################
-  #
-  #                                        Development commands
-  #
-  ########################################################################################################################
-
-  # --------------------------------------------------------------------------------------------------------------------
-  # Development server
-  # --------------------------------------------------------------------------------------------------------------------
-  start:
-    aliases:
-      - dev
-    desc: Start development server
+  # ---------------------------------------------------------------- Per-app tasks
+  # Every app task is dir-scoped to its app from app #1 (`web` — rename to the app's real
+  # dir). Bare interactive tasks (start/link/pull) are pickers; bare non-interactive ones
+  # (install/generate/typecheck/test/build) run every app — `per-app-picker` in
+  # references/taskfile.md. Flatten only for a genuinely standalone repo (no subdir, ever):
+  # drop `dir:` and the pickers, keep each task's `dotenv:` (it then resolves at the root).
+  start:web:
+    aliases: [dev:web]
+    desc: Start the web app dev server
+    dir: web
+    dotenv: &web-dotenv        # anchor once, per app — paths resolve relative to this dir:
+      - .env
+      - .env.vercel
     interactive: true
-    deps:
-      - check-aws-identity
     cmds:
-      - bunx --bun react-router dev
+      - bunx react-router dev --port {{.WEB_DEV_PORT}} --strictPort
 
-  install:
-    desc: Install dependencies with Bun
+  start:   # no `all` case — dev servers run in the foreground, one at a time
+    aliases: [dev]
+    desc: Start an app's dev server (interactive app picker)
+    interactive: true
+    silent: true
+    cmds:
+      - |
+        echo "Start which app?"
+        select app in web quit; do
+          case "$app" in
+            web) exec task start:web ;;
+            quit) break ;;
+            *) echo "invalid" ;;
+          esac
+        done
+
+  install:web:
+    desc: Install the web app's dependencies with Bun
+    dir: web
     cmds:
       - bun install {{.CLI_ARGS}}
 
-  backfill-shiplogs:
-    desc: Backfill shiplog TSX entry files from DB + CDN (use DRY_RUN=true to preview)
-    vars:
-      DRY_RUN: '{{default "" .DRY_RUN}}'
+  install:
+    desc: Install every app's dependencies
     cmds:
-      - |
-        ARGS=""
-        {{if .DRY_RUN}}ARGS="$ARGS --dry-run"{{end}}
-        bun run scripts/backfill-shiplog-entries.ts $ARGS
+      - task: install:web
 
-  generate-shiplog:
-    desc: Generate a weekly shiplog TSX file (use WEEK=11 YEAR=2026, defaults to current ISO week)
-    vars:
-      WEEK: '{{default "" .WEEK}}'
-      YEAR: '{{default "" .YEAR}}'
-    cmds:
-      - |
-        ARGS=""
-        {{if .WEEK}}ARGS="$ARGS --week {{.WEEK}}"{{end}}
-        {{if .YEAR}}ARGS="$ARGS --year {{.YEAR}}"{{end}}
-        bun run scripts/generate-shiplog.ts $ARGS
-
-  reconcile-shiplog-repos:
-    desc: Diff GitHub repos you've committed to against the shiplog whitelist (use WEEKS=12)
-    vars:
-      WEEKS: '{{default "" .WEEKS}}'
-    cmds:
-      - |
-        ARGS=""
-        {{if .WEEKS}}ARGS="$ARGS --weeks {{.WEEKS}}"{{end}}
-        bun run scripts/reconcile-shiplog-repos.ts $ARGS
-
-  show-weeks:
-    desc: Show week numbers with their date ranges
-    cmds:
-      - |
-        current_week=$(date +%-V)
-        current_year=$(date +%G)
-
-        echo "ISO Week Numbers for ${current_year}:"
-        echo ""
-
-        for week in {1..52}; do
-          # Calculate the Monday of this ISO week
-          monday=$(date -d "${current_year}-01-04 +$(((week - 1) * 7)) days -$(date -d ${current_year}-01-04 +%u) days +1 day" +%a\ %b\ %-d 2>/dev/null || echo "N/A")
-          sunday=$(date -d "${current_year}-01-04 +$(((week - 1) * 7)) days -$(date -d ${current_year}-01-04 +%u) days +7 days" +%a\ %b\ %-d 2>/dev/null || echo "N/A")
-
-          if [ "$week" -eq "$current_week" ]; then
-            echo "Week $week: $monday - $sunday [current week]"
-          else
-            echo "Week $week: $monday - $sunday"
-          fi
-        done
-
-  # --------------------------------------------------------------------------------------------------------------------
-  # Build commands
-  # --------------------------------------------------------------------------------------------------------------------
-  build:
-    desc: Build the application
+  build:web:
+    desc: Build the web app
+    dir: web
+    dotenv: *web-dotenv
     cmds:
       - bun run build
 
-  typecheck:
-    desc: Run TypeScript type checking on app and all services
-    aliases:
-      - typecheck:all
-    deps:
-      - generate
+  build:
+    desc: Build every app
     cmds:
-      - bun run typecheck
+      - task: build:web
 
-  typecheck-app:
-    desc: Run TypeScript type checking on main app only
-    aliases:
-      - typecheck:app
+  # ---------------------------------------------------------------- Codegen pipeline
+  # Each generator is guarded, so dropping a subsystem (deleting its script) is a safe
+  # no-op — no Taskfile edit. A generator that EXISTS and fails stops the task.
+  generate:web:
+    desc: Run the web app's code generators
+    dir: web
     cmds:
-      - bun run typecheck
+      - |
+        for f in app/lib/actions/_core/action-map.generate.ts app/lib/router/generouted-generate-routes.ts app/lib/env/_core/env-map.generate.ts app/lib/db/schema.generate.ts; do
+          if [ -f "$f" ]; then bun run "$f" || exit 1; else echo "⚠️  skip $f (not found)"; fi
+        done
 
-  # --------------------------------------------------------------------------------------------------------------------
-  # Database commands
-  # --------------------------------------------------------------------------------------------------------------------
-  db-push:
-    aliases:
-      - push
-      - drizzle-push
-      - drizzle-kit-push
-      - db:push
-    desc: Push database schema changes to database
-    interactive: true
-    prompt: "Before pushing schema changes, double-check the DATABASE_URL - is it correct?"
-    cmds:
-      - bunx drizzle-kit push
-
-
-  # --------------------------------------------------------------------------------------------------------------------
-  # Testing commands
-  # --------------------------------------------------------------------------------------------------------------------
-  test:
-    desc: Run all tests
-    cmds:
-      - bun test
-
-  test-watch:
-    aliases:
-      - test:watch
-    desc: Run tests in watch mode
-    cmds:
-      - bun test --watch
-
-  test-coverage:
-    aliases:
-      - test:coverage
-    desc: Run tests with coverage
-    cmds:
-      - bun test --coverage
-
-  test-unit:
-    aliases:
-      - test:unit
-    desc: Run unit tests only
-    cmds:
-      - bun test app/lib
-
-  test-integration:
-    aliases:
-      - test:integration
-    desc: Run integration tests only
-    cmds:
-      - bun test tests/integration
-
-  # --------------------------------------------------------------------------------------------------------------------
-  # Code generation commands
-  # --------------------------------------------------------------------------------------------------------------------
   generate:
-    desc: Run all code generators
+    desc: Run every app's code generators
     cmds:
-      - task: generate-actions
-      - task: generate-routes
-      - task: generate-env
-      - task: generate-db
+      - task: generate:web
 
-  generate-actions:
-    aliases:
-      - generate:actions
-    desc: Generate action map from action handlers
+  typecheck:web:
+    desc: Type check the web app (generates first so types reflect fresh codegen)
+    dir: web
+    deps: [generate:web]
     cmds:
-      - |
-        if [ -f app/lib/actions/_core/action-map.generate.ts ]; then
-          bun run app/lib/actions/_core/action-map.generate.ts
-        else
-          echo "⚠️  Skipping generate-actions: app/lib/actions/_core/action-map.generate.ts not found"
-        fi
+      - bun run typecheck
 
-  generate-routes:
-    aliases:
-      - generate:routes
-    desc: Generate type-safe routes from app/routes
+  typecheck:
+    desc: Type check every app
+    aliases: [typecheck:all]
     cmds:
-      - |
-        if [ -f app/lib/router/generouted-generate-routes.ts ]; then
-          bun run app/lib/router/generouted-generate-routes.ts
-        else
-          echo "⚠️  Skipping generate-routes: app/lib/router/generouted-generate-routes.ts not found"
-        fi
+      - task: typecheck:web
 
-  generate-env:
-    aliases:
-      - generate:env
-    desc: Generate consolidated environment variable files
+  # ---------------------------------------------------------------- Tests
+  test:web:
+    desc: Run the web app's tests (watch/coverage/a path → task test:web -- --watch)
+    dir: web
+    # Deliberately NO dotenv: tests never see live secrets (tests-see-no-secrets) —
+    # bunfig.toml's `env = false` + test-preload.ts back this up.
+    deps: [generate:web]
     cmds:
-      - |
-        if [ -f app/lib/env/_core/env-map.generate.ts ]; then
-          bun run app/lib/env/_core/env-map.generate.ts
-        else
-          echo "⚠️  Skipping generate-env: app/lib/env/_core/env-map.generate.ts not found"
-        fi
+      - bun test {{.CLI_ARGS}}
 
-  generate-db:
-    aliases:
-      - generate:db
-    desc: Generate consolidated database schema
+  test:
+    desc: Run every app's tests
     cmds:
-      - |
-        if [ -f app/lib/db/schema.generate.ts ]; then
-          bun run app/lib/db/schema.generate.ts
-        else
-          echo "⚠️  Skipping generate-db: app/lib/db/schema.generate.ts not found"
-        fi
+      - task: test:web
 
-  # --------------------------------------------------------------------------------------------------------------------
-  # Other commands
-  # --------------------------------------------------------------------------------------------------------------------
-
-  # pull dev env from vercel
-  env:
-    aliases:
-      - pull-env
-      - pull
-    interactive: true
-    cmds:
-      - bunx vercel env pull .env.vercel
-
-  link:
-    desc: Link to Vercel project
+  # ---------------------------------------------------------------- Vercel
+  link:web:
+    desc: Link the web app to its Vercel project
+    dir: web
+    dotenv: *web-dotenv
     interactive: true
     cmds:
       - bunx vercel link
 
-  # --------------------------------------------------------------------------------------------------------------------
-  # Environment reset commands
-  # --------------------------------------------------------------------------------------------------------------------
-  reset-staging:
-    desc: Reset staging environment (Neon DB + S3) to production state
+  link:
+    desc: Link an app to its Vercel project (interactive app picker)
     interactive: true
-    prompt: "⚠️  This will COMPLETELY OVERWRITE staging with production data. All staging changes will be LOST. Continue?"
-    deps:
-      - check-aws-identity
-    requires:
-      vars:
-        - NEON_API_KEY
-        - S3_BUCKET_NAME
-    vars:
-      NEON_PROJECT_ID: "shy-surf-98176918"
-      NEON_PRODUCTION_BRANCH_ID: "br-purple-water-ae0ylkm3"
-      NEON_STAGING_BRANCH_ID: "br-little-breeze-aec2kf8t"
+    silent: true
     cmds:
       - |
-        echo "🔄 Resetting Neon staging branch to production..."
-        curl -X POST \
-          "https://console.neon.tech/api/v2/projects/{{.NEON_PROJECT_ID}}/branches/{{.NEON_STAGING_BRANCH_ID}}/restore" \
-          -H "Authorization: Bearer ${NEON_API_KEY}" \
-          -H "Content-Type: application/json" \
-          -d '{"source_branch_id": "{{.NEON_PRODUCTION_BRANCH_ID}}"}'
-        echo ""
-        echo "✅ Neon reset initiated"
-        echo ""
+        echo "Link which app?"
+        select app in web quit; do
+          case "$app" in
+            web) exec task link:web ;;
+            quit) break ;;
+            *) echo "invalid" ;;
+          esac
+        done
+
+  # The stack's `pull-secrets:web` (SSM → .env.secrets) joins this once the app has secrets
+  # and infra keeps them in SSM (`env-vars-from-ssm` in the adpharm-stack terraform reference).
+  pull:web:
+    desc: Pull the web app's Vercel env vars into .env.vercel
+    dir: web
+    dotenv: *web-dotenv
+    interactive: true
+    cmds:
+      - bunx vercel env pull .env.vercel
+
+  pull:
+    desc: Pull dev env vars (interactive app picker)
+    interactive: true
+    silent: true
+    cmds:
       - |
-        echo "🔄 Syncing S3 from production/ to staging/..."
-        aws s3 sync \
-          s3://${S3_BUCKET_NAME}/production/ \
-          s3://${S3_BUCKET_NAME}/staging/ \
-          --profile {{.AWS_PROFILE}} \
-          --delete
-        echo ""
-        echo "✅ S3 sync complete"
-        echo ""
-        echo "🎉 Staging environment reset complete!"
+        echo "Pull which app? (all = every app)"
+        select app in web all quit; do
+          case "$app" in
+            web) exec task pull:web ;;
+            all) exec task pull:web ;;
+            quit) break ;;
+            *) echo "invalid" ;;
+          esac
+        done
 
-  ########################################################################################################################
-  #
-  #                                        Terraform commands
-  #
-  ########################################################################################################################
-
-  #  init shared infrastructure first
+  # ---------------------------------------------------------------- Terraform
+  # web/infra predates the adpharm-stack terraform layout (infra/<component>/root.hcl,
+  # tf:<component>:* tasks); these drive it as it stands. Shared always runs before ENV.
   tfinit-shared:
-    desc: Initialize shared infrastructure
     internal: true
-    interactive: true
-    deps:
-      - check-aws-identity
-    dir: infra/live/shared
+    deps: [check-aws-identity]
+    dir: web/infra/live/shared
     cmds:
       - terragrunt init {{.CLI_ARGS}}
 
-  # `terraform init`
   tfinit:
-    desc: Initialize Terraform (use ENV=staging or ENV=production)
-    deps:
-      - check-aws-identity
-      - tfinit-shared
+    desc: Initialize Terragrunt for shared + ENV (ENV=staging|production, default staging)
+    aliases: [tf-init, tf:init]
+    deps: [tfinit-shared]
     vars:
       ENV: '{{default "staging" .ENV}}'
-    dir: infra/live/{{.ENV}}
+    requires:
+      vars: [{ name: ENV, enum: [staging, production] }]
+    dir: web/infra/live/{{.ENV}}
     cmds:
       - terragrunt init {{.CLI_ARGS}}
 
-  # Apply shared infrastructure first
-  tfapply-shared:
-    desc: Apply shared infrastructure
-    internal: true
-    interactive: true
-    deps:
-      - check-aws-identity
-    dir: infra/live/shared
-    cmds:
-      - terragrunt apply {{.CLI_ARGS}}
-
-  # `terragrunt apply`
-  tfapply:
-    desc: Run Terragrunt apply (use ENV=staging or ENV=production)
-    interactive: true
-    deps:
-      - tfapply-shared
-    vars:
-      ENV: '{{default "staging" .ENV}}'
-    dir: infra/live/{{.ENV}}
-    cmds:
-      - terragrunt apply {{.CLI_ARGS}}
-
-  # plan shared infrastructure first
   tfplan-shared:
-    desc: Plan shared infrastructure
+    internal: true
+    deps: [check-aws-identity]
+    dir: web/infra/live/shared
+    cmds:
+      - terragrunt plan {{.CLI_ARGS}}
+
+  tfplan:
+    desc: Plan shared + ENV (ENV=staging|production, default staging)
+    aliases: [tf-plan, tf:plan]
+    deps: [tfplan-shared]
+    vars:
+      ENV: '{{default "staging" .ENV}}'
+    requires:
+      vars: [{ name: ENV, enum: [staging, production] }]
+    dir: web/infra/live/{{.ENV}}
+    cmds:
+      - terragrunt plan {{.CLI_ARGS}}
+
+  tfapply-shared:
     internal: true
     interactive: true
-    deps:
-      - check-aws-identity
-    dir: infra/live/shared
+    deps: [check-aws-identity]
+    dir: web/infra/live/shared
     cmds:
-      - terragrunt plan {{.CLI_ARGS}}
+      - terragrunt apply {{.CLI_ARGS}}
 
-  # `terragrunt plan`
-  tfplan:
-    desc: Run Terragrunt plan (use ENV=staging or ENV=production)
-    deps:
-      - tfplan-shared
-    vars:
-      ENV: '{{default "staging" .ENV}}'
-    dir: infra/live/{{.ENV}}
-    cmds:
-      - terragrunt plan {{.CLI_ARGS}}
-
-  # `terragrunt destroy`
-  tfdestroy:
-    desc: Run Terragrunt destroy (use ENV=staging or ENV=production)
+  tfapply:
+    desc: Apply shared + ENV (ENV=staging|production, default staging)
+    aliases: [tf-apply, tf:apply]
     interactive: true
-    deps:
-      - check-aws-identity
+    deps: [tfapply-shared]
     vars:
       ENV: '{{default "staging" .ENV}}'
-    dir: infra/live/{{.ENV}}
+    requires:
+      vars: [{ name: ENV, enum: [staging, production] }]
+    dir: web/infra/live/{{.ENV}}
     cmds:
-      - terragrunt destroy {{.CLI_ARGS}}
+      - terragrunt apply {{.CLI_ARGS}}
 
-  # `terragrunt import`
-  tfimport:
-    desc: Run Terragrunt import (use ENV=staging or ENV=production)
-    deps:
-      - check-aws-identity
-    vars:
-      ENV: '{{default "staging" .ENV}}'
-    dir: infra/live/{{.ENV}}
+  # ---------------------------------------------------------------- One-offs (temp)
+  # Throwaway scripts STILL run through `task` (so the app's dotenv + AWS_PROFILE load
+  # the same as everything else) — but they're quarantined and short-lived. Convention:
+  #   1. script file → <app>/scripts/tmp/<slug>.ts, INSIDE the app: Bun resolves imports
+  #      (deps, the `~/` alias) from the script file's location, not the task's `dir:`.
+  #      `**/scripts/tmp/` MUST be gitignored — a one-off is never committed
+  #   2. add a `tmp-<slug>` block below, dated, with a DELETE-AFTER-RUN banner
+  #   3. once it has served its purpose: delete the block + the script, then
+  #      `task tmp-sweep` to confirm nothing lingers
+  tmp-sweep:
+    desc: List lingering one-offs (tmp-* tasks + */scripts/tmp/ files) so they can be removed
+    aliases: [tmp:sweep]
+    silent: true
     cmds:
-      - terragrunt import {{.CLI_ARGS}}
+      - |
+        echo "── tmp-* task blocks still in Taskfile.yml ──"
+        grep -nE '^  tmp-[a-z0-9-]+:' Taskfile.yml | grep -v 'tmp-sweep:' || echo "  (none — clean)"
+        echo "── files in scripts/tmp/ ──"
+        find . -path ./node_modules -prune -o -path '*/node_modules' -prune -o -path '*/scripts/tmp/*' -type f ! -name .gitkeep -print | grep . || echo "  (none — clean)"
 
-  # `terraform state list`
-  tflist:
-    desc: List Terraform state (use ENV=staging or ENV=production)
-    deps:
-      - check-aws-identity
-    vars:
-      ENV: '{{default "staging" .ENV}}'
-    dir: infra/live/{{.ENV}}
-    cmds:
-      - terraform state list
-
-  # `terragrunt refresh`
-  tfrefresh:
-    desc: Run Terragrunt refresh (use ENV=staging or ENV=production)
-    deps:
-      - check-aws-identity
-    vars:
-      ENV: '{{default "staging" .ENV}}'
-    dir: infra/live/{{.ENV}}
-    cmds:
-      - terragrunt refresh
-
-  # Show outputs for a specific environment
-  tfoutput:
-    desc: Show Terraform outputs (use ENV=staging or ENV=production)
-    deps:
-      - check-aws-identity
-    vars:
-      ENV: '{{default "staging" .ENV}}'
-    dir: infra/live/{{.ENV}}
-    cmds:
-      - terragrunt output {{.CLI_ARGS}}
-
-  # Save terraform outputs to JSON file
-  save-outputs:
-    desc: Save Terraform outputs to JSON file (use ENV=staging or ENV=production)
-    deps:
-      - check-aws-identity
-    vars:
-      ENV: '{{default "staging" .ENV}}'
-    dir: infra/live/{{.ENV}}
-    cmds:
-      - terragrunt output -json > ../../../terraform-outputs-{{.ENV}}.json
-      - echo "✅ Saved {{.ENV}} terraform outputs to terraform-outputs-{{.ENV}}.json"
+  # ---- one-off task blocks go below; DELETE each (block + script) once it has run ----
+  # tmp-backfill-foo:        # added 2026-01-01 — DELETE AFTER RUN
+  #   desc: '[ONE-OFF 2026-01-01] backfill foo, then remove this task + its script'
+  #   aliases: [tmp:backfill-foo]
+  #   dir: web                        # the app the script lives in (web/scripts/tmp/)
+  #   dotenv: *web-dotenv
+  #   deps: [check-aws-identity]      # only if it touches AWS
+  #   cmds:
+  #     - bun run scripts/tmp/backfill-foo.ts {{.CLI_ARGS}}
