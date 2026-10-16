@@ -17,13 +17,17 @@ export default function Home() {
       <img src="/favicon.svg" alt="" className="size-10" />
       <h1 className="text-3xl font-semibold tracking-tight">Ben Honda</h1>
       <p className="leading-relaxed text-muted-foreground">
-        I took the old site down and I'm building a new one from scratch. Until it's ready you can find me on{" "}
+        Enjoy this riveting (temporary) site. You can find me on{" "}
         <a href="https://github.com/benhonda" className={linkClassName}>
           GitHub
-        </a>{" "}
-        or{" "}
+        </a>
+        ,{" "}
         <a href="https://www.linkedin.com/in/benhonda/" className={linkClassName}>
           LinkedIn
+        </a>
+        , or{" "}
+        <a href="https://www.shittylittleapps.com" className={linkClassName}>
+          shittylittleapps.com
         </a>
         .
       </p>
