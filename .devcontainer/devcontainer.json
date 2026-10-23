@@ -4,7 +4,7 @@
   "name": "bhondacom",
   "image": "ghcr.io/adpharm/devcontainer-base:latest",
   // Bind mounts fail if the host path is missing, so make sure they exist on every machine
-  "initializeCommand": "mkdir -p \"$HOME/.claude-mods\" \"$HOME/.aws\" \"$HOME/.ssh\" && touch \"$HOME/.gitconfig\"",
+  "initializeCommand": "mkdir -p \"$HOME/.claude-mods\" \"$HOME/.aws\" \"$HOME/.ssh\" && touch \"$HOME/.gitconfig\" && { docker pull -q ghcr.io/adpharm/devcontainer-base:latest > /dev/null || echo \"devbox: couldn't fetch the newest image (offline?), so this starts on the copy already here\"; }",
   "mounts": [
     // Literal repo suffix (not ${devcontainerId}) so image prunes/rebuilds can't orphan history,
     // while staying isolated from other repos' devcontainers
@@ -21,5 +21,29 @@
   ],
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
   "workspaceFolder": "/workspace",
-  "postCreateCommand": "bash .devcontainer/post-create.sh"
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "runArgs": [
+    "--name",
+    "${localWorkspaceFolderBasename}"
+  ],
+  "forwardPorts": [
+    7680
+  ],
+  "portsAttributes": {
+    "7680": {
+      "label": "Panel",
+      "onAutoForward": "notify"
+    }
+  },
+  "customizations": {
+    "codespaces": {
+      "repositories": {
+        "adpharm/adpharm-skills": {
+          "permissions": {
+            "contents": "read"
+          }
+        }
+      }
+    }
+  }
 }

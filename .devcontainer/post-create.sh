@@ -1,11 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
-# Everything else is baked into the base image. This stays here because it clones
-# over SSH with the host's mounted keys, which aren't available at image build time.
+# Everything else is baked into the base image. This stays here because adpharm-skills is private: it clones with
+# your gh login locally, and with the codespace's token (granted in devcontainer.json) in a codespace.
 
 # adskills
 d=$(mktemp -d)
 trap 'rm -rf "$d"' EXIT
-git clone -q --depth 1 git@github.com:adpharm/adpharm-skills.git "$d"
+gh repo clone adpharm/adpharm-skills "$d" -- -q --depth 1
 bash "$d/scripts/install.sh"
