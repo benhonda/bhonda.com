@@ -11,5 +11,8 @@
       "Read(./node_modules/@segment/**)",
       "Read(//workspace/node_modules/@segment/**)"
     ]
+  },
+  "enabledPlugins": {
+    "adpharm-extras@adpharm": true
   }
 }
